@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>Jeu des Clics – Réflexes</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{
+        font-family:Arial, sans-serif;
+        background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+        display:flex;justify-content:center;align-items:center;
+        min-height:100vh;overflow:hidden;touch-action:manipulation;
+    }
+    .game-container{
+        background:white;border-radius:20px;padding:20px;
+        width:100%;max-width:420px;height:100vh;max-height:820px;
+        box-shadow:0 20px 60px rgba(0,0,0,0.25);
+        display:flex;flex-direction:column;text-align:center;
+    }
+    h1{color:#667eea;margin-bottom:10px;font-size:1.8em;}
+    .stats{display:flex;justify-content:space-around;margin-bottom:20px;}
+    .stat-label{color:#666;font-size:0.8em;}
+    .stat-value{color:#667eea;font-size:1.5em;font-weight:bold;}
+    .game-area{
+        background:#f8f9fa;border-radius:15px;padding:25px;
+        flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
+        margin-bottom:20px;
+    }
+    .instruction{font-size:1.3em;color:#667eea;margin-bottom:20px;}
+    #consigne{font-size:2em;font-weight:bold;color:#333;margin-bottom:20px;}
+    #btn{
+        background:#667eea;color:white;border:none;border-radius:15px;
+        padding:18px 35px;font-size:1.4em;font-weight:bold;cursor:pointer;
+    }
+    #btn:disabled{background:#aaa;cursor:not-allowed;}
+    .timer-bar{width:100%;height:10px;background:#ddd;border-radius:6px;margin-bottom:20px;overflow:hidden;}
+    .timer-fill{height:100%;background:linear-gradient(90deg,#4caf50,#ffc107,#f44336);width:100%;}
+    #click-area{
+        margin-top:15px;
+        background:#ffffff;
+        border:2px solid #667eea;
+        border-radius:50px;
+        padding:15px 25px;
+        font-size:1.1em;
+        cursor:pointer;
+        user-select:none;
+    }
+</style>
+</head>
+<body>
+<div class="game-container">
+    <h1>🖱️ Jeu des Clics</h1>
+
+    <div class="stats">
+        <div><div class="stat-label">Score</div><div class="stat-value" id="score">0</div></div>
+        <div><div class="stat-label">Meilleur</div><div class="stat-value" id="best">0</div></div>
+    </div>
+
+    <div class="game-area">
+        <div id="start-screen">
+            <p class="instruction">Clique selon la consigne demandée :</p>
+            <p>✔ Clic gauche<br>✔ Clic droit<br>✔ Double-clic</p>
+            <button id="btn">Commencer</button>
+        </div>
+
+        <div id="game-screen" style="display:none;">
+            <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+            <div id="consigne"></div>
+            <button id="click-area">Clique ici</button>
+        </div>
+
+        <div id="game-over" style="display:none;">
+            <h2 style="color:#f44336;margin-bottom:15px;">Fin du jeu</h2>
+            <p id="final-score" style="font-size:2em;color:#667eea;"></p>
+            <button id="restart" style="background:#667eea;color:white;border:none;border-radius:15px;padding:15px 30px;font-size:1.2em;">Rejouer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let score = 0;
+let best = Number(localStorage.getItem("bestClickScore") || 0);
+let ready = false;
+let timer;
+let timeLeft = 100;
+
+const consignes = ["clic gauche","clic droit","double-clic"];
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const btn = document.getElementById("btn");
+const restartBtn = document.getElementById("restart");
+const consigneEl = document.getElementById("consigne");
+const timerFill = document.getElementById("timer-fill");
+const clickArea = document.getElementById("click-area");
+
+bestEl.textContent = best;
+
+btn.addEventListener("click", startGame);
+restartBtn.addEventListener("click", startGame);
+
+function startGame(){
+    score = 0;
+    scoreEl.textContent = 0;
+    document.getElementById("start-screen").style.display = "none";
+    document.getElementById("game-over").style.display = "none";
+    document.getElementById("game-screen").style.display = "block";
+    nextRound();
+}
+
+function nextRound(){
+    ready = false;
+    consigneEl.textContent = "Prépare-toi...";
+
+    let delay = Math.random()*2000 + 1000;
+    setTimeout(()=>{
+        window.action = consignes[Math.floor(Math.random()*consignes.length)];
+        consigneEl.textContent = window.action.toUpperCase();
+        ready = true;
+        startTimer();
+    }, delay);
+}
+
+function startTimer(){
+    clearInterval(timer);
+    timeLeft = 100;
+    timerFill.style.width = "100%";
+
+    timer = setInterval(()=>{
+        timeLeft -= 1;
+        timerFill.style.width = timeLeft + "%";
+        if(timeLeft <= 0) endGame();
+    }, 40);
+}
+
+// CLIC GAUCHE sur le bouton
+clickArea.addEventListener("mouseup", e => {
+    if(!ready) return;
+    if(e.button !== 0) return; // seulement bouton gauche
+
+    if(window.action === "clic gauche"){
+        success();
+    } else if(window.action === "clic droit"){
+        // mauvaise action → perdu
+        endGame();
+    } else if(window.action === "double-clic"){
+        // on attend le double-clic, on NE punit PAS le simple clic
+        return;
+    }
+});
+
+// DOUBLE-CLIC sur le bouton
+clickArea.addEventListener("dblclick", e => {
+    if(!ready) return;
+
+    if(window.action === "double-clic"){
+        success();
+    } else {
+        endGame();
+    }
+});
+
+// CLIC DROIT sur le bouton
+clickArea.addEventListener("contextmenu", e => {
+    e.preventDefault();
+    if(!ready) return;
+
+    if(window.action === "clic droit"){
+        success();
+    } else {
+        endGame();
+    }
+});
+
+function success(){
+    clearInterval(timer);
+    score++;
+    scoreEl.textContent = score;
+    if(score > best){
+        best = score;
+        localStorage.setItem("bestClickScore", best);
+        bestEl.textContent = best;
+    }
+    nextRound();
+}
+
+function endGame(){
+    clearInterval(timer);
+    ready = false;
+    document.getElementById("game-screen").style.display = "none";
+    document.getElementById("game-over").style.display = "block";
+    document.getElementById("final-score").textContent = "Score : " + score;
+}
+</script>
+</body>
+</html>
