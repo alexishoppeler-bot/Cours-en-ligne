@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Réécriture – 100 phrases</title>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+/* MODE CLAIR */
+:root {
+    --bg: #f5f7ff;
+    --text: #1a1a1a;
+    --card: #ffffff;
+    --primary: #3f71ff;
+    --secondary: #f2982c;
+    --border: #d6d8e0;
+}
+
+/* MODE SOMBRE */
+body.dark {
+    --bg: #121212;
+    --text: #e8e8e8;
+    --card: #1f1f1f;
+    --primary: #6f94ff;
+    --secondary: #ffbb6a;
+    --border: #444;
+}
+
+body {
+    background: var(--bg);
+    font-family: Arial;
+    margin:0;
+    padding:40px;
+    display:flex;
+    justify-content:center;
+    transition:0.3s;
+}
+
+#container {
+    width:100%;
+    max-width:850px;
+    background:var(--card);
+    padding:40px;
+    border-radius:18px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.15);
+    transition:0.3s;
+}
+
+h1,h2,p,label,span {
+    color:var(--text);
+}
+
+/* Bouton mode sombre */
+#darkToggle {
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:var(--primary);
+    color:white;
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+/* Barre de progression */
+#progressBar {
+    width:100%;
+    height:14px;
+    background:#e2e5f2;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+#progressInner {
+    height:100%;
+    width:0%;
+    background:var(--primary);
+    transition:0.3s;
+}
+
+/* Phrase modèle */
+#phrase {
+    font-size:20px;
+    background:#dde4ff;
+    padding:18px;
+    border-left:6px solid var(--primary);
+    border-radius:10px;
+    user-select:none;
+    margin-bottom:20px;
+}
+
+/* Zone réponse */
+textarea {
+    width:100%;
+    height:150px;
+    padding:15px;
+    font-size:18px;
+    border-radius:12px;
+    border:2px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    outline:none;
+    transition:0.25s;
+}
+textarea:focus {
+    border-color:var(--primary);
+}
+
+/* Boutons */
+button {
+    padding:14px 26px;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+    margin:5px;
+    transition:0.2s;
+}
+.btn-primary { background:var(--primary); color:white; }
+.btn-primary:hover { background:#2b5be0; }
+
+.btn-green { background:#00a86b; color:white; }
+.btn-green:hover { background:#007e50; }
+
+.btn-orange { background:var(--secondary); color:white; }
+.btn-orange:hover { background:#d98524; }
+
+.btn-red { background:#d62828; color:white; }
+.btn-red:hover { background:#b31f1f; }
+
+/* Messages */
+.ok { color:#0a9b39; font-weight:bold; font-size:20px; }
+.error { color:#cc0000; font-weight:bold; font-size:20px; }
+
+/* Pages */
+#accueil { display:block; }
+#exercice { display:none; }
+
+</style>
+</head>
+
+<body>
+
+<button id="darkToggle" onclick="toggleDark()">🌙 Mode sombre</button>
+
+<div id="container">
+
+<!-- ACCUEIL -->
+<div id="accueil">
+    <h1>Réécriture de 100 phrases</h1>
+    <p style="font-size:19px;line-height:1.5;">
+        Exercice d’écriture avec sauvegarde automatique,<br>
+        validation tolérante et certificat final PDF.
+    </p>
+
+    <label style="font-size:18px;">Votre nom :</label><br>
+    <input id="nom" type="text" 
+           style="margin-top:10px;font-size:20px;padding:10px;width:60%;
+           border-radius:10px;border:2px solid var(--border);"><br><br>
+
+    <button class="btn-primary" onclick="commencer()">Commencer</button>
+</div>
+
+<!-- EXERCICE -->
+<div id="exercice">
+
+    <div id="progressBar"><div id="progressInner"></div></div>
+
+    <h2>Exercice <span id="numEx">1</span> / 100</h2>
+
+    <div id="phrase"></div>
+
+    <textarea id="reponse" placeholder="Écrivez ici…"></textarea>
+
+    <br>
+    <button class="btn-primary" onclick="valider()">Valider</button>
+    <button id="btnSuivant" class="btn-green" style="display:none;" onclick="suivant()">Suivant</button>
+
+    <div id="message" style="margin-top:15px;"></div>
+
+    <br>
+    <button class="btn-orange" onclick="genererPDF()">📄 Télécharger PDF réponses</button>
+    <button class="btn-red" onclick="resetData()">🔄 Réinitialiser</button>
+
+</div>
+
+<script>
+/* ===========================================================
+   LISTE DES PHRASES (PARTIE 2 SUIVANTE)
+=========================================================== */
+/* ===========================================================
+   100 PHRASES LONGUES
+=========================================================== */
+
+const phrases = [
+"Aujourd’hui, je suis motivé et je veux vraiment progresser dans mon apprentissage du français.",
+"Je fais un effort chaque jour pour écrire correctement et améliorer mes compétences en communication.",
+"Je viens en cours pour apprendre, pratiquer et devenir plus autonome dans mon travail futur.",
+"J’ai envoyé mon CV hier soir et j’attends une réponse de l’entreprise qui m’intéresse.",
+"Je suis à l’heure tous les jours, parce que c’est important pour le travail et le respect des autres.",
+"Je veux trouver un emploi stable pour construire un bon avenir pour moi et ma famille.",
+"Je fais de mon mieux pour comprendre les consignes et suivre le rythme de la formation.",
+"Je relis mes phrases avant de valider l’exercice afin d’éviter les fautes d’orthographe.",
+"Je suis fier de mes progrès, même si j’ai encore beaucoup de choses à apprendre.",
+"Je suis disponible rapidement et prêt à commencer un nouveau travail dans une entreprise motivante.",
+"Je pratique la dactylographie pour taper plus vite et plus correctement sur l’ordinateur.",
+"J’aime apprendre le français, car cela m’aide à mieux communiquer dans la vie de tous les jours.",
+"Je cherche un travail où je peux utiliser mes compétences et continuer à progresser.",
+"Je veux être autonome dans l’utilisation de Word et dans l’écriture des documents professionnels.",
+"Je suis prêt à travailler le matin, l’après-midi ou le soir, selon les besoins de l’entreprise.",
+"Je peux me déplacer facilement en bus, en train ou à pied pour aller travailler sans problème.",
+"J’utilise Google Maps pour vérifier mon trajet et planifier mon heure de départ correctement.",
+"Je suis sérieux, ponctuel et motivé pour réussir dans mon futur emploi.",
+"Je fais attention à ma présentation et à ma communication quand je parle avec un employeur.",
+"Je suis capable de lire une annonce d’emploi et de comprendre les informations importantes.",
+"J’ai besoin de pratiquer encore beaucoup pour écrire plus vite sur le clavier de l’ordinateur.",
+"Je me corrige quand je fais une erreur, car cela me permet d’apprendre plus facilement.",
+"Je suis calme et concentré pendant les exercices pour éviter les fautes dans mes phrases.",
+"Je veux réussir ma formation et trouver un emploi qui me correspond vraiment.",
+"Je prends des notes dans mon cahier pour ne rien oublier et pour réviser à la maison.",
+"Je suis motivé à continuer mes efforts, même si parfois c’est difficile.",
+"Je demande de l’aide quand je ne comprends pas une consigne ou un exercice.",
+"Je peux écrire un message simple et poli pour demander un rendez-vous professionnel.",
+"Je comprends que la pratique est importante pour progresser chaque jour.",
+"Je lis attentivement les phrases avant de les recopier pour éviter les erreurs.",
+"Je travaille mes compétences numériques pour être plus autonome dans le futur.",
+"Je fais attention aux caractères dans les mots, car ils sont importants pour bien écrire.",
+"Je veux améliorer ma vitesse d’écriture pour être plus efficace sur l’ordinateur.",
+"Je suis motivé pour apprendre de nouvelles choses et évoluer dans mon travail.",
+"Je pratique l’écriture pour gagner en confiance lors de mes recherches d’emploi.",
+"Je suis prêt à faire des efforts chaque jour pour avancer vers mes objectifs.",
+"Je prends mon avenir au sérieux et je veux faire les choses correctement.",
+"J’aime apprendre dans une bonne ambiance, car cela me donne envie de venir en formation.",
+"Je suis heureux de voir mes progrès et je veux continuer dans cette direction.",
+"Je veux écrire correctement pour communiquer facilement avec les entreprises.",
+"Je fais un effort pour utiliser les bons mots et les bonnes phrases dans mes messages.",
+"J’apprends à organiser mes documents pour ne rien perdre et rester bien préparé.",
+"Je dois envoyer mes candidatures chaque semaine pour avancer dans ma recherche d’emploi.",
+"Je peux demander des informations simples dans un magasin ou dans une administration.",
+"Je suis capable de lire l’heure et les dates importantes dans les documents.",
+"Je fais attention aux détails pour éviter les erreurs dans mes dossiers administratifs.",
+"Je suis poli quand j’écris un message ou un e-mail professionnel.",
+"Je peux expliquer mes disponibilités à un employeur pendant un entretien.",
+"Je me prépare toujours avant un rendez-vous important pour être plus à l’aise.",
+"Je suis capable de suivre une consigne simple si elle est bien expliquée.",
+"Je comprends l’importance d’être ponctuel quand j’ai un rendez-vous professionnel.",
+"Je lis mes documents administratifs pour comprendre les informations importantes.",
+"Je prends le temps de bien écrire pour éviter les fautes dans mes textes.",
+"Je fais des efforts pour améliorer mon français chaque jour.",
+"Je suis motivé à trouver un travail qui me plaît et qui correspond à mes compétences.",
+"Je comprends l’importance d’avoir un bon CV pour attirer les employeurs.",
+"Je fais attention à la qualité de mes documents pour donner une bonne impression.",
+"Je pratique les exercices pour améliorer ma vitesse et ma précision en écriture.",
+"Je peux décrire mes qualités simples pendant un entretien d’embauche.",
+"Je suis capable de parler de mon expérience professionnelle avec des phrases simples.",
+"Je comprends que la répétition est importante pour progresser dans l’écriture.",
+"Je relis mes textes avant de les envoyer pour vérifier s’il y a des erreurs.",
+"Je suis plus à l’aise avec l’ordinateur grâce à la pratique quotidienne.",
+"Je comprends mieux les consignes grâce aux exercices répétés.",
+"Je veux améliorer ma compréhension pour être plus autonome en Suisse.",
+"Je peux écrire une petite phrase correcte pour répondre à un employeur.",
+"Je suis fier de mes efforts même si le chemin est encore long.",
+"Je suis patient et j’avance doucement mais sûrement vers mes objectifs.",
+"Je fais attention à bien taper les accents dans les mots importants.",
+"Je suis capable de recopier des phrases longues sans faire trop d’erreurs.",
+"Je veux m’améliorer dans la communication pour trouver un emploi plus facilement.",
+"Je peux écrire un message simple pour confirmer un rendez-vous.",
+"Je prends mon temps pour bien écrire, car je veux faire les choses correctement.",
+"Je sais que la persévérance est importante pour réussir dans la vie professionnelle.",
+"Je fais attention à ma posture quand j’écris sur l’ordinateur pour ne pas me fatiguer.",
+"Je me sens plus confiant quand je réussis un exercice difficile.",
+"Je veux apprendre à écrire des phrases plus longues pour progresser en français.",
+"Je suis capable d’écrire un petit texte pour me présenter à un employeur.",
+"Je fais un effort pour utiliser un vocabulaire simple mais correct.",
+"Je comprends que chaque exercice m’aide à progresser un peu plus.",
+"Je veux être autonome dans mes démarches administratives en Suisse.",
+"Je peux écrire une phrase pour expliquer pourquoi je suis motivé.",
+"Je suis capable d’écrire un message poli pour demander des informations.",
+"Je travaille avec sérieux pour réussir dans ma formation.",
+"Je prends le temps de bien taper chaque lettre pour éviter les fautes.",
+"Je veux améliorer ma vitesse d’écriture sans perdre la qualité.",
+"Je peux écrire un texte simple pour parler de ma journée.",
+"Je comprends que la pratique est la clé pour progresser.",
+"Je veux écrire clairement pour que les autres comprennent mes messages.",
+"Je veux apprendre à écrire correctement pour être plus professionnel.",
+"Je suis motivé à continuer mes efforts chaque semaine.",
+"J’apprends de mes erreurs et je ne me décourage pas.",
+"Je sais que je progresse même si ce n’est pas toujours facile.",
+"Je suis prêt à faire des exercices plus difficiles pour avancer.",
+"Je fais attention à l’orthographe pour améliorer mes textes.",
+"Je peux écrire un message simple pour répondre à une invitation.",
+"Je travaille chaque jour pour devenir plus autonome.",
+"Je suis heureux de voir mes progrès dans l’écriture.",
+"Je continue mes efforts pour atteindre mes objectifs professionnels.",
+"Je veux réussir ma formation pour avoir un meilleur avenir."
+];
+
+/* ===========================================================
+   VARIABLES + SAUVEGARDE
+=========================================================== */
+
+let index = 0;
+let startTime;
+let participant = "";
+let reponses = new Array(phrases.length).fill("");
+
+/* Récupération sauvegarde */
+if (localStorage.getItem("reponses100")) {
+    reponses = JSON.parse(localStorage.getItem("reponses100"));
+}
+if (localStorage.getItem("exerciceIndex")) {
+    index = parseInt(localStorage.getItem("exerciceIndex"));
+}
+
+/* Sauvegarde auto */
+document.addEventListener("input", () => {
+    if (document.activeElement.id === "reponse") {
+        reponses[index] = document.getElementById("reponse").value;
+        localStorage.setItem("reponses100", JSON.stringify(reponses));
+        localStorage.setItem("exerciceIndex", index);
+    }
+});
+
+/* ===========================================================
+   DÉBUT DES FONCTIONS (PARTIE 3 SUIVANTE)
+=========================================================== */
+/* ===========================================================
+   FONCTIONS PRINCIPALES
+=========================================================== */
+
+function commencer() {
+    participant = document.getElementById("nom").value.trim();
+
+    if (!participant) {
+        alert("Veuillez écrire votre nom avant de commencer.");
+        return;
+    }
+
+    startTime = Date.now();
+
+    document.getElementById("accueil").style.display = "none";
+    document.getElementById("exercice").style.display = "block";
+
+    afficher();
+}
+
+function afficher() {
+    document.getElementById("numEx").innerText = index + 1;
+    document.getElementById("phrase").innerText = phrases[index];
+    document.getElementById("reponse").value = reponses[index] || "";
+    document.getElementById("message").innerHTML = "";
+    document.getElementById("btnSuivant").style.display = "none";
+
+    updateProgress();
+}
+
+/* ===========================================================
+   BARRE DE PROGRESSION
+=========================================================== */
+function updateProgress() {
+    const pct = (index / phrases.length) * 100;
+    document.getElementById("progressInner").style.width = pct + "%";
+}
+
+/* ===========================================================
+   VALIDATION TOLÉRANTE
+=========================================================== */
+
+function nettoyer(txt) {
+    return txt
+        .toLowerCase()
+        .replace(/’/g, "'")
+        .replace(/[–—]/g, "-")
+        .replace(/\s+/g, " ")
+        .replace(/[.,!?;:]/g, "")
+        .trim();
+}
+
+const messages = [
+    "Très bien, continue !",
+    "Bravo, tu progresses !",
+    "Excellent travail !",
+    "Super, continue comme ça !",
+    "Félicitations, bonne écriture !"
+];
+
+function valider() {
+    const attendu = phrases[index];
+    const ecrit   = document.getElementById("reponse").value;
+
+    reponses[index] = ecrit;
+
+    if (nettoyer(attendu) === nettoyer(ecrit)) {
+
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+
+        document.getElementById("message").innerHTML =
+            `<span class="ok">✔ Correct ! ${msg}</span>`;
+
+        document.getElementById("btnSuivant").style.display = "inline-block";
+    } else {
+        document.getElementById("message").innerHTML =
+            `<span class="error">❌ Presque… corrige encore un peu.</span>`;
+    }
+}
+
+/* ===========================================================
+   SUIVANT
+=========================================================== */
+function suivant() {
+    index++;
+
+    if (index < phrases.length) afficher();
+    else fin();
+}
+
+/* ===========================================================
+   FIN : CERTIFICAT
+=========================================================== */
+
+function fin() {
+
+    const dureeMin = Math.max(1, Math.floor((Date.now() - startTime) / 60000));
+    const phraseMotivante = "Votre travail est remarquable. Continuez comme ça !";
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:"pt", format:"a4" });
+
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(30);
+    doc.text("Certificat de Réussite", 150, 80);
+
+    doc.setFontSize(16);
+    doc.setFont("Helvetica", "normal");
+    doc.text("Ce certificat est remis à :", 60, 150);
+
+    doc.setFontSize(22);
+    doc.setFont("Helvetica", "bold");
+    doc.text(participant, 60, 185);
+
+    doc.setFontSize(16);
+    doc.setFont("Helvetica", "normal");
+    doc.text("Pour avoir terminé avec succès les 100 exercices de réécriture.", 60, 230);
+
+    doc.text(`Durée estimée : ${dureeMin} minutes`, 60, 270);
+
+    doc.text("Message de motivation :", 60, 330);
+    doc.setFont("Helvetica", "italic");
+    doc.text(phraseMotivante, 60, 360);
+
+    const date = new Date().toLocaleDateString("fr-CH");
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Date : ${date}`, 60, 420);
+
+    doc.save("certificat.pdf");
+
+    document.getElementById("exercice").innerHTML = `
+        <h1>Bravo ${participant} 🎉</h1>
+        <p style="font-size:22px;">Vous avez terminé les 100 exercices.</p>
+        <p>Votre certificat PDF est téléchargé.</p>
+    `;
+}
+
+/* ===========================================================
+   PDF DES RÉPONSES
+=========================================================== */
+
+function genererPDF() {
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:"pt", format:"a4" });
+
+    let y = 40;
+
+    doc.setFontSize(18);
+    doc.setFont("Helvetica", "bold");
+    doc.text(`Réponses de : ${participant}`, 40, y);
+    y += 30;
+
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(12);
+
+    for (let i = 0; i < phrases.length; i++) {
+
+        if (y > 770) {
+            doc.addPage();
+            y = 40;
+        }
+
+        doc.text(`Phrase ${i+1} :`, 40, y);
+        y += 12;
+        doc.text(phrases[i], 60, y, { maxWidth: 480 });
+        y += 28;
+
+        doc.text("Réponse :", 40, y);
+        y += 12;
+        doc.text(reponses[i] || "(vide)", 60, y, { maxWidth: 480 });
+        y += 30;
+    }
+
+    doc.save("reponses.pdf");
+}
+
+/* ===========================================================
+   MODE SOMBRE
+=========================================================== */
+
+function toggleDark() {
+    document.body.classList.toggle("dark");
+}
+
+/* ===========================================================
+   ANTI-COPIE
+=========================================================== */
+
+document.addEventListener("contextmenu", function(e) {
+    const modele = document.getElementById("phrase");
+    if (modele.contains(e.target)) e.preventDefault();
+});
+
+document.addEventListener("keydown", function(e) {
+    if (e.ctrlKey && ["c","v","x","a"].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+    }
+});
+
+document.getElementById("phrase").ondragstart = () => false;
+
+/* ===========================================================
+   RESET
+=========================================================== */
+
+function resetData() {
+    if (confirm("Effacer toutes les réponses ?")) {
+        localStorage.removeItem("reponses100");
+        localStorage.removeItem("exerciceIndex");
+        reponses = new Array(phrases.length).fill("");
+        index = 0;
+        afficher();
+        alert("Données effacées.");
+    }
+}
+
+</script>
+
+</div>
+</body>
+</html>
