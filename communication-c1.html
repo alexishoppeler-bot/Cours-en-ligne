@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz C1 – Communication professionnelle</title>
+
+<style>
+  body{
+    font-family:Arial, sans-serif;
+    background:#eef3f9;
+    margin:0;
+    padding:20px;
+  }
+  .container{
+    max-width:800px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  }
+  h2{
+    color:#004c97;
+    margin-top:0;
+  }
+  .scenario{
+    font-weight:bold;
+    margin-bottom:10px;
+  }
+  .option{
+    background:#f0f4ff;
+    border:1px solid #ccd9ff;
+    padding:10px;
+    border-radius:10px;
+    margin:8px 0;
+    cursor:pointer;
+  }
+  .option:hover{
+    background:#dfe8ff;
+  }
+  .correct{
+    color:green;
+    font-weight:bold;
+    margin-top:10px;
+  }
+  .wrong{
+    color:red;
+    font-weight:bold;
+    margin-top:10px;
+  }
+  #resetBtn{
+    display:none;
+    background:#d9534f;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    margin-top:20px;
+    cursor:pointer;
+  }
+  .scoreBox{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:15px;
+    color:#004c97;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="intro" style="max-width:800px;margin:auto;background:#ffffff;padding:25px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.2);">
+  <h2>Quiz C1 – Communication professionnelle</h2>
+  <p>📘 <b>Objectif :</b> Gérer des situations complexes avec clients, collègues et tensions.</p>
+  <p>🎯 <b>Compétences :</b></p>
+  <ul>
+    <li>Compréhension fine de sous-entendus.</li>
+    <li>Analyse d’un conflit ou d’une situation sensible.</li>
+    <li>Communication professionnelle avancée.</li>
+    <li>Choisir la meilleure stratégie relationnelle.</li>
+  </ul>
+  <p>⭐ <b>Score :</b> 1 point seulement si bonne réponse du premier coup.</p>
+
+  <button onclick="startQuiz()" style="background:#004c97;color:white;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-size:16px;">Commencer</button>
+</div>
+
+<!-- QUIZ -->
+<div class="container" id="quizContainer" style="display:none;">
+  <h2>Quiz – Communication professionnelle C1</h2>
+  <div class="scoreBox">Score : <span id="score">0</span>/<span id="total">0</span></div>
+
+  <div id="scenario" class="scenario"></div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+
+  <button id="resetBtn" onclick="resetAll()">Réinitialiser</button>
+</div>
+
+<script>
+// ----------------------------------------------------
+// 50 QUESTIONS C1 – RELATION CLIENT / COMMUNICATION
+// ----------------------------------------------------
+
+const questions = [
+  {text:"Un client dit d’un ton sec : « Je paie assez cher pour un service correct. » Quelle réaction professionnelle est la plus appropriée ?", options:["Vous lui rappelez les règles","Vous ignorez le ton et proposez une solution calmement","Vous lui dites qu’il exagère"], correct:1},
+
+  {text:"Un client dit : « Ce n'est pas ce que j’ai commandé, mais bon, laissez tomber. » Sous-entendu ?", options:["Il est satisfait","Il est en réalité contrarié et attend une proposition","Il veut partir"], correct:1},
+
+  {text:"Un collègue vous écrit : « Merci de valider rapidement, on attend ton retour pour avancer. » Que faire ?", options:["Vous validez ou expliquez ce qui manque","Vous attendez le lendemain","Vous demandez qui a décidé cela"], correct:0},
+
+  {text:"Un client : « Je comprends que vous ayez beaucoup de travail, mais j’attends depuis 30 minutes… » Quel est le but de cette phrase ?", options:["Se plaindre agressivement","Exprimer l’attente avec diplomatie","Quitter le service"], correct:1},
+
+  {text:"Lors d’une tension, un collègue dit : « Je pense qu’on ne se comprend pas. » Vous répondez :", options:["« Ce n’est pas mon problème. »","« Reformulons pour vérifier que nous parlons de la même chose. »","« J’ai raison, c’est tout. »"], correct:1},
+
+  {text:"Un client en colère parle fort. Votre première stratégie :", options:["Relever le ton aussi","Rester calme et baisser l’intensité de votre voix","Interrompre brutalement"], correct:1},
+
+  {text:"Client : « Ça fait trois fois que j’explique le problème… » Votre réponse C1 :", options:["« Oui mais ce n’est pas clair. »","« Je comprends, je vais reformuler pour vérifier que j’ai bien tout saisi. »","« Calmez-vous. »"], correct:1},
+
+  {text:"Un email interne indique : « Merci d’éviter toute escalade avec ce client sensible. » Cela signifie :", options:["Rester factuel et éviter les conflits","Être très strict","Ignorer le client"], correct:0},
+
+  {text:"Un collègue : « Je ne me sens pas écouté dans cette équipe. » Réponse adéquate :", options:["« Peut-être que tu exagères. »","« Je t’écoute, dis-moi ce qui ne va pas. »","« Ce n’est pas le moment. »"], correct:1},
+
+  {text:"Client : « Votre collègue m’a parlé d’une solution, mais je ne suis plus certain… » Vous :", options:["Vous vérifiez calmement les informations","Vous dites que votre collègue s’est trompé","Vous demandez au client d’appeler demain"], correct:0},
+
+  {text:"Une cliente dit : « J’aimerais comprendre pourquoi cela prend autant de temps. » Elle attend :", options:["Une justification agressive","Une explication claire et transparente","Que vous accélériez sans parler"], correct:1},
+
+  {text:"Un collègue : « Je suis débordé, je n’y arrive plus. » Réflexe professionnel :", options:["Proposer de prioriser ensemble","Dire : « Moi aussi », et partir","Ignorer"], correct:0},
+
+  {text:"Client : « Je ne veux plus parler à personne ici. » Vous :", options:["« Je vais vous aider personnellement. »","« Alors partez. »","« Ce n’est pas possible. »"], correct:0},
+
+  {text:"Un client envoie un email très long et confus. Votre première étape :", options:["Vous répondez par un message très court","Vous clarifiez point par point","Vous dites : résumez mieux"], correct:1},
+
+  {text:"Un collègue dit : « Le client était agressif mais je pense que je l’ai calmé. » Comportement attendu :", options:["Demander comment il a fait","Ne pas s’intéresser","Se moquer du client"], correct:0},
+
+  {text:"Un client lève la voix. Le bon réflexe :", options:["Garder une posture ouverte et calme","Regarder ailleurs","Relever le ton aussi"], correct:0},
+
+  {text:"Client : « Je veux juste quelqu’un qui me comprenne. » Ce qu’il exprime réellement :", options:["Un besoin d’écoute active","Une envie de partir","Un refus de parler"], correct:0},
+
+  {text:"Un collègue fait une erreur et le client est fâché. Vous :", options:["Accusez le collègue","Présentez des excuses au nom de l'équipe","Dites que le client exagère"], correct:1},
+
+  {text:"Email : « Merci de me tenir informé régulièrement. » Cela signifie :", options:["Envoyer un message toutes les secondes","Envoyer des mises à jour claires à intervalles raisonnables","Ne plus écrire du tout"], correct:1},
+
+  {text:"Client : « Ce n’est pas acceptable ! » La meilleure réponse :", options:["Justifier immédiatement","Reconnaître l’émotion et proposer une solution","Dire qu’il exagère"], correct:1},
+
+  {text:"Vous observez qu’un client devient plus calme après que vous reformulez ses propos. Cela montre :", options:["Que la reformulation crée compréhension et apaisement","Que vous répétez trop","Qu’il veut partir"], correct:0},
+
+  {text:"Un collègue dit : « Ce client me met une pression énorme. » Vous :", options:["Lui proposez un soutien ou une stratégie","Lui dites de changer de travail","L’ignorez"], correct:0},
+
+  {text:"Client : « Je ne comprends plus rien à vos explications techniques. » Vous :", options:["Simplifiez et utilisez des exemples","Accélérez","Répétez les mêmes mots"], correct:0},
+
+  {text:"Un client vous écrit : « Je souhaite un retour clair sur les prochaines étapes. »", options:["Vous décrivez les étapes précisément","Vous dites : on verra","Vous envoyez juste : OK"], correct:0},
+
+  {text:"Client : « Je trouve votre ton un peu sec. » Votre réponse :", options:["« Ce n’était pas mon intention, je reformule. »","« C’est votre impression. »","« Je suis comme ça. »"], correct:0},
+
+  {text:"Un collègue dit : « On doit harmoniser notre communication. » Cela implique :", options:["Aligner les messages pour éviter contradictions","Ne plus communiquer du tout","Faire chacun à sa manière"], correct:0},
+
+  {text:"Un client écrit : « Je reste ouvert à une solution. » Cela signifie :", options:["Il attend une proposition","Il abandonne","Il veut un remboursement immédiat"], correct:0},
+
+  {text:"Client : « Donc si je comprends bien… » Que devez-vous faire ?", options:["Valider et clarifier","L’interrompre","Dire : oui oui"], correct:0},
+
+  {text:"Message interne : « Merci d’adopter une posture constructive. » Cela signifie :", options:["Accuser les autres","Chercher des solutions et rester collaboratif","Éviter la discussion"], correct:1},
+
+  {text:"Client : « Je suis vraiment déçu. » La priorité :", options:["Reconnaître l’émotion","Lui expliquer qu’il a tort","Changer de sujet"], correct:0},
+
+  {text:"Un collègue coupe la parole constamment en réunion. Vous :", options:["Proposez un tour de parole","Criez plus fort","Quittez la salle"], correct:0},
+
+  {text:"Client : « Je veux parler à quelqu’un de compétent. » Vous :", options:["Restez calme et reformulez pour comprendre son besoin","Vous vexez","Vous raccrochez"], correct:0},
+
+  {text:"Un client ne répond plus depuis 2 semaines. La réponse professionnelle :", options:["Envoyer un rappel courtois","L’oublier","Dire qu’il n’est pas sérieux"], correct:0},
+
+  {text:"Client : « Ça fait trois emails sans réponse. » Vous :", options:["Reconnaissez le délai et répondez précisément","Dites qu’il exagère","Ignorez"], correct:0},
+
+  {text:"Un collègue : « Je trouve ton message un peu direct. » Vous :", options:["Demandez ce qui peut être amélioré","Dites qu'il est trop sensible","Ignorez"], correct:0},
+
+  {text:"Client : « Vous ne m’avez pas compris. » Vous :", options:["Demandez de préciser et reformulez","Vous énervez","Continuez sans écouter"], correct:0},
+
+  {text:"Un email demande : « Merci de préciser votre délai réaliste. » Vous :", options:["Évaluez et donnez un délai clair","Promettez vite sans réfléchir","Ne répondez pas"], correct:0},
+
+  {text:"Client : « Je reste insatisfait malgré vos explications. » Votre réaction :", options:["Explorer ce qui manque","Dit qu'il est compliqué","Terminer la conversation"], correct:0},
+
+  {text:"Un collègue reçoit beaucoup de critiques de clients. Vous :", options:["L’aidez à analyser les causes","Vous moquez de lui","Ignorez"], correct:0},
+
+  {text:"Client : « Je ne veux pas de conflit. » Ce que cela signifie :", options:["Il veut trouver une solution","Il veut se battre","Il veut partir"], correct:0},
+
+  {text:"Situation : un client se plaint d’un collègue absent. Vous :", options:["Assurez un suivi à sa place","Dites que ce n’est pas votre problème","Blâmez le collègue"], correct:0},
+
+  {text:"Un client vous remercie après un long conflit résolu. Votre réponse :", options:["Un message courtois clôturant positivement","Un message froid","Pas de réponse"], correct:0},
+
+  {text:"Email client : « Je souhaiterais éviter que cette situation se reproduise. » Vous :", options:["Proposez des mesures préventives","Dites que ce n’est pas possible","Ignorez"], correct:0},
+
+  {text:"Dialogue : un client parle vite car il est stressé. Vous :", options:["Ralentissez votre propre rythme pour apaiser","Parlez encore plus vite","Interrompez"], correct:0},
+
+  {text:"Un collègue dit : « Je crois qu’on communique trop par écrit et pas assez en direct. » Vous :", options:["Proposez un échange en personne","Envoyez encore plus d’emails","Refusez de parler"], correct:0},
+
+  {text:"Un client exige une solution impossible. Vous :", options:["Expliquez calmement les limites et proposez des alternatives","Dites simplement non","Cédez même si c’est interdit"], correct:0},
+
+  {text:"Client : « Vous dites ça pour me calmer ? » Vous :", options:["Clarifiez votre intention et restez factuel","Répondez oui","Riez"], correct:0},
+
+  {text:"Un collègue dit : « Je n’ai pas compris ton mail, peux-tu préciser ? » Réponse :", options:["Vous reformulez","Vous dites qu’il doit mieux lire","Vous vous énervez"], correct:0},
+
+  {text:"Un client dit : « Je veux être sûr qu’on avance vraiment. » Vous :", options:["Expliquez les étapes déjà réalisées et celles à venir","Dites : on verra","Changez de sujet"], correct:0}
+];
+
+// ----------------------------------------------------
+// LOGIQUE DU QUIZ
+// ----------------------------------------------------
+let index = parseInt(localStorage.getItem('quizC1_index') || '0');
+let score = parseInt(localStorage.getItem('quizC1_score') || '0');
+let answered = false;
+let firstAttempt = true;
+let currentCorrectIndex = null;
+
+const scoreSpan = document.getElementById('score');
+const totalSpan = document.getElementById('total');
+scoreSpan.textContent = score;
+totalSpan.textContent = questions.length;
+
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function startQuiz(){
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('quizContainer').style.display = 'block';
+}
+
+function loadQuestion(){
+  if(index >= questions.length){
+    document.getElementById('scenario').innerHTML = "Quiz terminé !";
+    document.getElementById('options').innerHTML = "";
+    document.getElementById('feedback').innerHTML = "Votre score final : " + score + "/" + questions.length;
+    document.getElementById('resetBtn').style.display = "block";
+    return;
+  }
+
+  const q = questions[index];
+  answered = false;
+  firstAttempt = true;
+  currentCorrectIndex = null;
+  document.getElementById('feedback').innerHTML = "";
+  document.getElementById('scenario').textContent = q.text;
+
+  const optionObjects = q.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  shuffleArray(optionObjects);
+
+  optionObjects.forEach((obj, newIdx) => {
+    if(obj.originalIndex === q.correct){
+      currentCorrectIndex = newIdx;
+    }
+  });
+
+  let html = "";
+  optionObjects.forEach((obj, i) => {
+    html += `<div class="option" onclick="choose(${i})">${obj.text}</div>`;
+  });
+  document.getElementById('options').innerHTML = html;
+}
+
+function choose(i){
+  if(answered) return;
+
+  if(i === currentCorrectIndex){
+    if(firstAttempt){
+      score++;
+      localStorage.setItem('quizC1_score', score.toString());
+      scoreSpan.textContent = score;
+    }
+    document.getElementById('feedback').innerHTML = '<div class="correct">✔ Bonne réponse !</div>';
+    answered = true;
+
+    setTimeout(() => {
+      index++;
+      localStorage.setItem('quizC1_index', index.toString());
+      loadQuestion();
+    }, 700);
+  } else {
+    document.getElementById('feedback').innerHTML = '<div class="wrong">✘ Mauvaise réponse</div>';
+    firstAttempt = false;
+  }
+}
+
+function resetAll(){
+  localStorage.removeItem('quizC1_index');
+  localStorage.removeItem('quizC1_score');
+  index = 0;
+  score = 0;
+  answered = false;
+  firstAttempt = true;
+  scoreSpan.textContent = score;
+  document.getElementById('resetBtn').style.display = 'none';
+  loadQuestion();
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
