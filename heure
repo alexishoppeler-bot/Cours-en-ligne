@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Montre digitale – Manipulation</title>
+<style>
+  body{
+    font-family:Arial, sans-serif;
+    background:#eef3f9;
+    padding:20px;
+    text-align:center;
+  }
+  #app{
+    max-width:520px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  }
+  h2{
+    margin-top:0;
+    color:#003c8f;
+  }
+  #consigne{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:15px;
+  }
+  .info-box{
+    background:#e8f0ff;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:12px;
+    text-align:left;
+    font-size:14px;
+  }
+  .keywords-box{
+    background:#fff3cd;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:18px;
+    text-align:left;
+    font-size:14px;
+  }
+  .digit{
+    font-size:60px;
+    font-weight:bold;
+    background:#000;
+    color:#0f0;
+    padding:20px;
+    border-radius:14px;
+    margin:0 auto 20px auto;
+    width:260px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .digit input{
+    background:transparent;
+    border:none;
+    outline:none;
+    color:#0f0;
+    font:inherit;
+    text-align:center;
+    width:100%;
+    letter-spacing:6px;
+  }
+  button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    background:#0a66c2;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+    margin:5px;
+  }
+  .reset{
+    background:#d9534f;
+  }
+  .ok{color:#0a9b39;font-weight:bold;margin-top:15px;}
+  .err{color:#c00;font-weight:bold;margin-top:15px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <h2>🕒 Exercice <span id="numEx">1</span> / 50</h2>
+  <p id="consigne">Consigne…</p>
+
+  <div class="info-box">
+    <strong>ℹ️ Info importante :</strong><br>
+    • Écris l'heure au format <strong>HH:MM</strong> directement sur la montre<br>
+    • Tu peux utiliser le clavier numérique de ton téléphone ou de l'ordinateur<br>
+    • La progression est sauvegardée automatiquement (pas besoin d'enregistrer)
+  </div>
+
+  <div class="keywords-box">
+    <strong>🧩 Mots-clés utiles :</strong><br>
+    • « et quart » → :15<br>
+    • « et demie » → :30<br>
+    • « moins le quart » → :45
+  </div>
+
+  <div class="digit">
+    <input id="timeInput" type="text" maxlength="5" placeholder="00:00"
+           autocomplete="off" inputmode="numeric" />
+  </div>
+
+  <button id="btnValider" type="button">Valider</button>
+  <div id="message"></div>
+
+  <button class="reset" id="btnReset" type="button">Réinitialiser</button>
+</div>
+
+<script>
+// 50 heures cibles pour les exercices
+const heures = [
+  "01:15","02:30","03:45","04:20","05:10","06:55","07:05","08:40","09:50","10:25",
+  "11:35","12:00","13:15","14:45","15:05","16:30","17:50","18:10","19:25","20:40",
+  "21:55","22:05","23:35","00:45","01:50","02:05","03:35","04:55","05:25","06:15",
+  "07:45","08:50","09:20","10:10","11:05","12:50","13:40","14:25","15:55","16:05",
+  "17:15","18:45","19:50","20:25","21:10","22:40","23:15","00:30","12:35","04:10"
+];
+
+// "Tests" internes simples pour vérifier les données
+if (heures.length !== 50) {
+  console.warn("Attention: le tableau 'heures' ne contient pas 50 éléments.");
+}
+heures.forEach((h, i) => {
+  if (!/^\d{2}:\d{2}$/.test(h)) {
+    console.warn("Format d'heure invalide à l'index", i, ":", h);
+  }
+});
+
+// Conversion d'une heure numérique en texte (français suisse simple)
+const heuresTxt = [
+  "minuit",           // 0
+  "une heure",        // 1
+  "deux heures",      // 2
+  "trois heures",     // 3
+  "quatre heures",    // 4
+  "cinq heures",      // 5
+  "six heures",       // 6
+  "sept heures",      // 7
+  "huit heures",      // 8
+  "neuf heures",      // 9
+  "dix heures",       // 10
+  "onze heures",      // 11
+  "midi",             // 12
+  "treize heures",    // 13
+  "quatorze heures",  // 14
+  "quinze heures",    // 15
+  "seize heures",     // 16
+  "dix-sept heures",  // 17
+  "dix-huit heures",  // 18
+  "dix-neuf heures",  // 19
+  "vingt heures",     // 20
+  "vingt et une heures", // 21
+  "vingt-deux heures",// 22
+  "vingt-trois heures"// 23
+];
+
+function heureEnLettres(timeStr){
+  const parts = timeStr.split(":");
+  const hh = parseInt(parts[0], 10);
+  const mm = parseInt(parts[1], 10);
+  const base = heuresTxt[hh] || timeStr;
+
+  if (isNaN(mm)) return base;
+  if (mm === 0) return base;
+  if (mm === 15) return base + " et quart";
+  if (mm === 30) return base + " et demie";
+  if (mm === 45) {
+    const nextH = (hh + 1) % 24;
+    return (heuresTxt[nextH] || timeStr) + " moins le quart";
+  }
+  return base + " " + mm + " minutes";
+}
+
+// État de l'exercice + sauvegarde
+let index = parseInt(localStorage.getItem("montreInv_index") || "0", 10);
+if (isNaN(index) || index < 0 || index >= heures.length) index = 0;
+let sauv = {};
+try {
+  const saved = localStorage.getItem("montreInv_sauv");
+  if (saved) sauv = JSON.parse(saved) || {};
+} catch(e) {
+  sauv = {};
+}
+let heureActuelle = "00:00";
+
+// Normalisation de l'entrée HH:MM
+function normaliserHeure(val){
+  if (!val) return "";
+  val = val.replace(/[^0-9:]/g, "");
+  // si l'utilisateur tape 4 chiffres (ex: 0815) -> 08:15
+  if (/^\d{3,4}$/.test(val)) {
+    const digits = val.padStart(4, "0");
+    const h = digits.slice(0,2);
+    const m = digits.slice(2,4);
+    val = h + ":" + m;
+  }
+  if (val.length === 2 && !val.includes(":")) {
+    val = val + ":";
+  }
+  if (val.length > 5) {
+    val = val.slice(0,5);
+  }
+  if (!/^\d{2}:\d{2}$/.test(val)) return val; // format incomplet encore
+
+  let [h, m] = val.split(":");
+  let hh = Math.min(Math.max(parseInt(h,10), 0), 23);
+  let mm = Math.min(Math.max(parseInt(m,10), 0), 59);
+  const hhStr = hh.toString().padStart(2,"0");
+  const mmStr = mm.toString().padStart(2,"0");
+  return hhStr + ":" + mmStr;
+}
+
+function chargerExercice(){
+  const consigneElt = document.getElementById("consigne");
+  const timeInput = document.getElementById("timeInput");
+  const numExElt = document.getElementById("numEx");
+  if (!consigneElt || !timeInput || !numExElt) return;
+
+  numExElt.innerText = (index + 1);
+
+  const cible = heures[index];
+  consigneElt.innerText = "Mets la montre sur : " + heureEnLettres(cible);
+
+  heureActuelle = sauv[index] || "00:00";
+  timeInput.value = heureActuelle;
+}
+
+function sauvegarder(){
+  sauv[index] = heureActuelle;
+  try {
+    localStorage.setItem("montreInv_sauv", JSON.stringify(sauv));
+  } catch(e) {
+    console.warn("Impossible de sauvegarder dans localStorage", e);
+  }
+}
+
+function valider(){
+  const messageElt = document.getElementById("message");
+  const timeInput = document.getElementById("timeInput");
+  if (!messageElt || !timeInput) return;
+
+  const normalisee = normaliserHeure(timeInput.value);
+  if (!/^\d{2}:\d{2}$/.test(normalisee)) {
+    messageElt.innerHTML = "<div class='err'>❌ Format incorrect. Utilise HH:MM.</div>";
+    return;
+  }
+
+  heureActuelle = normalisee;
+  sauvegarder();
+  timeInput.value = heureActuelle;
+
+  const attendu = heures[index];
+  if (heureActuelle === attendu) {
+    messageElt.innerHTML = "<div class='ok'>✔ Correct !</div>";
+    setTimeout(() => {
+      index++;
+      if (index >= heures.length) {
+        messageElt.innerHTML = "🎉 Terminé ! Tu as fini tous les exercices.";
+        try {
+          localStorage.setItem("montreInv_index", (heures.length - 1).toString());
+        } catch(e) {}
+        return;
+      }
+      try {
+        localStorage.setItem("montreInv_index", index.toString());
+      } catch(e) {}
+      messageElt.innerHTML = "";
+      chargerExercice();
+    }, 700);
+  } else {
+    messageElt.innerHTML = "<div class='err'>❌ Incorrect. Corrige encore un peu.</div>";
+  }
+}
+
+function resetAll(){
+  if (!confirm("Effacer toutes les données et recommencer ?")) return;
+  try {
+    localStorage.removeItem("montreInv_index");
+    localStorage.removeItem("montreInv_sauv");
+  } catch(e) {}
+  index = 0;
+  sauv = {};
+  heureActuelle = "00:00";
+  const timeInput = document.getElementById("timeInput");
+  const messageElt = document.getElementById("message");
+  if (timeInput) timeInput.value = "00:00";
+  if (messageElt) messageElt.innerHTML = "";
+  chargerExercice();
+}
+
+// Initialisation une fois que le DOM est prêt
+window.addEventListener("DOMContentLoaded", () => {
+  const timeInput = document.getElementById("timeInput");
+  const btnValider = document.getElementById("btnValider");
+  const btnReset = document.getElementById("btnReset");
+
+  if (timeInput) {
+    timeInput.addEventListener("input", () => {
+      let val = timeInput.value;
+      val = normaliserHeure(val);
+      timeInput.value = val;
+      if (/^\d{2}:\d{2}$/.test(val)) {
+        heureActuelle = val;
+        sauvegarder();
+      }
+    });
+  }
+
+  if (btnValider) btnValider.addEventListener("click", valider);
+  if (btnReset) btnReset.addEventListener("click", resetAll);
+
+  chargerExercice();
+});
+</script>
+
+</body>
+</html>
