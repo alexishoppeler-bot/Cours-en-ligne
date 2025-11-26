@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercice – Formulaire Profil</title>
+  <style>
+    body{
+      font-family:Arial, sans-serif;
+      background:#eef3f9;
+      margin:0;
+      padding:20px;
+      display:flex;
+      justify-content:center;
+    }
+    .container{
+      background:white;
+      padding:35px;
+      border-radius:20px;
+      box-shadow:0 6px 25px rgba(0,0,0,0.12);
+      max-width:1200px;
+      width:100%;
+      display:flex;
+      gap:100px;
+      align-items:flex-start;
+      border:1px solid #dce3ee;
+    }
+    h2{
+      text-align:center;
+      color:#004c97;
+      margin-top:0;
+    }
+    .profile-box{
+      background:#f3f7ff;
+      padding:30px;
+      border-radius:20px;
+      margin-bottom:25px;
+      font-size:18px;
+      line-height:1.6;
+      width:100%;
+      min-height:220px;
+      border:3px solid #2a6fdb;
+      box-shadow:0 6px 22px rgba(0,0,0,0.15);
+    }
+    label{
+      display:block;
+      margin:18px 0 6px;
+      font-weight:bold;
+      font-size:15px;
+      color:#003b78;
+    }
+    input,select{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #c8d3e0;
+      font-size:16px;
+      background:white;
+      transition:all .2s ease;
+      box-sizing:border-box;
+    }
+    input:focus,select:focus{
+      border-color:#4d90fe;
+      box-shadow:0 0 5px rgba(77,144,254,0.3);
+      outline:none;
+    }
+    button{
+      margin-top:14px;
+      padding:12px 15px;
+      background:#0a63b8;
+      color:white;
+      border:none;
+      border-radius:10px;
+      font-size:17px;
+      cursor:pointer;
+      width:100%;
+      font-weight:bold;
+      transition:.2s;
+    }
+    button:hover{ background:#084e90; }
+
+    .msg{ font-size:14px; margin-top:3px; }
+    .correct{ color:green; }
+    .wrong{ color:red; }
+
+    #success{
+      margin-top:20px;
+      padding:12px;
+      border-radius:10px;
+      background:#e0f7e9;
+      color:#1b7a3a;
+      font-weight:bold;
+      text-align:center;
+      display:none;
+    }
+
+    #progress{
+      font-size:14px;
+      color:#555;
+      display:block;
+      margin-top:4px;
+    }
+    #progressBarContainer{
+      width:100%;
+      height:12px;
+      background:#d0d7e6;
+      border-radius:6px;
+      margin-top:10px;
+      overflow:hidden;
+    }
+    #progressBar{
+      height:100%;
+      width:0%;
+      background:#2a8f2a;
+      transition:width .3s ease;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- COLONNE PROFIL -->
+  <div style="width:45%; position:sticky; top:20px;">
+    <h2>Profil</h2>
+    <div id="profile" class="profile-box">(Chargement…)</div>
+    <div id="progress">Profil 1 / 50</div>
+    <div id="progressBarContainer"><div id="progressBar"></div></div>
+
+    <div id="finalMsg" style="display:none;margin-top:20px;padding:15px;background:#d9f7d9;border-radius:10px;font-size:18px;font-weight:bold;color:#1b6e1b;">
+      Bravo ! Tu as terminé les 50 profils !
+    </div>
+
+    <button id="restartBtn" style="display:none;background:#b80000;">Recommencer</button>
+    <button id="nextProfileBtn" style="background:#2a8f2a;">Profil suivant</button>
+  </div>
+
+  <!-- COLONNE FORMULAIRE -->
+  <div style="flex:1;background:#fafcff;padding:25px;border-radius:15px;border:1px solid #e2e8f2;">
+    <h2>Formulaire – À remplir</h2>
+
+    <label>1. Nom :</label><select id="f1"><option value="">Choisir…</option></select><div class="msg"></div>
+    <label>2. Prénom :</label><select id="f2"><option value="">Choisir…</option></select><div class="msg"></div>
+    <label>3. Adresse :</label><select id="f3"><option value="">Choisir…</option></select><div class="msg"></div>
+    <label>4. NPA :</label><select id="f4"><option value="">Choisir…</option></select><div class="msg"></div>
+    <label>5. Ville :</label><select id="f5"><option value="">Choisir…</option></select><div class="msg"></div>
+    <label>6. Téléphone :</label><select id="f6"><option value="">Choisir…</option></select><div class="msg"></div>
+    <label>7. E-mail :</label><select id="f7"><option value="">Choisir…</option></select><div class="msg"></div>
+
+    <label>8. Date de naissance :</label>
+    <input id="f8" type="date" /><div class="msg"></div>
+
+    <label>9. Nationalité :</label>
+    <select id="f9"><option value="">Choisir…</option></select><div class="msg"></div>
+
+    <label>10. État civil :</label>
+    <select id="f10"><option value="">Choisir…</option></select><div class="msg"></div>
+
+    <label>11. Permis de séjour :</label>
+    <select id="f11"><option value="">Choisir…</option></select><div class="msg"></div>
+
+    <label>12. Permis de conduire :</label>
+    <select id="f12">
+      <option value="">Choisir…</option>
+      <option>Oui</option>
+      <option>Non</option>
+    </select>
+    <div class="msg"></div>
+
+    <label>13. Disponibilité :</label>
+    <select id="f13"><option value="">Choisir…</option></select><div class="msg"></div>
+
+    <div id="success">Bravo, tout est correct pour cette personne !</div>
+  </div>
+</div>
+
+<script>
+/* --- DONNÉES --- */
+const villes=[
+  {ville:"Vevey",npa:"1800",rues:["Rue des Moulins","Rue du Simplon","Avenue Nestlé","Avenue de Gilamont"]},
+  {ville:"Lausanne",npa:"1003",rues:["Rue de Lausanne","Avenue du Théâtre","Chemin de Mornex"]},
+  {ville:"Genève",npa:"1204",rues:["Rue du Rhône","Rue de Carouge","Boulevard James-Fazy"]},
+  {ville:"Sion",npa:"1950",rues:["Rue du Bourg","Rue de Conthey","Rue de Lausanne"]},
+  {ville:"Fribourg",npa:"1700",rues:["Rue de Romont","Rue des Alpes","Avenue de la Gare"]},
+  {ville:"Neuchâtel",npa:"2000",rues:["Rue des Terreaux","Avenue du Premier-Mars","Rue de l'Hôpital"]}
+];
+
+const prenoms=["Maria","Ahmed","Ana","Nikolai","Lucie","João","Aisha","Hélène","Miguel","Thi Hoa","Carlos","Rami",
+"Claire","Igor","Giulia","Arben","Zara","Sergio","Helena","Fatima","Yusuf","Diana","Sofia","Marco","Elena","Bilal",
+"Omar","Sara","Nadia","Paulo","Inès","Mina","Jonas","Camila","Rosa","Hassan","Yara","Marta","Moussa","Khaled","Tania",
+"Luca","Nour","Ivana","Petar","Mariam","Amir","Sabri","Lina"];
+
+const noms=["Santos","Yusuf","Silva","Ivanov","Morel","Ribeiro","Khan","Bernard","Garcia","Nguyen","Da Silva","Kassis",
+"Dupraz","Petrov","Rossi","Hoxha","Ahmed","Moretti","Fernandes","Costa","Diallo","Ferreira","Said","Haddad","Correia",
+"Muller","Ramos","Ben Ali","Cruz","Soumah","Tavares","Hussein","Tsai","Gonzalez","Topić","Keller","Gashi","Martins",
+"Barbosa","Ndiaye","Bianchi","Moreno","Ziegler","Rahman","Ammar","Durand","Mendes","Carvalho","Sousa"];
+
+const nationalites=["Suisse","Portugaise","Érythréenne","Brésilienne","Française","Italienne","Vietnamienne",
+"Libanaise","Albanaise","Russe","Espagnole","Guinéenne","Pakistanaise","Soudanaise","Kosovare","Angolaise"];
+
+const etats=["Célibataire","Marié(e)","Divorcé(e)","Séparé(e)","Veuf/Veuve"];
+
+const permisTypes=["B","C","L","F","N"];
+
+const conduireTypes=["Oui","Non"];
+
+const dispos=["Disponible immédiatement","Dans 1 semaine","Dans 2 semaines","Dans 1 mois","Autre"];
+
+/* --- OUTILS --- */
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function randomTel(){
+  return `07${Math.floor(Math.random()*8)+1} ${Math.floor(Math.random()*900+100)} ${Math.floor(Math.random()*90+10)} ${Math.floor(Math.random()*90+10)}`;
+}
+
+function randomDate(){
+  const y = 1975 + Math.floor(Math.random()*25);
+  const m = String(1+Math.floor(Math.random()*12)).padStart(2,'0');
+  const d = String(1+Math.floor(Math.random()*28)).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
+function normalize(v){
+  return (v+"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toLowerCase();
+}
+
+/* --- GÉNÉRATION PROFIL --- */
+function genererProfil(){
+  const villeObj=rand(villes);
+  const rue=rand(villeObj.rues)+" "+(Math.floor(Math.random()*40)+1);
+  const prenom=rand(prenoms);
+  const nom=rand(noms);
+  const nat=rand(nationalites);
+  const tel=randomTel();
+  const naissance=randomDate();
+  const mail=prenom.toLowerCase()+"."+nom.toLowerCase().replace(/\s+/g,"")+"@mail.ch";
+
+  const etat=rand(etats);
+  const permis=rand(permisTypes);
+  const conduire=rand(conduireTypes);
+  const dispo=rand(dispos);
+
+  const texteProfil =
+    "Je m’appelle "+prenom+" "+nom+". "+
+    "J’habite "+rue+", à "+villeObj.ville+" ("+villeObj.npa+").<br>"+
+    "Vous pouvez me joindre au "+tel+" ou par e-mail à "+mail+".<br>"+
+    "Je suis né(e) le "+naissance.split('-').reverse().join('.')+" et je suis de nationalité "+nat+".<br>"+
+    "Je suis "+etat.toLowerCase()+", titulaire d’un permis "+permis+". "+
+    (conduire==="Oui" ? "Je possède le permis de conduire." : "Je ne possède pas de permis de conduire.")+
+    "<br>Ma disponibilité est : "+dispo+".";
+
+  return{
+    text:texteProfil,
+    nom:nom,
+    prenom:prenom,
+    adresse:rue,
+    npa:villeObj.npa,
+    ville:villeObj.ville,
+    tel:tel,
+    mail:mail,
+    naissance:naissance,
+    nat:nat,
+    etat:etat,
+    permis:permis,
+    conduire:conduire,
+    dispo:dispo
+  };
+}
+
+/* --- CRÉATION 50 PROFILS --- */
+const profils=Array.from({length:50},()=>genererProfil());
+
+/* --- MAPPING --- */
+const fieldMap={
+  f1:"nom",f2:"prenom",f3:"adresse",f4:"npa",f5:"ville",
+  f6:"tel",f7:"mail",f8:"naissance",f9:"nat",f10:"etat",
+  f11:"permis",f12:"conduire",f13:"dispo"
+};
+
+let currentIndex=0;
+let validated=Array(50).fill(false);
+let ref=profils[currentIndex];
+
+/* --- AFFICHAGE --- */
+function afficherProfil(p){
+  document.getElementById("profile").innerHTML=p.text;
+  document.getElementById("progress").textContent=
+    "Profil "+(currentIndex+1)+" / "+profils.length;
+}
+
+function updateProgressBar(){
+  const done=validated.filter(v=>v).length;
+  document.getElementById("progressBar").style.width=
+    Math.round(done/profils.length*100)+"%";
+}
+
+/* --- REMPLISSAGE DES LISTES --- */
+function remplirListes(){
+  const toutesValeurs={};
+
+  profils.forEach(p=>{
+    Object.keys(fieldMap).forEach(fid=>{
+      const cle=fieldMap[fid];
+      if(!toutesValeurs[cle]) toutesValeurs[cle]=new Set();
+      toutesValeurs[cle].add(p[cle]);
+    });
+  });
+
+  Object.keys(fieldMap).forEach(fid=>{
+    const sel=document.getElementById(fid);
+    if(fid==="f8"){ sel.value=""; return; }
+
+    sel.innerHTML=`<option value="">Choisir…</option>`;
+
+    const cle=fieldMap[fid];
+    const correct=ref[cle];
+
+    let options=[...toutesValeurs[cle]];
+    options=options.filter(v=>v!==correct).sort(()=>Math.random()-0.5);
+    const distracteurs=options.slice(0,9);
+
+    const final=[...distracteurs,correct].sort(()=>Math.random()-0.5);
+
+    final.forEach(v=>{
+      const opt=document.createElement("option");
+      opt.value=v;
+      opt.textContent=v;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+/* --- RESET FORMULAIRE --- */
+function resetForm(){
+  for(let i=1;i<=13;i++){
+    const f=document.getElementById("f"+i);
+    f.value="";
+    f.style.borderColor="#c8d3e0";
+    const msg=f.nextElementSibling;
+    msg.textContent="";
+    msg.className="msg";
+  }
+  document.getElementById("success").style.display="none";
+}
+
+/* --- AFFICHER PROFIL INDEX --- */
+function afficherProfilIndex(i){
+  currentIndex=i;
+  ref=profils[currentIndex];
+  afficherProfil(ref);
+  remplirListes();
+  resetForm();
+}
+
+/* --- VÉRIFICATION --- */
+function check(){
+  let ok=true;
+
+  for(let i=1;i<=13;i++){
+    const f=document.getElementById("f"+i);
+    const msg=f.nextElementSibling;
+    const cle=fieldMap["f"+i];
+    const expected=ref[cle];
+    const val=f.value;
+
+    /* DATE corrigée */
+    if(i===8){
+      if(!val){
+        f.style.borderColor="#c8d3e0";
+        msg.textContent="";
+        msg.className="msg";
+        ok=false;
+      }
+      else if(val===expected){
+        f.style.borderColor="green";
+        msg.textContent="✔ Correct";
+        msg.className="msg correct";
+      } else {
+        f.style.borderColor="red";
+        msg.textContent="❌ Incorrect";
+        msg.className="msg wrong";
+        ok=false;
+      }
+      continue;
+    }
+
+    if(!val){
+      f.style.borderColor="#c8d3e0";
+      msg.textContent="";
+      msg.className="msg";
+      ok=false;
+      continue;
+    }
+
+    if(normalize(val)===normalize(expected)){
+      f.style.borderColor="green";
+      msg.textContent="✔ Correct";
+      msg.className="msg correct";
+    } else {
+      f.style.borderColor="red";
+      msg.textContent="❌ Incorrect";
+      msg.className="msg wrong";
+      ok=false;
+    }
+  }
+
+  if(ok){
+    if(!validated[currentIndex]){
+      validated[currentIndex]=true;
+      updateProgressBar();
+    }
+    document.getElementById("success").style.display="block";
+  } else {
+    document.getElementById("success").style.display="none";
+  }
+}
+
+/* --- INIT --- */
+document.addEventListener("DOMContentLoaded",()=>{
+  afficherProfilIndex(0);
+  updateProgressBar();
+
+  document.getElementById("nextProfileBtn").addEventListener("click",()=>{
+    if(document.getElementById("success").style.display!=="block"){
+      alert("Tu dois remplir toutes les lignes correctement avant de passer au prochain profil.");
+      return;
+    }
+    if(currentIndex<profils.length-1){
+      afficherProfilIndex(currentIndex+1);
+    } else {
+      document.getElementById("finalMsg").style.display="block";
+      document.getElementById("restartBtn").style.display="block";
+    }
+  });
+
+  document.getElementById("restartBtn").addEventListener("click",()=>{
+    validated=Array(50).fill(false);
+    afficherProfilIndex(0);
+    updateProgressBar();
+    document.getElementById("finalMsg").style.display="none";
+    document.getElementById("restartBtn").style.display="none";
+  });
+
+  for(let i=1;i<=13;i++){
+    const f=document.getElementById("f"+i);
+    f.addEventListener("input",check);
+    f.addEventListener("change",check);
+  }
+});
+</script>
+
+</body>
+</html>
