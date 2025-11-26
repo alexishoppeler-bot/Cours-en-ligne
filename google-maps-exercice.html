@@ -115,6 +115,32 @@ h1{
   border:3px solid var(--primary);
   background:#f9fbff;
   font-weight:bold;
+  transition:all .2s;
+}
+
+/* FEEDBACK */
+.display.correct{
+  border-color:var(--ok);
+  background:#e8f6ee;
+  animation:pulseGreen .4s;
+}
+.display.error{
+  border-color:var(--error);
+  background:#fdeaea;
+  animation:shake .35s;
+}
+
+@keyframes pulseGreen{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.04);}
+  100%{transform:scale(1);}
+}
+@keyframes shake{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-6px);}
+  50%{transform:translateX(6px);}
+  75%{transform:translateX(-6px);}
+  100%{transform:translateX(0);}
 }
 
 /* CLAVIER */
@@ -130,12 +156,12 @@ h1{
   border:none;
   border-radius:20px;
   background:#ffffff;
-  box-shadow:inset 0 -3px 0 rgba(0,0,0,0.15),0 4px 8px rgba(0,0,0,0.15);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.15),0 4px 8px rgba(0,0,0,.15);
   font-weight:bold;
 }
-.keypad button.ok{background:var(--primary);color:white;}
-.keypad button.del{background:#f6d6d6;}
 .keypad button:active{transform:translateY(2px);}
+.keypad .ok{background:var(--primary);color:white;}
+.keypad .del{background:#f6d6d6;}
 
 /* MESSAGE */
 .message{
@@ -144,8 +170,8 @@ h1{
   font-weight:bold;
   display:none;
 }
-.message.ok{ color:var(--ok); }
-.message.error{ color:var(--error); }
+.message.ok{color:var(--ok);}
+.message.error{color:var(--error);}
 
 /* RESET */
 .reset-btn{
@@ -169,7 +195,7 @@ h1{
 <div class="container">
 
 <h1>🚆 Temps de trajet en train</h1>
-<div class="subtitle">Situation professionnelle – Google Maps</div>
+<div class="subtitle">Trouver le temps de trajet en train avec Google Maps</div>
 
 <div class="progress-bg">
   <div class="progress-bar" id="progressBar"></div>
@@ -186,26 +212,17 @@ h1{
 </div>
 </div>
 
-<a class="maps-btn" href="https://www.google.com/maps" target="_blank">
-📍 Ouvrir Google Maps
-</a>
+<a class="maps-btn" href="https://www.google.com/maps" target="_blank">📍 Ouvrir Google Maps</a>
 
 <div class="card">
 <h2>⏱️ Temps de trajet (minutes)</h2>
 <input id="display" class="display" disabled value="0">
 
 <div class="keypad">
-  <button onclick="addDigit(1)">1</button>
-  <button onclick="addDigit(2)">2</button>
-  <button onclick="addDigit(3)">3</button>
-  <button onclick="addDigit(4)">4</button>
-  <button onclick="addDigit(5)">5</button>
-  <button onclick="addDigit(6)">6</button>
-  <button onclick="addDigit(7)">7</button>
-  <button onclick="addDigit(8)">8</button>
-  <button onclick="addDigit(9)">9</button>
-  <button class="del" onclick="delDigit()">⌫</button>
-  <button onclick="addDigit(0)">0</button>
+  <button onclick="addDigit(1)">1</button><button onclick="addDigit(2)">2</button><button onclick="addDigit(3)">3</button>
+  <button onclick="addDigit(4)">4</button><button onclick="addDigit(5)">5</button><button onclick="addDigit(6)">6</button>
+  <button onclick="addDigit(7)">7</button><button onclick="addDigit(8)">8</button><button onclick="addDigit(9)">9</button>
+  <button class="del" onclick="delDigit()">⌫</button><button onclick="addDigit(0)">0</button>
   <button class="ok" onclick="valider()">OK</button>
 </div>
 
@@ -221,35 +238,7 @@ h1{
 const exercices = [
   {g:"Gare de Lausanne",min:12,max:30},
   {g:"Gare de Montreux",min:8,max:20},
-  {g:"Gare de La Tour-de-Peilz",min:3,max:10},
-  {g:"Gare de Clarens",min:4,max:12},
-  {g:"Gare de Villeneuve",min:8,max:20},
-  {g:"Gare de Renens",min:18,max:40},
-  {g:"Gare de Morges",min:15,max:35},
-  {g:"Gare de Rolle",min:25,max:50},
-  {g:"Gare de Allaman",min:20,max:45},
   {g:"Gare de Nyon",min:35,max:70},
-
-  {g:"Gare de Bussigny",min:20,max:40},
-  {g:"Gare de Cossonay",min:35,max:60},
-  {g:"Gare de Palézieux",min:25,max:50},
-  {g:"Gare de Puidoux",min:10,max:25},
-  {g:"Gare de Cully",min:6,max:15},
-  {g:"Gare de Lutry",min:10,max:25},
-  {g:"Gare de Prilly-Malley",min:15,max:35},
-  {g:"Gare de Lausanne-Flon",min:15,max:35},
-  {g:"Gare d’Aigle",min:25,max:50},
-  {g:"Gare de St-Maurice",min:40,max:70},
-
-  {g:"Gare de Bex",min:35,max:65},
-  {g:"Gare de Roche VD",min:30,max:60},
-  {g:"Gare de Payerne",min:70,max:110},
-  {g:"Gare d’Yverdon-les-Bains",min:60,max:90},
-  {g:"Gare de Grandson",min:65,max:100},
-  {g:"Gare d’Estavayer-le-Lac",min:80,max:120},
-  {g:"Gare de Fribourg",min:90,max:130},
-  {g:"Gare de Sion",min:120,max:180},
-  {g:"Gare de Martigny",min:110,max:170},
   {g:"Gare de Genève",min:70,max:120}
 ];
 
@@ -257,30 +246,29 @@ let i = parseInt(localStorage.getItem("step")) || 0;
 let val = "";
 const display = document.getElementById("display");
 
+function hideMessages(){
+  document.getElementById("msgOk").style.display="none";
+  document.getElementById("msgErr").style.display="none";
+  display.classList.remove("correct","error");
+}
+
 function init(){
   const ex = exercices[i];
   document.getElementById("destinationText").innerText = ex.g;
-  document.getElementById("progressText").innerText = `Exercice ${i+1} / ${exercices.length}`;
-  document.getElementById("progressBar").style.width = ((i+1)/exercices.length*100)+"%";
-  resetInput();
+  document.getElementById("progressText").innerText =
+    `Exercice ${i+1} / ${exercices.length}`;
+  document.getElementById("progressBar").style.width =
+    ((i+1)/exercices.length*100)+"%";
+  val=""; display.value="0"; hideMessages();
 }
-
-function resetInput(){
-  val="";
-  display.value="0";
-  document.getElementById("msgOk").style.display="none";
-  document.getElementById("msgErr").style.display="none";
-}
-
 init();
 
 function addDigit(d){
-  if(val.length<3){
-    val+=d;
-    display.value=val;
-  }
+  hideMessages();
+  if(val.length<3){val+=d;display.value=val;}
 }
 function delDigit(){
+  hideMessages();
   val=val.slice(0,-1);
   display.value=val||"0";
 }
@@ -290,23 +278,23 @@ function valider(){
   const ex=exercices[i];
 
   if(isNaN(m)||m<ex.min||m>ex.max){
-    resetInput();
+    hideMessages();
+    display.classList.add("error");
     document.getElementById("msgErr").style.display="block";
+    val=""; display.value="0";
     return;
   }
 
+  hideMessages();
+  display.classList.add("correct");
   document.getElementById("msgOk").style.display="block";
 
   setTimeout(()=>{
-    i++;a
-    localStorage.setItem("step",i);
-    if(i<exercices.length){
-      init();
-    }else{
-      document.querySelector(".container").innerHTML =
-        "<h1>✅ Exercice terminé</h1><p style='text-align:center'>Compétence validée.</p>";
-    }
-  },600);
+    i++; localStorage.setItem("step",i);
+    if(i<exercices.length) init();
+    else document.querySelector(".container").innerHTML =
+      "<h1>✅ Exercice terminé</h1><p style='text-align:center'>Compétence validée.</p>";
+  },700);
 }
 
 function resetAll(){
