@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Simulateur d’e-mails professionnels – Proactif</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+  }
+  .mail-box {
+    width: 760px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  .mail-header {
+    background-color: #e8f0fe;
+    padding: 15px 25px;
+    color: #1a73e8;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-reset {
+    background-color: #888;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .btn-reset:hover { background-color: #666; }
+  .consigne {
+    background-color: #fff8e1;
+    color: #444;
+    padding: 18px 28px;
+    border-bottom: 2px solid #ffcc00;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .mail-fields {
+    padding: 20px 28px;
+    background-color: #fafafa;
+    border-bottom: 1px solid #ddd;
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .label {
+    width: 70px;
+    color: #555;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .value {
+    flex: 1;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #222;
+  }
+  .no-copy {
+    user-select: none;
+    background-color: #f3f3f3;
+    color: #888;
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    border-radius: 6px;
+  }
+  .mail-body {
+    padding: 30px;
+    font-size: 15px;
+    line-height: 1.7;
+    white-space: pre-line;
+    color: #333;
+    background-color: #fff;
+    min-height: 160px;
+  }
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+    margin-bottom: 20px;
+  }
+  .btn-envoyer {
+    display: block;
+    margin: 20px auto;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 35px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .btn-envoyer:hover { background-color: #0f5dc0; }
+  .reponse {
+    background-color: #f1f3f4;
+    border-left: 5px solid #1a73e8;
+    padding: 18px 22px;
+    margin: 20px;
+    border-radius: 8px;
+    display: none;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<div class="mail-box">
+  <div class="mail-header">
+    📧 Nouveau message
+    <button class="btn-reset" onclick="reinitialiser()">🔄 Réinitialiser</button>
+  </div>
+
+  <div class="consigne">
+    <b>🟡 Consignes :</b><br>
+    1️⃣ Choisissez votre genre (Homme ou Femme)<br>
+    2️⃣ Choisissez le sujet (absence, candidature, vacances, etc.)<br>
+    3️⃣ Si vous postulez, choisissez ciblée ou spontanée<br>
+    4️⃣ Lisez le modèle d’e-mail affiché<br>
+    5️⃣ Cliquez sur « Envoyer » pour voir la réponse ✉️<br>
+    6️⃣ Copiez le texte et collez-le dans votre vrai e-mail<br>
+    7️⃣ Remplacez [Prénom Nom] par votre vrai prénom et nom
+  </div>
+
+  <div class="mail-fields">
+    <select id="genre" onchange="changerGenre()">
+      <option value="">-- Choisir votre genre --</option>
+      <option value="homme">👨 Homme</option>
+      <option value="femme">👩 Femme</option>
+    </select>
+
+    <select id="sujet" onchange="changerSujet()" style="display:none">
+      <option value="">-- Choisir un sujet --</option>
+      <option value="absence">Absence</option>
+      <option value="retard">Retard</option>
+      <option value="certificat">Certificat de travail</option>
+      <option value="rdv">Changer un rendez-vous</option>
+      <option value="vacances">Demande de vacances</option>
+      <option value="candidature">Candidature à un emploi</option>
+    </select>
+
+    <select id="type" onchange="changerType()" style="display:none">
+      <option value="">-- Type de candidature --</option>
+      <option value="ciblee">🎯 Candidature ciblée</option>
+      <option value="spontanee">💡 Candidature spontanée</option>
+    </select>
+
+    <select id="metier" onchange="changerMetier()" style="display:none"></select>
+
+    <div class="field"><div class="label">À :</div><div id="email" class="value"></div></div>
+    <div class="field" id="cc-field" style="display:none"><div class="label">Cc :</div><div id="cc" class="value"></div></div>
+    <div class="field"><div class="label">Objet :</div><div id="objet" class="value"></div></div>
+  </div>
+
+  <div class="mail-body" id="texte"></div>
+
+  <button class="btn-envoyer" onclick="envoyerMail()">📨 Envoyer</button>
+  <div class="reponse" id="reponse"></div>
+</div>
+
+<script>
+let genre = "", sujet = "", type = "", metier = "";
+
+const metiersHomme = [
+  "agent de nettoyage","employé polyvalent","plongeur","aide de cuisine",
+  "agent de voirie","employé de production","peintre",
+  "ouvrier en bâtiment","livreur","chauffeur","employé métallurgique"
+];
+const metiersFemme = [
+  "agente de nettoyage","employée polyvalente","plongeuse","aide de cuisine",
+  "agente de voirie","employée de production","blanchisseuse",
+  "peintre","ouvrière en bâtiment","livreuse","chauffeuse","coiffeuse","employée métallurgique"
+];
+
+const mails = {
+  absence: { to: "info@proactif.ch", toCopy: true, cc: "orp@vd.ch", ccCopy: false },
+  retard: { to: "info@proactif.ch", toCopy: true, cc: "", ccCopy: true },
+  certificat: { to: "entreprise@mail.ch", toCopy: false, cc: "", ccCopy: true },
+  rdv: { to: "alexis.hoppeler@proactif.ch", toCopy: true, cc: "", ccCopy: true },
+  vacances: { to: "orp@vd.ch", toCopy: false, cc: "info@proactif.ch", ccCopy: true },
+  candidature: { to: "entreprise@mail.ch", toCopy: false, cc: "", ccCopy: true }
+};
+
+window.onload = () => {
+  document.getElementById("sujet").style.display = "none";
+  document.getElementById("type").style.display = "none";
+  document.getElementById("metier").style.display = "none";
+};
+
+function changerGenre() {
+  genre = document.getElementById("genre").value;
+  const metierSelect = document.getElementById("metier");
+  metierSelect.innerHTML = "";
+  const liste = genre === "femme" ? metiersFemme : metiersHomme;
+  let options = "<option value=''>-- Choisir un métier --</option>";
+  liste.forEach(m => options += `<option value="${m}">${m.charAt(0).toUpperCase() + m.slice(1)}</option>`);
+  metierSelect.innerHTML = options;
+  document.getElementById("sujet").style.display = genre ? "block" : "none";
+  if (sujet) afficherInfos();
+}
+
+function changerSujet() {
+  sujet = document.getElementById("sujet").value;
+  document.getElementById("type").style.display = sujet === "candidature" ? "block" : "none";
+  document.getElementById("metier").style.display = sujet === "candidature" ? "block" : "none";
+  afficherInfos();
+}
+
+function changerType() { type = document.getElementById("type").value; afficherInfos(); }
+function changerMetier() { metier = document.getElementById("metier").value; afficherInfos(); }
+
+function articleAvantMot(mot) {
+  const voyelles = ["a","e","i","o","u","h"];
+  return voyelles.includes(mot[0].toLowerCase()) ? "d’" : "de ";
+}
+
+function afficherInfos() {
+  const data = mails[sujet];
+  const emailDiv = document.getElementById("email");
+  const ccDiv = document.getElementById("cc");
+  const ccField = document.getElementById("cc-field");
+  if (!data) return;
+
+  emailDiv.innerHTML = data.toCopy ? `<a href="mailto:${data.to}">${data.to}</a>` : `<span class='no-copy'>🔒 ${data.to}</span>`;
+  if (data.cc) {
+    ccField.style.display = "flex";
+    ccDiv.innerHTML = data.ccCopy ? `<a href="mailto:${data.cc}">${data.cc}</a>` : `<span class='no-copy'>🔒 ${data.cc}</span>`;
+  } else ccField.style.display = "none";
+
+  let texte = "";
+  let objet = "";
+
+  const salut = "Bonjour Madame, Monsieur,";
+
+  switch (sujet) {
+    case "absence":
+      objet = "Absence aujourd’hui";
+      texte = `${salut}\n\nJe suis malade aujourd’hui. Je ne peux pas venir au cours.\nMerci de votre compréhension.\n\nCordialement,\n[Prénom Nom]`;
+      break;
+    case "retard":
+      objet = "Retard ce matin";
+      texte = `${salut}\n\nJe suis ${genre === "femme" ? "arrivée" : "arrivé"} en retard ce matin (train en retard / problème de bus).\nMerci et à tout à l’heure.\n\nCordialement,\n[Prénom Nom]`;
+      break;
+    case "certificat":
+      objet = "Demande de certificat de travail";
+      texte = `${salut}\n\nJe vous écris pour demander une copie de mon certificat de travail.\nMerci beaucoup et bonne journée.\n\nCordialement,\n[Prénom Nom]`;
+      break;
+    case "rdv":
+      objet = "Changement de rendez-vous";
+      texte = `${salut}\n\nJe souhaite changer la date de mon rendez-vous. Est-il possible de le déplacer à un autre jour ?\nMerci de votre réponse.\n\nCordialement,\n[Prénom Nom]`;
+      break;
+    case "vacances":
+      objet = "Demande de vacances";
+      texte = `${salut}\n\nJe souhaite prendre quelques jours de vacances. Pouvez-vous me dire si c’est possible ?\nMerci beaucoup.\n\nCordialement,\n[Prénom Nom]`;
+      break;
+    case "candidature":
+      if (metier) {
+        const art = articleAvantMot(metier);
+        objet = type === "spontanee" ? `Candidature spontanée – ${metier}` : `Candidature au poste ${art}${metier}`;
+        texte = `${salut}\n\n${type === "spontanee"
+          ? `Je me permets de vous écrire pour vous proposer ma candidature spontanée.\nJe suis ${genre === "femme" ? "motivée" : "motivé"} et disponible pour un poste ${art}${metier}.\nVous trouverez mon CV en pièce jointe.\n\nMerci pour votre attention.`
+          : `Je vous envoie ma candidature pour le poste ${art}${metier}.\nJe suis ${genre === "femme" ? "motivée" : "motivé"} et je reste à disposition pour un entretien.\nMerci beaucoup.`}\n\nCordialement,\n[Prénom Nom]`;
+      }
+      break;
+  }
+
+  document.getElementById("objet").textContent = objet;
+  document.getElementById("texte").textContent = texte;
+}
+
+function envoyerMail() {
+  const rep = document.getElementById("reponse");
+  rep.style.display = "block";
+  let message = "";
+  switch (sujet) {
+    case "absence": message = "Merci, bon rétablissement !"; break;
+    case "retard": message = "Merci d’avoir prévenu, à tout à l’heure."; break;
+    case "vacances": message = "Votre demande sera transmise à l’ORP."; break;
+    case "candidature": message = "Votre candidature a bien été reçue."; break;
+    case "rdv": message = "Merci, nous vous proposerons une nouvelle date."; break;
+    default: message = "Merci pour votre message.";
+  }
+  rep.textContent = "📬 Réponse : " + message;
+}
+
+function reinitialiser(full = true) {
+  if (full) document.getElementById("genre").value = "";
+  document.getElementById("sujet").value = "";
+  document.getElementById("type").value = "";
+  document.getElementById("metier").value = "";
+  document.getElementById("sujet").style.display = full ? "none" : "block";
+  document.getElementById("type").style.display = "none";
+  document.getElementById("metier").style.display = "none";
+  document.getElementById("email").innerHTML = "";
+  document.getElementById("cc").innerHTML = "";
+  document.getElementById("cc-field").style.display = "none";
+  document.getElementById("objet").textContent = "";
+  document.getElementById("texte").textContent = "";
+  document.getElementById("reponse").style.display = "none";
+}
+</script>
+</body>
+</html>
