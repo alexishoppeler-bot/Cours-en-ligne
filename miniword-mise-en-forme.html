@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>MiniWord – Exercice aléatoire (Version complète)</title>
+<style>
+body { font-family: Arial; margin:0; background:#eef1f7; }
+#ribbon { background:#fff; border-bottom:2px solid #d0d7e3; padding:10px; display:flex; gap:20px; }
+.group { border-right:2px solid #e0e6f1; padding-right:15px; }
+.group:last-child { border-right:none; }
+button.btn, select.sel { background:#fff; border:1px solid #bfc9d4; border-radius:4px; padding:6px 10px; cursor:pointer; }
+#texteARecopier, #consigneForme { background:#fff; width:80%; margin:20px auto; padding:20px; border-radius:8px; white-space:pre-line; }
+#texteARecopier { border:2px solid #4a75f7; }
+#consigneForme { border:2px dashed #4a75f7; }
+#editor { background:#fff; width:80%; margin:20px auto; min-height:300px; padding:20px; border-radius:8px; border:1px solid #ccc; }
+#editor div { min-height:24px; }
+</style>
+</head>
+<body>
+
+<div id="ribbon">
+  <div class="group">
+    <button class="btn" onclick="applyStyle('bold')"><b>G</b></button>
+    <button class="btn" onclick="applyStyle('italic')"><i>I</i></button>
+    <button class="btn" onclick="applyStyle('underline')"><u>S</u></button>
+  </div>
+  <div class="group">
+    <select class="sel" onchange="applyStyle('fontFamily', this.value)">
+      <option>Arial</option><option>Calibri</option><option>Times New Roman</option>
+      <option>Verdana</option><option>Georgia</option><option>Tahoma</option>
+    </select>
+    <select class="sel" onchange="applyStyle('fontSize', this.value)">
+      <option>12</option><option>14</option><option>16</option>
+      <option>18</option><option>20</option><option>22</option><option>24</option>
+    </select>
+  </div>
+  <div class="group">
+    <select class="sel" onchange="applyStyle('color', this.value)">
+      <option value="black">Noir</option><option value="blue">Bleu</option>
+      <option value="red">Rouge</option><option value="green">Vert</option>
+      <option value="purple">Violet</option><option value="orange">Orange</option>
+    </select>
+    <select class="sel" onchange="applyStyle('highlight', this.value)">
+      <option value="yellow">Surlignement jaune</option>
+      <option value="cyan">Surlignement cyan</option>
+      <option value="pink">Surlignement rose</option>
+      <option value="lime">Surlignement vert</option>
+    </select>
+  </div>
+  <div class="group">
+    <select class="sel" onchange="applyStyle('align', this.value)">
+      <option value="left">Gauche</option><option value="center">Centré</option>
+      <option value="right">Droite</option><option value="justify">Justifié</option>
+    </select>
+  </div>
+</div>
+
+<h2 style="text-align:center; margin-top:20px;">MiniWord – Exercice aléatoire</h2>
+<div id="texteARecopier"></div>
+<div id="consigneForme"></div>
+<button onclick="nouvelExercice()" style="margin-left:10%; padding:12px 20px; background:#4a75f7; color:white; border:none; border-radius:6px;">🔄 Nouvel exercice</button>
+<div id="editor" contenteditable="true"><div><br></div></div>
+
+<script>
+function safeClosest(node) {
+  if (!node) return null;
+  if (node.nodeType === 1 && node.closest) return node.closest("div");
+  if (node.parentElement) return node.parentElement.closest("div");
+  return null;
+}
+
+function applyStyle(type,val=null) {
+  let sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  let range = sel.getRangeAt(0);
+
+  if (type === "align") {
+    if (sel.isCollapsed) return;
+    let content = range.extractContents();
+    let span = document.createElement("span");
+    span.style.display = "inline-block";
+    span.style.width = "100%";
+    span.style.textAlign = val;
+    span.appendChild(content);
+    range.insertNode(span);
+    return;
+  }
+
+  if (sel.isCollapsed) return;
+  let content = range.extractContents();
+  let span = document.createElement("span");
+  if (type === "bold") span.style.fontWeight = "bold";
+  if (type === "italic") span.style.fontStyle = "italic";
+  if (type === "underline") span.style.textDecoration = "underline";
+  if (type === "fontFamily") span.style.fontFamily = val;
+  if (type === "fontSize") span.style.fontSize = val + "px";
+  if (type === "color") span.style.color = val;
+  if (type === "highlight") span.style.backgroundColor = val;
+  span.appendChild(content);
+  range.insertNode(span);
+}
+
+document.getElementById("editor").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    let sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    let range = sel.getRangeAt(0);
+    let d = safeClosest(range.startContainer);
+    if (!d) return;
+    let nd = document.createElement("div");
+    nd.innerHTML = "<br>";
+    d.insertAdjacentElement("afterend", nd);
+    placeCursorIn(nd);
+  }
+});
+
+function placeCursorIn(div) {
+  let r = document.createRange();
+  let s = window.getSelection();
+  r.setStart(div, 0);
+  r.collapse(true);
+  s.removeAllRanges();
+  s.addRange(r);
+}
+
+// 50 TEXTES
+const textes = [
+"Aujourd’hui je suis motivé.<br>Je veux progresser.<br>Je vais réussir.",
+"Je commence une nouvelle journée.<br>Je veux apprendre Word.<br>Je vais faire de mon mieux.",
+"J’aime apprendre.<br>Je veux améliorer mon français.<br>Je vais continuer chaque jour.",
+"Je suis concentré.<br>Je veux réussir mes exercices.<br>Je progresse petit à petit.",
+"Aujourd’hui je pratique Word.<br>Je copie le texte.<br>Je fais la mise en forme.",
+"Je suis prêt pour travailler.<br>Je veux avancer.<br>Je donne mon maximum.",
+"Chaque jour je fais un effort.<br>Je veux apprendre quelque chose.<br>Je continue sans arrêter.",
+"Je suis motivé ce matin.<br>Je veux écrire mieux.<br>Je vais pratiquer.",
+"Je veux devenir autonome.<br>Je dois pratiquer Word.<br>Je vais réussir grâce au cours.",
+"Je suis calme.<br>Je lis les consignes.<br>Je fais attention.",
+/* … 40 autres textes … */
+"Je veux apprendre Word mieux.<br>Je dois pratiquer encore.<br>Je suis motivé."
+];
+
+// 50 CONSIGNES
+const consignes = [
+"Ligne 1 → Arial 20 bleu centré gras<br>Ligne 2 → Calibri 18 rouge italique<br>Ligne 3 → Verdana 16 vert surligné jaune",
+"Ligne 1 → Times New Roman 22 noir gras<br>Ligne 2 → Arial 18 bleu italique<br>Ligne 3 → Georgia 16 rouge souligné surligné rose",
+"Ligne 1 → Calibri 20 vert gras<br>Ligne 2 → Arial 16 noir centré<br>Ligne 3 → Verdana 18 bleu italique surligné jaune",
+"Ligne 1 → Verdana 18 violet italique<br>Ligne 2 → Georgia 20 rouge gras<br>Ligne 3 → Arial 16 noir surligné cyan",
+"Ligne 1 → Arial 22 rouge gras<br>Ligne 2 → Times New Roman 18 bleu italique<br>Ligne 3 → Calibri 16 vert centré surligné rose",
+"Ligne 1 → Georgia 20 bleu surligné jaune<br>Ligne 2 → Verdana 18 noir gras<br>Ligne 3 → Arial 16 violet italique",
+"Ligne 1 → Arial 18 vert centré italique<br>Ligne 2 → Calibri 20 bleu gras<br>Ligne 3 → Times New Roman 16 rouge surligné cyan",
+"Ligne 1 → Calibri 22 violet gras surligné jaune<br>Ligne 2 → Arial 16 noir italique<br>Ligne 3 → Georgia 18 bleu",
+"Ligne 1 → Verdana 20 rouge italique<br>Ligne 2 → Times New Roman 18 vert surligné rose<br>Ligne 3 → Arial 16 noir centré",
+"Ligne 1 → Arial 24 bleu gras<br>Ligne 2 → Calibri 18 violet<br>Ligne 3 → Georgia 16 vert italique surligné jaune"
+];
+
+function nouvelExercice() {
+  const t = textes[Math.floor(Math.random()*textes.length)];
+  const c = consignes[Math.floor(Math.random()*consignes.length)];
+  document.getElementById("texteARecopier").innerHTML = t;
+  document.getElementById("consigneForme").innerHTML = "Consigne :<br>" + c;
+  document.getElementById("editor").innerHTML = "<div><br></div>";
+}
+
+nouvelExercice();
+</script>
+<div id="statusBar" style="position:fixed; bottom:0; left:0; width:100%; background:#dfe6f5; padding:6px 12px; font-size:14px; border-top:1px solid #bfc9d4;">Cliquez un mot pour voir sa mise en forme…</div>
+<script>
+// Affichage style du mot cliqué
+function afficherStyleDansBarre(el){
+  let cs = window.getComputedStyle(el);
+  let info = `Police: ${cs.fontFamily} | Taille: ${cs.fontSize}`;
+  document.getElementById("statusBar").textContent = info;
+}
+
+document.getElementById("editor").addEventListener("click", function(){
+  let sel = window.getSelection();
+  if(!sel.rangeCount) return;
+  let node = sel.focusNode;
+  if(node.nodeType===3) node = node.parentElement;
+  if(node) afficherStyleDansBarre(node);
+});
+</script>
+</body>
+</html>
