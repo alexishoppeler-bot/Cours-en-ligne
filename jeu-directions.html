@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jeu de Directions – Niveaux</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display:flex; justify-content:center; align-items:center;
+            min-height:100vh; overflow:hidden; touch-action:manipulation;
+        }
+        .game-container {
+            background:white; border-radius:20px; padding:20px;
+            box-shadow:0 20px 60px rgba(0,0,0,0.3);
+            width:100%; max-width:500px; height:100vh; max-height:900px;
+            display:flex; flex-direction:column; text-align:center;
+        }
+        h1 { color:#667eea; margin-bottom:15px; font-size:1.8em; }
+        .stats { display:flex; justify-content:space-around; margin-bottom:20px; font-size:1.1em; }
+        .stat { display:flex; flex-direction:column; }
+        .stat-label { color:#666; font-size:0.8em; margin-bottom:5px; }
+        .stat-value { color:#667eea; font-weight:bold; font-size:1.5em; }
+        .game-area {
+            background:#f8f9fa; border-radius:15px; padding:30px 20px; margin-bottom:20px;
+            flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;
+        }
+        .direction-display {
+            font-size:2.5em; font-weight:bold; color:#667eea;
+            margin-bottom:20px; animation:pulse 0.5s ease-in-out;
+        }
+        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+        .arrow { font-size:6em; margin:20px 0; display:none; }
+        .controls {
+            display:grid; grid-template-columns:repeat(3,1fr);
+            gap:15px; padding:0 10px; margin-bottom:20px;
+        }
+        .control-btn {
+            background:#667eea; color:white; border:none; border-radius:15px;
+            font-size:2.5em; cursor:pointer; transition:0.2s;
+            font-weight:bold; aspect-ratio:1; display:flex; align-items:center; 
+            justify-content:center; min-height:80px; user-select:none;
+        }
+        .control-btn.correct { background:#4caf50; animation:correctFlash 0.5s; }
+        .control-btn.wrong { background:#f44336; animation:shake 0.5s; }
+        @keyframes correctFlash { 0%,100%{background:#4caf50;} 50%{background:#66bb6a;} }
+        @keyframes shake {
+            0%,100%{transform:translateX(0);}
+            25%{transform:translateX(-10px);} 75%{transform:translateX(10px);}
+        }
+        #start-btn,#restart-btn {
+            background:#4caf50; color:white; border:none; border-radius:15px;
+            padding:20px 40px; font-size:1.5em; cursor:pointer; font-weight:bold;
+        }
+        #restart-btn { background:#667eea; }
+        .timer-bar { width:100%; height:12px; background:#ddd; border-radius:6px; margin-bottom:20px; overflow:hidden; }
+        .timer-fill { height:100%; background:linear-gradient(90deg,#4caf50,#ffc107,#f44336); transition:width 0.1s linear; }
+        .hidden{ display:none !important; }
+        .game-over{ display:none; }
+        .game-over.active{ display:block; }
+        .final-score{ font-size:2.5em; color:#667eea; margin:30px 0; font-weight:bold; }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+        <h1>🧭 Jeu de Directions</h1>
+
+        <div class="stats">
+            <div class="stat"><span class="stat-label">Score</span><span class="stat-value" id="score">0</span></div>
+            <div class="stat"><span class="stat-label">Meilleur</span><span class="stat-value" id="best-score">0</span></div>
+            <div class="stat"><span class="stat-label">Niveau</span><span class="stat-value" id="level">1</span></div>
+        </div>
+
+        <div class="game-area">
+            <div id="start-screen">
+                <p class="instruction-text">Suivez les directions rapidement !</p>
+                <button id="start-btn">Commencer</button>
+            </div>
+
+            <div id="game-screen" class="hidden">
+                <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+                <div class="direction-display" id="direction-text"></div>
+                <div class="arrow" id="arrow"></div>
+            </div>
+
+            <div id="game-over-screen" class="game-over">
+                <h2 style="color:#f44336; margin-bottom:20px; font-size:1.8em;">Temps écoulé !</h2>
+                <div class="final-score" id="final-score"></div>
+                <button id="restart-btn">Rejouer</button>
+            </div>
+        </div>
+
+        <div class="controls" id="controls">
+            <div></div>
+            <button class="control-btn" data-direction="up">↑</button>
+            <div></div>
+            <button class="control-btn" data-direction="left">←</button>
+            <button class="control-btn" data-direction="down">↓</button>
+            <button class="control-btn" data-direction="right">→</button>
+        </div>
+    </div>
+
+<script>
+    const baseDirections = [
+        { text:'TOUT DROIT', arrow:'↑', key:'up' },
+        { text:'À GAUCHE',   arrow:'←', key:'left' },
+        { text:'À DROITE',   arrow:'→', key:'right' },
+        { text:'DEMI-TOUR',  arrow:'↓', key:'down' }
+    ];
+
+    let score = 0;
+    let bestScore = localStorage.getItem('bestScore') || 0;
+    let level = 1;
+    let currentDirection = null;
+    let gameActive = false;
+
+    let timeLeft = 100;
+    let timerInterval = null;
+    let speed = 1;
+
+    const scoreEl = document.getElementById('score');
+    const bestScoreEl = document.getElementById('best-score');
+    const levelEl = document.getElementById('level');
+    const directionTextEl = document.getElementById('direction-text');
+    const timerFillEl = document.getElementById('timer-fill');
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const finalScoreEl = document.getElementById('final-score');
+
+    bestScoreEl.textContent = bestScore;
+
+    document.getElementById('start-btn').addEventListener('click', startGame);
+    document.getElementById('restart-btn').addEventListener('click', startGame);
+
+    document.querySelectorAll('.control-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (!gameActive) return;
+            checkAnswer(btn.dataset.direction);
+        });
+    });
+
+    function startGame() {
+        score = 0;
+        level = 1;
+        speed = 1;
+        gameActive = true;
+
+        scoreEl.textContent = 0;
+        levelEl.textContent = 1;
+
+        startScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        gameOverScreen.classList.remove('active');
+
+        nextDirection();
+    }
+
+    function nextDirection() {
+        if (!gameActive) return;
+
+        let direction = baseDirections[Math.floor(Math.random()*baseDirections.length)];
+        let displayText = direction.text;
+        let expectedKey = direction.key;
+
+        // 🔥 Niveau 2 et 3 : consignes inversées aléatoires
+        let inverseChance = (level === 2 ? 0.10 : level === 3 ? 0.20 : 0);
+
+        if (Math.random() < inverseChance) {
+            expectedKey = getOpposite(expectedKey);
+            displayText += " (INVERSE)";
+        }
+
+        currentDirection = { text:displayText, key:expectedKey };
+
+        directionTextEl.textContent = displayText;
+
+        // timer
+        timeLeft = 100;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, (40 / speed));
+    }
+
+    function getOpposite(key) {
+        switch(key){
+            case 'up': return 'down';
+            case 'down': return 'up';
+            case 'left': return 'right';
+            case 'right': return 'left';
+        }
+    }
+
+    function updateTimer() {
+        timeLeft -= 1;
+        timerFillEl.style.width = timeLeft + "%";
+
+        if (timeLeft <= 0) gameOver();
+    }
+
+    function checkAnswer(key) {
+        if (key === currentDirection.key) {
+            score++;
+            scoreEl.textContent = score;
+
+            if (score === 10) { level = 2; levelEl.textContent = 2; speed = 1.3; }
+            if (score === 25) { level = 3; levelEl.textContent = 3; speed = 1.6; }
+
+            nextDirection();
+        } else {
+            gameOver();
+        }
+    }
+
+    function gameOver() {
+        gameActive = false;
+        clearInterval(timerInterval);
+
+        if (score > bestScore) {
+            bestScore = score;
+            localStorage.setItem('bestScore', bestScore);
+            bestScoreEl.textContent = bestScore;
+        }
+
+        gameScreen.classList.add('hidden');
+        gameOverScreen.classList.add('active');
+        finalScoreEl.textContent = "Score : " + score;
+    }
+</script>
+
+</body>
+</html>
