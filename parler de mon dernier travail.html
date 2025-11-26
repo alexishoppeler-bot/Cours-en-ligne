@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Parler de mon dernier travail – Exercice interactif</title>
+
+<!-- jsPDF pour le PDF des réponses -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+ body{
+   font-family:Arial, sans-serif;
+   background:#eef3f9;
+   padding:20px;
+   text-align:center;
+ }
+ #app{
+   max-width:700px;
+   margin:auto;
+   background:white;
+   padding:30px;
+   border-radius:16px;
+   box-shadow:0 4px 20px rgba(0,0,0,0.18);
+   text-align:left;
+ }
+ h1{
+   text-align:center;
+   color:#003c8f;
+ }
+ .question-box{
+   background:#f0f4ff;
+   padding:15px;
+   border-radius:10px;
+   margin-top:20px;
+   font-size:18px;
+   font-weight:bold;
+ }
+ textarea{
+   width:100%;
+   height:130px;
+   margin-top:10px;
+   padding:12px;
+   border-radius:10px;
+   border:2px solid #d0d3e2;
+   font-size:17px;
+ }
+ button{
+   padding:12px 20px;
+   border:none;
+   border-radius:10px;
+   font-size:18px;
+   margin-top:15px;
+   cursor:pointer;
+ }
+ .nextBtn{
+   background:#0a66c2;
+   color:white;
+ }
+ .resetBtn{
+   background:#d9534f;
+   color:white;
+ }
+ .pdfBtn{
+   background:#28a745;
+   color:white;
+ }
+ .progress{
+   font-size:18px;
+   font-weight:bold;
+   text-align:center;
+   color:#003c8f;
+   margin-bottom:15px;
+ }
+ .feedback{
+   margin-top:10px;
+   font-weight:bold;
+   font-size:18px;
+ }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>🗣️ Parler de mon dernier travail</h1>
+  <div class="progress" id="progress">1 / 10</div>
+
+  <div class="question-box" id="question">...</div>
+  
+  <textarea id="reponse" placeholder="Écrivez votre réponse ici..."></textarea>
+
+  <button class="nextBtn" onclick="suivant()">Suivant</button>
+  <div class="feedback" id="feedback"></div>
+  
+  
+
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+// 10 QUESTIONS POUR PARLER DE SON DERNIER TRAVAIL (version professionnelle, données non sensibles)
+const questions = [
+  "Quel type d'activité professionnelle aviez-vous ? (ex. : nettoyage, cuisine, logistique...)",
+  "Dans quel secteur travailliez-vous ? (ex. : restauration, industrie, commerce...)",
+  "Depuis combien de temps exerciez-vous ce poste environ ?",
+  "Quelles étaient vos tâches principales dans ce rôle ?",
+  "Avec quel type d'équipe travailliez-vous ? (ex. : équipe de 3 personnes, travail en binôme...)",
+  "Quelles compétences professionnelles utilisiez-vous régulièrement ?",
+  "Qu’appréciiez-vous dans votre activité ?",
+  "Quels aspects du travail étaient plus difficiles pour vous ?",
+  "Quels changements vous ont amené à arrêter cette activité ?",
+  "Quels objectifs professionnels avez-vous pour la suite ?"
+];
+
+let index = parseInt(localStorage.getItem("job_index") || 0, 10);
+let reponses;
+try{
+  reponses = JSON.parse(localStorage.getItem("job_reponses") || "[]");
+}catch(e){
+  reponses = [];
+}
+if(!Array.isArray(reponses) || reponses.length !== questions.length){
+  reponses = new Array(questions.length).fill("");
+}
+
+function charger(){
+  document.getElementById("question").innerText = questions[index];
+  document.getElementById("reponse").value = reponses[index] || "";
+  document.getElementById("progress").innerText = (index+1) + " / " + questions.length;
+}
+
+charger();
+
+function suivant(){
+  const rep = document.getElementById("reponse").value.trim();
+  if(rep === ""){
+    document.getElementById("feedback").innerHTML = "⚠️ Écrivez une réponse avant de continuer.";
+    return;
+  }
+
+  reponses[index] = rep;
+  localStorage.setItem("job_reponses", JSON.stringify(reponses));
+
+  index++;
+
+  if(index >= questions.length){
+    document.getElementById("app").innerHTML = `
+      <h1>🎉 Bravo !</h1>
+      <p style='font-size:20px;'>Vous avez terminé les 10 questions sur votre dernier travail.</p>
+      <p style='font-size:18px;'>Vous progressez très bien. Continuez ainsi : c’est un excellent entraînement pour vous exprimer clairement avec un conseiller ORP ou un employeur.</p>
+      <div style='margin-top:25px; text-align:center;'>
+        <button class='resetBtn' onclick='resetAll()'>Réinitialiser</button>
+        <button class='pdfBtn' onclick='genererPDF()'>📄 Télécharger le PDF de vos réponses</button>
+      </div>
+    `;
+    localStorage.setItem("job_index", (questions.length - 1).toString());
+    return;
+  }
+
+  localStorage.setItem("job_index", index.toString());
+  document.getElementById("feedback").innerHTML = "";
+  charger();
+}
+
+function resetAll(){
+  if(!confirm("Effacer toutes les réponses et recommencer ?")) return;
+  index = 0;
+  reponses = new Array(questions.length).fill("");
+  localStorage.removeItem("job_index");
+  localStorage.removeItem("job_reponses");
+  charger();
+  document.getElementById("feedback").innerHTML = "";
+}
+
+function genererPDF(){
+  // Vérifier que jsPDF est bien chargé
+  if(!window.jspdf || !window.jspdf.jsPDF){
+    alert("Le PDF ne peut pas être généré pour le moment. Veuillez vérifier la connexion internet ou réessayer.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.text("Parler de mon dernier travail", 20, 20);
+
+  const date = new Date().toLocaleDateString("fr-CH");
+  doc.setFontSize(11);
+  doc.text("Date : " + date, 20, 30);
+
+  doc.setFontSize(12);
+  let y = 45;
+
+  for(let i=0; i<questions.length; i++){
+    doc.text((i+1)+". "+questions[i], 20, y);
+    y += 8;
+    let r = reponses[i] ? reponses[i] : "(pas de réponse)";
+
+    // découper la réponse sur plusieurs lignes si elle est longue
+    const lignes = doc.splitTextToSize("Réponse : " + r, 170);
+    lignes.forEach(l => {
+      if(y > 280){
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(l, 20, y);
+      y += 7;
+    });
+
+    y += 3;
+    if(y > 280){
+      doc.addPage();
+      y = 20;
+    }
+  }
+
+  doc.save("dernier_travail.pdf");
+}
+</script>
+
+</body>
+</html>
