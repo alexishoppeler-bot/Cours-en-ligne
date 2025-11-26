@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz A2/B1 – Compréhension professionnelle</title>
+
+<style>
+  body{
+    font-family:Arial, sans-serif;
+    background:#eef3f9;
+    margin:0;
+    padding:20px;
+  }
+  .container{
+    max-width:800px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  }
+  h2{
+    color:#004c97;
+    margin-top:0;
+  }
+  .scenario{
+    font-weight:bold;
+    margin-bottom:10px;
+  }
+  .option{
+    background:#f0f4ff;
+    border:1px solid #ccd9ff;
+    padding:10px;
+    border-radius:10px;
+    margin:8px 0;
+    cursor:pointer;
+  }
+  .option:hover{
+    background:#dfe8ff;
+  }
+  .correct{
+    color:green;
+    font-weight:bold;
+    margin-top:10px;
+  }
+  .wrong{
+    color:red;
+    font-weight:bold;
+    margin-top:10px;
+  }
+  #resetBtn{
+    display:none;
+    background:#d9534f;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    margin-top:20px;
+    cursor:pointer;
+  }
+  .scoreBox{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:15px;
+    color:#004c97;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="intro" style="max-width:800px;margin:auto;background:#ffffff;padding:25px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.2);">
+  <h2>Quiz A2/B1 – Compréhension professionnelle</h2>
+  <p>📘 <b>Objectif :</b> Comprendre des situations complexes au travail (consignes, problèmes, dialogues, emails).</p>
+  <p>🎯 <b>Compétences :</b></p>
+  <ul>
+    <li>Lire un message professionnel.</li>
+    <li>Comprendre des dialogues au travail.</li>
+    <li>Analyser une situation et choisir la bonne réaction.</li>
+    <li>Interpréter des informations implicites.</li>
+  </ul>
+  <p>⭐ <b>Score :</b> 1 point seulement si bonne réponse du premier coup.</p>
+
+  <button onclick="startQuiz()" style="background:#004c97;color:white;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-size:16px;">Commencer</button>
+</div>
+
+<!-- QUIZ -->
+<div class="container" id="quizContainer" style="display:none;">
+  <h2>Quiz – Situations professionnelles A2/B1</h2>
+  <div class="scoreBox">Score : <span id="score">0</span>/<span id="total">0</span></div>
+
+  <div id="scenario" class="scenario"></div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+
+  <button id="resetBtn" onclick="resetAll()">Réinitialiser</button>
+</div>
+
+<script>
+// ----------------------------------------------------
+// 50 QUESTIONS MIX A2/B1
+// ----------------------------------------------------
+const questions = [
+  {text:"Un collègue vous dit : « On doit finir cette commande avant 14h, sinon le client attendra. » Que faites-vous ?", options:["Vous ralentissez","Vous travaillez plus vite et vous organisez","Vous partez en pause longue"], correct:1},
+  {text:"Vous recevez un message : « Bonjour, pouvez-vous vérifier les stocks avant 16h ? Merci. »", options:["Vous vérifiez les stocks","Vous ignorez le message","Vous vérifiez demain"], correct:0},
+  {text:"Un chef vous dit : « La priorité aujourd’hui, c’est la sécurité. Faites très attention. »", options:["Vous travaillez normalement","Vous faites attention à chaque geste","Vous courez pour aller plus vite"], correct:1},
+  {text:"Un collègue vous dit : « Tu peux appeler le fournisseur ? Il ne répond pas à mes emails. »", options:["Vous envoyez un SMS au hasard","Vous appelez le fournisseur","Vous attendez la fin de la journée"], correct:1},
+  {text:"Lors d’une réunion, on vous dit : « Chacun doit proposer une idée pour améliorer l’organisation. »", options:["Vous proposez une idée simple","Vous ne parlez pas","Vous quittez la salle"], correct:0},
+
+  {text:"La responsable vous écrit : « Merci de préparer un rapport avec les problèmes rencontrés cette semaine. »", options:["Vous préparez un rapport clair","Vous supprimez le message","Vous envoyez juste un mot : OK"], correct:0},
+  {text:"Un collègue dit : « On a un conflit dans l’équipe, on doit discuter calmement. »", options:["Vous criez","Vous écoutez et donnez votre avis calmement","Vous partez"], correct:1},
+  {text:"Une affiche dit : « Nouvelle règle : chaque employé doit signaler immédiatement tout accident, même petit. »", options:["Vous attendez la fin de la journée","Vous signalez un accident immédiatement","Vous ne signalez rien"], correct:1},
+  {text:"Le chef dit : « La machine 3 fait un bruit bizarre. Stoppez-la et prévenez-moi. »", options:["Vous continuez","Vous arrêtez la machine et vous prévenez","Vous éteignez tout le bâtiment"], correct:1},
+  {text:"Un email dit : « Réunion déplacée à 15h au lieu de 14h. Merci de confirmer. »", options:["Vous ne répondez pas","Vous confirmez votre présence","Vous arrivez à 14h"], correct:1},
+
+  {text:"Votre collègue : « On doit préparer la livraison ensemble, tu peux commencer par les cartons lourds ? »", options:["Vous l’aidez","Vous refusez sans raison","Vous partez boire un café"], correct:0},
+  {text:"Le responsable : « La qualité n’est pas bonne aujourd’hui, vérifiez davantage. »", options:["Vous vérifiez mieux","Vous travaillez plus vite","Vous ignorez"], correct:0},
+  {text:"Une affiche interne : « Nouveaux horaires : pause obligatoire de 20 minutes. »", options:["Vous faites une pause de 5 minutes","Vous respectez la pause de 20 minutes","Vous ne faites pas de pause"], correct:1},
+  {text:"Une cliente dit : « Désolée, ce produit est abîmé. Pouvez-vous m’aider ? »", options:["Vous l’ignorez","Vous l’aidez et cherchez une solution","Vous dites : ce n’est pas mon problème"], correct:1},
+  {text:"Votre chef : « Demain, on doit former le nouveau collègue. Je compte sur toi. »", options:["Vous préparez quelques explications","Vous n’aidez pas","Vous lui dites d’aller sur Google"], correct:0},
+
+  {text:"Un email : « Merci de transmettre les documents avant midi, c’est urgent. »", options:["Vous envoyez avant midi","Vous envoyez le soir","Vous n’envoyez rien"], correct:0},
+  {text:"Votre collègue : « Attention, le client est très stressé aujourd’hui. Sois patient. »", options:["Vous parlez calmement","Vous êtes agressif","Vous parlez vite"], correct:0},
+  {text:"Le chef : « On a un contrôle demain. Rangez bien la zone. »", options:["Vous rangez la zone","Vous faites le minimum","Vous partez plus tôt"], correct:0},
+  {text:"Une note interne : « Travaillez en binôme pour éviter les erreurs. »", options:["Vous travaillez seul","Vous travaillez en binôme","Vous travaillez sans vérifier"], correct:1},
+  {text:"Un collègue : « Ça te dérange si on échange nos horaires demain ? »", options:["Vous répondez honnêtement si c’est possible ou non","Vous ne répondez pas","Vous vous énervez"], correct:0},
+
+  {text:"Un client dit : « Excusez-moi, j’ai attendu longtemps… »", options:["Vous expliquez calmement et vous aidez","Vous criez","Vous l’ignorez"], correct:0},
+  {text:"Votre responsable : « Merci d’envoyer un message quand tu as terminé. »", options:["Vous envoyez un message","Vous faites rien","Vous partez"], correct:0},
+  {text:"Email : « Bonjour, le document joint est erroné. Merci de le corriger. »", options:["Vous corrigez et renvoyez","Vous supprimez l’email","Vous envoyez le même document"], correct:0},
+  {text:"Affiche : « Priorité aux piétons dans l’entrepôt. »", options:["Vous faites attention aux piétons","Vous roulez vite avec le chariot","Vous ignorez"], correct:0},
+  {text:"Chef : « Cette tâche demande précision et lenteur. Pas de vitesse aujourd’hui. »", options:["Vous travaillez lentement et bien","Vous travaillez vite","Vous changez de poste"], correct:0},
+
+  {text:"Dialogue : « On a une erreur dans la commande de hier. Tu peux m’aider à comprendre ? »", options:["Vous aidez","Vous refusez","Vous partez"], correct:0},
+  {text:"Email : « Merci de lire le nouveau règlement interne et de le signer. »", options:["Vous lisez et signez","Vous ne lisez pas","Vous signez sans lire"], correct:0},
+  {text:"Collègue : « Le client veut changer sa commande, c’est possible ? »", options:["Vous vérifiez le système","Vous dites non sans réfléchir","Vous ignorez"], correct:0},
+  {text:"Chef : « On doit réagir vite. Le camion arrive dans 10 minutes. »", options:["Vous préparez rapidement","Vous buvez un café","Vous attendez"], correct:0},
+  {text:"Email : « Le fournisseur annonce un retard, adaptez votre planning. »", options:["Vous adaptez","Vous gardez le même planning","Vous arrêtez de travailler"], correct:0},
+
+  {text:"Dialogue : « Je pense qu’on doit revoir l’organisation, ça ne fonctionne pas bien. »", options:["Vous proposez des améliorations","Vous vous énervez","Vous ne dites rien"], correct:0},
+  {text:"Chef : « Tu peux expliquer au nouveau comment utiliser cette machine ? »", options:["Vous expliquez calmement","Vous le laissez seul","Vous partez"], correct:0},
+  {text:"Message : « On a besoin d’un remplaçant pour vendredi. Disponible ? »", options:["Vous répondez rapidement","Vous ignorez","Vous répondez une semaine après"], correct:0},
+  {text:"Un client : « J’ai reçu la mauvaise facture. »", options:["Vous vérifiez et corrigez","Vous dites que ce n’est pas votre faute","Vous partez"], correct:0},
+  {text:"Affiche : « Zone bruyante – protection obligatoire. »", options:["Vous mettez une protection","Vous entrez sans protection","Vous courez"], correct:0},
+
+  {text:"Chef : « Le planning change, tu commences à 6h demain. »", options:["Vous arrivez à 6h","Vous arrivez à 8h","Vous ne venez pas"], correct:0},
+  {text:"Collègue : « Cette tâche demande 2 personnes. Tu m’aides ? »", options:["Vous aidez","Vous refusez","Vous partez"], correct:0},
+  {text:"Email : « Merci d’imprimer 10 copies de ce document pour la réunion. »", options:["Vous imprimez","Vous envoyez un SMS","Vous ignorez"], correct:0},
+  {text:"Chef : « Tu peux me faire un retour sur la journée ? »", options:["Vous faites un compte-rendu simple","Vous dites juste : ça va","Vous partez"], correct:0},
+  {text:"Collègue : « Le client attend au téléphone depuis longtemps, tu peux prendre l’appel ? »", options:["Vous prenez l’appel","Vous attendez","Vous raccrochez"], correct:0},
+
+  {text:"Affiche : « Risque chimique – suivre le protocole. »", options:["Vous suivez le protocole","Vous ne faites rien","Vous entrez sans matériel"], correct:0},
+  {text:"Email : « Merci de mettre à jour le fichier partagé. »", options:["Vous mettez à jour","Vous supprimez le fichier","Vous changez tout sans prévenir"], correct:0},
+  {text:"Chef : « Il y a une erreur dans cette commande, retrouve-la. »", options:["Vous analysez pour trouver l’erreur","Vous envoyez la commande","Vous laissez quelqu’un d’autre le faire"], correct:0},
+  {text:"Collègue : « J’ai besoin de toi pour vérifier la marchandise. »", options:["Vous vérifiez ensemble","Vous refusez","Vous partez manger"], correct:0},
+  {text:"Responsable : « On doit améliorer la communication. Tu peux proposer une solution ? »", options:["Vous proposez une idée","Vous ne dites rien","Vous critiquez"], correct:0}
+];
+
+// ----------------------------------------------------
+// LOGIQUE DU QUIZ
+// ----------------------------------------------------
+let index = parseInt(localStorage.getItem('quizAB_index') || '0');
+let score = parseInt(localStorage.getItem('quizAB_score') || '0');
+let answered = false;
+let firstAttempt = true;
+let currentCorrectIndex = null;
+
+const scoreSpan = document.getElementById('score');
+const totalSpan = document.getElementById('total');
+scoreSpan.textContent = score;
+totalSpan.textContent = questions.length;
+
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function startQuiz(){
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('quizContainer').style.display = 'block';
+}
+
+function loadQuestion(){
+  if(index >= questions.length){
+    document.getElementById('scenario').innerHTML = "Quiz terminé !";
+    document.getElementById('options').innerHTML = "";
+    document.getElementById('feedback').innerHTML = "Votre score final : " + score + "/" + questions.length;
+    document.getElementById('resetBtn').style.display = "block";
+    return;
+  }
+
+  const q = questions[index];
+  answered = false;
+  firstAttempt = true;
+  currentCorrectIndex = null;
+  document.getElementById('feedback').innerHTML = "";
+  document.getElementById('scenario').textContent = q.text;
+
+  const optionObjects = q.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  shuffleArray(optionObjects);
+
+  optionObjects.forEach((obj, newIdx) => {
+    if(obj.originalIndex === q.correct){
+      currentCorrectIndex = newIdx;
+    }
+  });
+
+  let html = "";
+  optionObjects.forEach((obj, i) => {
+    html += `<div class="option" onclick="choose(${i})">${obj.text}</div>`;
+  });
+  document.getElementById('options').innerHTML = html;
+}
+
+function choose(i){
+  if(answered) return;
+
+  if(i === currentCorrectIndex){
+    if(firstAttempt){
+      score++;
+      localStorage.setItem('quizAB_score', score.toString());
+      scoreSpan.textContent = score;
+    }
+    document.getElementById('feedback').innerHTML = '<div class="correct">✔ Bonne réponse !</div>';
+    answered = true;
+
+    setTimeout(() => {
+      index++;
+      localStorage.setItem('quizAB_index', index.toString());
+      loadQuestion();
+    }, 700);
+  } else {
+    document.getElementById('feedback').innerHTML = '<div class="wrong">✘ Mauvaise réponse</div>';
+    firstAttempt = false;
+  }
+}
+
+function resetAll(){
+  localStorage.removeItem('quizAB_index');
+  localStorage.removeItem('quizAB_score');
+  index = 0;
+  score = 0;
+  answered = false;
+  firstAttempt = true;
+  scoreSpan.textContent = score;
+  document.getElementById('resetBtn').style.display = 'none';
+  loadQuestion();
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
