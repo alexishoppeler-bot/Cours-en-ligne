@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>50 Situations Professionnelles – Dialogues Progressifs</title>
+<style>
+ body { font-family: Arial, sans-serif; background:#eef2f7; margin:0; padding:0; }
+ .container { max-width:900px; margin:auto; padding:20px; }
+ .card { background:white; padding:25px; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.15); }
+ h1,h2 { color:#003c8f; margin-top:0; }
+ button { background:#0056d8; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px; }
+ button:hover { background:#003c8f; }
+ #content { display:none; }
+ .nav { display:flex; justify-content:space-between; margin-top:20px; gap:10px; }
+ .hidden { display:none; }
+ .chef { color:#0056d8; font-weight:bold; }
+ .employe { color:#008a2e; font-weight:bold; }
+ .client { color:#b30000; font-weight:bold; }
+ .autre { color:#7a0099; font-weight:bold; }
+ #dialogue { line-height: 1.9; margin-top:20px; }
+ .nav button[disabled] { opacity:0.4; cursor:default; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div id="intro" class="card">
+ <h1>50 Situations Professionnelles et Dialogues</h1>
+ <p>Ce parcours présente des situations réalistes du monde du travail, chacune avec une explication claire et un dialogue complet. Les apprenants découvrent chaque situation une par une, de façon progressive.</p>
+ <h2>Objectifs d’apprentissage</h2>
+ <ul>
+   <li>Comprendre des situations professionnelles typiques (nettoyage, usine, cuisine, magasin, logistique).</li>
+   <li>Développer la communication orale en contexte réel (A2–B1).</li>
+   <li>S’entraîner à réagir avec politesse, calme et professionnalisme.</li>
+   <li>Acquérir du vocabulaire utile pour le monde du travail en Suisse.</li>
+ </ul>
+ <button onclick="startCourse()">Commencer</button>
+</div>
+
+<div id="content" class="card">
+  <h2 id="titre"></h2>
+  <p id="situation"></p>
+  <div id="dialogue"></div>
+
+  <div class="nav">
+    <button id="btnPrev" onclick="prev()">◀ Retour</button>
+    <div id="progress"></div>
+    <button id="btnNext" onclick="next()">Suivant ▶</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+// Données : 20 situations déjà intégrées (prêtes à être étendues jusqu’à 50)
+const data = [
+  {
+    titre:"1. Problème sur la fiche de salaire – Employé polyvalent",
+    situation:"L’employé vérifie attentivement sa fiche de salaire et remarque une erreur concernant une heure supplémentaire non comptée.",
+    dialogue:`Employé : Bonjour, excusez-moi, j’aurais besoin d’une vérification concernant ma fiche de salaire.<br>
+RH : Bien sûr, qu’est-ce qui vous semble incorrect ?<br>
+Employé : Il manque une heure supplémentaire de vendredi soir. J’ai travaillé jusqu’à 19h, mais la fiche indique seulement jusqu’à 18h.<br>
+RH : Je regarde… oui, vous avez raison, l’heure n’a pas été enregistrée. Merci de l’avoir signalé.<br>
+Employé : Je voulais être sûr avant de venir vous voir.<br>
+RH : Aucun souci. Je fais la correction maintenant et cela apparaîtra sur votre prochaine fiche.<br>
+Employé : Merci beaucoup pour votre aide.<br>
+RH : Avec plaisir, vous pouvez toujours venir vérifier si quelque chose vous semble étrange.`
+  },
+  {
+    titre:"2. Retard à cause du bus – Nettoyeur",
+    situation:"L’employé arrive en retard à cause d’un incident de transport et doit expliquer calmement la situation.",
+    dialogue:`Employé : Bonjour chef, je suis désolé pour le retard.<br>
+Chef : Bonjour, que s’est-il passé ?<br>
+Employé : Le bus a été bloqué suite à un accident sur la route. On est resté arrêtés longtemps.<br>
+Chef : Je comprends. Merci d’avoir prévenu et d’être venu directement me le dire.<br>
+Employé : Je vais me changer vite et je commence tout de suite.<br>
+Chef : Très bien, installez-vous et rejoignez l’équipe dès que vous êtes prêt.`
+  },
+  {
+    titre:"3. Fiche de salaire à corriger – Employé polyvalent",
+    situation:"L’employé remarque une erreur plus simple sur sa fiche (une heure manquante) et demande une correction.",
+    dialogue:`Employé : Bonjour, il manque une heure sur ma fiche de salaire.<br>
+RH : Je vérifie… oui, c’est exact, vendredi soir n’a pas été compté.<br>
+Employé : D’accord, je voulais juste être sûr.<br>
+RH : Merci d’être venu. Je corrige cela immédiatement dans le système.<br>
+Employé : Merci beaucoup.<br>
+RH : Avec plaisir.`
+  },
+  {
+    titre:"4. Contrat à vérifier – Aide de cuisine",
+    situation:"L’employé reçoit son nouveau contrat et veut vérifier les horaires et le salaire avant de signer.",
+    dialogue:`RH : Voici votre contrat de travail pour le poste d’aide de cuisine.<br>
+Employé : Merci. Les horaires sont bien de 7h à 16h ?<br>
+RH : Oui, du lundi au vendredi, avec une pause de 30 minutes à midi.<br>
+Employé : Et le salaire indiqué ici est correct ?<br>
+RH : 3’600 francs brut par mois, plus les vacances payées.<br>
+Employé : Tout est clair pour moi. Je signe où ?<br>
+RH : Juste ici, en bas de la page.<br>
+Employé : Très bien, merci.`
+  },
+  {
+    titre:"5. Réunion du matin – Agent d’entretien",
+    situation:"Le chef rassemble l’équipe et organise la journée de travail.",
+    dialogue:`Chef : Bonjour à tous, on commence avec le planning du jour.<br>
+Employé : Bonjour.<br>
+Chef : Sofia, tu t’occupes des bureaux au 2e étage. Marco, tu fais les salles de réunion au rez-de-chaussée.<br>
+Marco : D’accord.<br>
+Chef : Pause à 9h45 comme d’habitude. S’il y a un problème, vous m’appelez directement.<br>
+Sofia : Très bien, merci.<br>
+Chef : Bon travail à tous.`
+  },
+  {
+    titre:"6. Machine en panne – Ouvrier de production",
+    situation:"Une machine s’arrête et l’employé signale immédiatement le problème pour éviter un accident.",
+    dialogue:`Employé : Chef, la machine 2 s’arrête toute seule et fait un bruit bizarre.<br>
+Chef : Vous avez essayé de la redémarrer ?<br>
+Employé : Oui, deux fois, mais c’est toujours pareil.<br>
+Chef : D’accord, ne la touchez plus. On ne prend aucun risque.<br>
+Employé : Je vais sur quelle ligne en attendant ?<br>
+Chef : Allez aider la ligne 4. Je contacte la maintenance tout de suite.<br>
+Employé : Très bien, merci.`
+  },
+  {
+    titre:"7. Rangement du matériel – Agent de propreté",
+    situation:"En fin de journée, l’équipe doit ranger le matériel, nettoyer les bouteilles et recharger les batteries.",
+    dialogue:`Chef : Avant de partir, pensez à bien ranger les chariots et le matériel.<br>
+Employé : Oui, je suis en train de nettoyer les bouteilles de produit.<br>
+Chef : Parfait. N’oubliez pas de mettre les batteries en charge pour demain matin.<br>
+Employé : Je le fais juste après, comme d’habitude.<br>
+Chef : Super, merci pour votre travail aujourd’hui.<br>
+Employé : Merci, bonne soirée.<br>
+Chef : Bonne soirée.`
+  },
+  {
+    titre:"8. Premier appel téléphonique – Employé polyvalent",
+    situation:"L’employé répond au téléphone professionnel pour la première fois et doit noter un changement d’horaire.",
+    dialogue:`Employé : Bonjour, entreprise CleanPro, j’écoute.<br>
+Client : Bonjour, j’aimerais changer l’horaire du nettoyage de demain.<br>
+Employé : Très bien, quelle heure vous conviendrait ?<br>
+Client : 8h au lieu de 7h, si possible.<br>
+Employé : D’accord, je note 8h et j’informe le responsable.<br>
+Client : Merci beaucoup pour votre aide.<br>
+Employé : Avec plaisir, bonne journée.<br>
+Client : Bonne journée.`
+  },
+  {
+    titre:"9. Livraison en retard – Logistique",
+    situation:"Le livreur arrive plus tard que prévu, ce qui oblige à adapter l’organisation.",
+    dialogue:`Chef : Bonjour, la livraison devait arriver à 9h, nous sommes déjà en retard sur le planning.<br>
+Livreur : Bonjour, je suis vraiment désolé, il y avait un gros bouchon sur l’autoroute.<br>
+Chef : Je comprends, merci d’avoir prévenu.<br>
+Employé : Chef, en attendant, on peut commencer une autre zone ?<br>
+Chef : Oui, bonne idée, commencez la zone B. On s’adaptera pour la suite.<br>
+Livreur : Je décharge tout de suite pour gagner du temps.<br>
+Chef : Parfait, merci.`
+  },
+  {
+    titre:"10. Client mécontent du nettoyage – Agent de nettoyage",
+    situation:"Un client se plaint que le sol n’est pas propre. L’employé doit rester calme et proposer une solution.",
+    dialogue:`Client : Excusez-moi, le sol n’est pas bien nettoyé ici.<br>
+Employé : Bonjour, montrez-moi l’endroit s’il vous plaît.<br>
+Client : Là, regardez, on voit encore des traces.<br>
+Employé : Vous avez raison, je vais refaire tout de suite cette zone.<br>
+Client : Merci, c’est important pour nous.<br>
+Employé : Je comprends, je m’en occupe maintenant.`
+  },
+  {
+    titre:"11. Nouvelle consigne de sécurité – Nettoyage industriel",
+    situation:"L’entreprise impose des chaussures antidérapantes pour toute l’équipe.",
+    dialogue:`Chef : Bonjour, j’ai une information importante pour tout le monde.<br>
+Employé : Qu’est-ce qu’il y a ?<br>
+Chef : À partir d’aujourd’hui, les chaussures antidérapantes sont obligatoires dans toutes les zones de travail.<br>
+Employé : On les reçoit quand ?<br>
+Chef : Elles seront distribuées cet après-midi dans le vestiaire.<br>
+Employé : Très bien, c’est plus sûr comme ça.<br>
+Chef : Exactement, c’est pour éviter les accidents.`
+  },
+  {
+    titre:"12. Planning modifié – Nettoyeur",
+    situation:"Les horaires de travail changent pendant deux semaines.",
+    dialogue:`Chef : Pour les deux prochaines semaines, on commence à 7h au lieu de 8h.<br>
+Employé : D’accord, et on finit à quelle heure ?<br>
+Chef : À 16h au lieu de 17h.<br>
+Employé : Je note les nouveaux horaires.<br>
+Chef : Si quelqu’un a un problème de transport, venez me voir.<br>
+Employé : Pour moi, c’est bon, merci.`
+  },
+  {
+    titre:"13. Travail en binôme – Femme de chambre",
+    situation:"Deux collègues doivent nettoyer un étage d’hôtel ensemble.",
+    dialogue:`Chef : Aujourd’hui, vous travaillez en binôme au 3e étage.<br>
+Employée : Très bien, avec qui ?<br>
+Chef : Maria, tu fais les lits. Jonas, tu t’occupes des salles de bain.<br>
+Jonas : D’accord, on se partage les chambres.<br>
+Employée : On fait la pause à 10h comme d’habitude ?<br>
+Chef : Oui, exactement.<br>
+Jonas : Parfait, on y va.`
+  },
+  {
+    titre:"14. Mal de dos – Agent d’entretien",
+    situation:"L’employé a mal au dos et demande une adaptation temporaire de ses tâches.",
+    dialogue:`Employé : Chef, je voudrais vous parler d’un problème de santé.<br>
+Chef : Oui, dites-moi.<br>
+Employé : J’ai mal au dos depuis hier, c’est difficile de porter des charges lourdes aujourd’hui.<br>
+Chef : Merci de me le dire. On va adapter vos tâches pour la journée.<br>
+Employé : Je peux faire les petites salles ou les couloirs ?<br>
+Chef : Oui, je vous mets sur les tâches plus légères. On verra demain comment ça va.<br>
+Employé : Merci beaucoup.`
+  },
+  {
+    titre:"15. Odeur de brûlé – Aide de cuisine",
+    situation:"Une odeur de brûlé est détectée dans la cuisine et doit être signalée immédiatement.",
+    dialogue:`Employé : Chef, il y a une forte odeur de brûlé près du four.<br>
+Chef : Vous avez regardé d’où ça vient ?<br>
+Employé : Oui, ça semble venir du câble derrière la machine.<br>
+Chef : On coupe l’alimentation tout de suite. Ouvrez aussi les fenêtres pour aérer.<br>
+Employé : D’accord, je m’en occupe.<br>
+Chef : Ensuite, j’appelle la maintenance pour vérifier le four.<br>
+Employé : Très bien.`
+  },
+  {
+    titre:"16. Contrôle qualité – Ouvrier de production",
+    situation:"Un employé est chargé de vérifier que les produits sont en bon état avant l’envoi.",
+    dialogue:`Chef : Aujourd’hui, tu fais le contrôle qualité sur la ligne 3.<br>
+Employé : D’accord, je dois vérifier quoi exactement ?<br>
+Chef : L’emballage, l’étiquette et l’état du produit. Si quelque chose ne va pas, tu mets de côté et tu m’appelles.<br>
+Employé : Très bien, je commence tout de suite.<br>
+Chef : Merci, c’est un travail très important.`
+  },
+  {
+    titre:"17. Tâche urgente – Entretien du bâtiment",
+    situation:"Une salle doit être prête pour une réunion qui commence bientôt.",
+    dialogue:`Chef : On a une réunion imprévue dans une heure dans la salle 204.<br>
+Employé : Qu’est-ce qu’il faut préparer exactement ?<br>
+Chef : Douze chaises, une table propre et le tableau bien effacé.<br>
+Employé : D’accord, je m’en occupe tout de suite.<br>
+Chef : Merci, c’est un peu urgent, mais je sais que tu vas gérer.`
+  },
+  {
+    titre:"18. Petit accident – Agent de nettoyage",
+    situation:"Un employé se coupe légèrement et doit désinfecter et déclarer l’incident.",
+    dialogue:`Employé : Chef, je me suis coupé légèrement le doigt avec un bord de métal.<br>
+Chef : Montrez-moi… Ce n’est pas très profond, mais il faut désinfecter.<br>
+Employé : Je vais à la pharmacie interne ?<br>
+Chef : Oui, et mettez un pansement. Ensuite, venez remplir un petit rapport d’incident.<br>
+Employé : D’accord, merci.<br>
+Chef : Merci de me l’avoir dit, c’est important pour la sécurité.`
+  },
+  {
+    titre:"19. Objet perdu – Employé en magasin",
+    situation:"Un client pense avoir perdu son téléphone dans le magasin.",
+    dialogue:`Client : Bonjour, je crois que j’ai perdu mon téléphone dans votre magasin.<br>
+Employé : Bonjour, vous vous rappelez où vous l’aviez peut-être posé ?<br>
+Client : Peut-être près des caisses ou au rayon boissons.<br>
+Employé : Je vais d’abord vérifier aux objets trouvés.<br>
+Client : Merci beaucoup.<br>
+Employé : Bonne nouvelle, on a trouvé un téléphone noir ce matin. Pouvez-vous le décrire ?<br>
+Client : Noir, avec une coque bleue.<br>
+Employé : Parfait, c’est celui-là. Je vous demande juste de signer ici pour la remise.<br>
+Client : Merci infiniment.<br>
+Employé : Avec plaisir, bonne journée.`
+  },
+  {
+    titre:"20. Pause déplacée – Entretien dans un centre de conférences",
+    situation:"L’arrivée d’un groupe de clients oblige à décaler la pause de l’équipe.",
+    dialogue:`Chef : Petit changement pour ce matin, le groupe de 30 personnes arrive à 9h30 au lieu de 10h.<br>
+Employé : D’accord, qu’est-ce qu’on modifie ?<br>
+Chef : On décale la pause à 10h15 au lieu de 9h45, pour avoir le temps de finir la préparation.<br>
+Employé : Aucun problème pour moi.<br>
+Chef : Merci pour ta flexibilité. Après la pause, on reprend le planning normal.<br>
+Employé : Très bien.`
+  }
+,
+  {
+    titre:"21. Erreur de commande – Magasinier",
+    situation:"Une livraison présente plusieurs anomalies : quantités manquantes, références incorrectes et un carton endommagé. L’employé doit analyser calmement la situation, vérifier les bons de commande et avertir le chef pour éviter un problème administratif.",
+    dialogue:`Employé : Chef, la livraison est arrivée mais il y a plusieurs problèmes.<br>
+Chef : D’accord, explique-moi ce qu’il manque.<br>
+Employé : On devait recevoir dix cartons, mais il n’y en a que six. Et deux cartons ne correspondent pas du tout à la référence commandée.<br>
+Chef : Montre-moi… Oui, ce ne sont pas les bons produits.<br>
+Employé : Et celui-ci est déchiré sur le côté. Le contenu a peut-être été abîmé.<br>
+Chef : Très bien. Prends des photos de chaque problème et note les numéros de lot.<br>
+Employé : Je note aussi les quantités exactes manquantes ?<br>
+Chef : Oui, c’est essentiel pour la réclamation auprès du fournisseur.<br>
+Employé : Je prépare un rapport complet pour que tout soit clair.<br>
+Chef : Parfait, merci pour ton sérieux.`},
+  {
+    titre:"22. Produit dangereux renversé – Entrepôt",
+    situation:"Un bidon contenant un produit chimique se renverse. L’employé doit suivre strictement la procédure : sécuriser la zone, prévenir le chef et utiliser le matériel adapté.",
+    dialogue:`Employé : Chef, un bidon de produit chimique vient de tomber dans l’allée 3, il s’est ouvert.<br>
+Chef : Ne vous approchez pas, surtout ne touchez rien.<br>
+Employé : J’ai déjà bloqué l’accès et je reste à distance.<br>
+Chef : Très bien. Placez les panneaux “Danger” et “Sol glissant”.<br>
+Employé : Je les installe tout de suite des deux côtés de l’allée.<br>
+Chef : Je vais chercher le kit d’absorption spécial dans la réserve sécurisée.<br>
+Employé : Je dois prévenir la sécurité du site ?<br>
+Chef : Oui, faites-le immédiatement. Ils notent tous les incidents chimiques.<br>
+Employé : Je les contacte et j’attends ici.<br>
+Chef : Parfait, merci de votre réactivité.`},
+  {
+    titre:"23. Appel urgent d’un client – Réception",
+    situation:"Une cliente stressée demande une confirmation écrite immédiate. L’employé doit rester calme, structuré et rassurant.",
+    dialogue:`Client : Bonjour ! J’ai besoin d’une confirmation écrite MAINTENANT, c’est urgent !<br>
+Employé : Bonjour madame, je vous écoute. Quelle confirmation vous faut-il exactement ?<br>
+Client : La réservation de la salle ! J’en ai besoin tout de suite pour une réunion importante.<br>
+Employé : Très bien, je peux vous l’envoyer dans cinq minutes par e-mail.<br>
+Client : Cinq minutes, pas plus !<br>
+Employé : D’accord. Pouvez-vous me confirmer votre adresse e-mail pour éviter toute erreur ?<br>
+Client : Oui, m.durand@mail.ch.<br>
+Employé : Parfait, je prépare le document et je vous l’envoie immédiatement.<br>
+Client : Merci, je compte vraiment dessus.<br>
+Employé : Je m’en occupe maintenant, vous le recevrez dans quelques instants.`},
+  {
+    titre:"24. Badge oublié – Usine",
+    situation:"En arrivant au travail, l’employé réalise qu’il a oublié son badge d’accès. Il doit suivre la procédure pour obtenir un badge provisoire.",
+    dialogue:`Employé : Bonjour, excusez-moi, j’ai un souci : j’ai oublié mon badge à la maison.<br>
+Sécurité : Pas de problème, ça arrive. Avez-vous une pièce d'identité sur vous ?<br>
+Employé : Oui, voilà ma carte.<br>
+Sécurité : Merci. Je vous fais un badge temporaire pour la journée.<br>
+Employé : Je dois le rendre ce soir, c’est ça ?<br>
+Sécurité : Oui, sans faute, sinon le système envoie une alerte.<br>
+Employé : Très bien, je vous le rapporte en partant.<br>
+Sécurité : Voici votre badge provisoire. Il fonctionne pour toutes les zones où vous êtes autorisé.<br>
+Employé : Merci beaucoup, bonne journée.<br>
+Sécurité : Bonne journée.`},
+  {
+    titre:"25. Nouvelle procédure – Équipe de nettoyage",
+    situation:"Le chef annonce une nouvelle méthode de travail : ordre des zones, matériel, priorités. L’équipe doit comprendre clairement la nouvelle organisation.",
+    dialogue:`Chef : Bonjour à tous, on a une nouvelle organisation dès aujourd’hui.<br>
+Employé : Qu’est-ce qu’on change exactement ?<br>
+Chef : On commence d’abord par les couloirs principaux. Ensuite, on passe aux salles et on termine par les bureaux.<br>
+Employé : D’accord. Et pour les produits, on garde les mêmes ?<br>
+Chef : Oui, sauf pour les sanitaires où on utilise désormais le nouveau détergent bleu.<br>
+Employé : On doit aussi noter les anomalies dans le cahier comme d’habitude ?<br>
+Chef : Exactement. Rien ne change pour le suivi, seulement l’ordre des zones.<br>
+Employé : Très bien, merci pour les explications.<br>
+Chef : Si quelque chose n’est pas clair pendant la journée, venez me voir directement.`}
+];
+
+let index = 0;
+
+function startCourse(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('content').style.display='block';
+  load();
+}
+
+function load(){
+  const item = data[index];
+  document.getElementById('titre').innerHTML = item.titre;
+  document.getElementById('situation').innerHTML = item.situation;
+  let formatted = item.dialogue
+    .replace(/Chef ?:/g, "<span class='chef'>Chef :</span>")
+    .replace(/Employé ?:/g, "<span class='employe'>Employé :</span>")
+    .replace(/Employée ?:/g, "<span class='employe'>Employée :</span>")
+    .replace(/Client ?:/g, "<span class='client'>Client :</span>")
+    .replace(/Livreur ?:/g, "<span class='autre'>Livreur :</span>")
+    .replace(/RH ?:/g, "<span class='autre'>RH :</span>")
+    .replace(/Sécurité ?:/g, "<span class='autre'>Sécurité :</span>");
+  document.getElementById('dialogue').innerHTML = formatted;
+
+  // Mise à jour de la progression et des boutons
+  document.getElementById('progress').textContent = (index+1) + " / " + data.length;
+  document.getElementById('btnPrev').disabled = (index === 0);
+  document.getElementById('btnNext').disabled = (index === data.length - 1);
+}
+
+function next(){
+  if(index < data.length-1){
+    index++;
+    load();
+  }
+}
+
+function prev(){
+  if(index > 0){
+    index--;
+    load();
+  }
+}
+</script>
+</body>
+</html>
