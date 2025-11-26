@@ -105,7 +105,7 @@ h1{
   text-decoration:none;
 }
 
-/* AFFICHAGE */
+/* AFFICHAGE TEMPS */
 .display{
   width:100%;
   font-size:40px;
@@ -118,7 +118,7 @@ h1{
   transition:all .2s;
 }
 
-/* FEEDBACK */
+/* FEEDBACK VISUEL */
 .display.correct{
   border-color:var(--ok);
   background:#e8f6ee;
@@ -163,7 +163,7 @@ h1{
 .keypad .ok{background:var(--primary);color:white;}
 .keypad .del{background:#f6d6d6;}
 
-/* MESSAGE */
+/* MESSAGES */
 .message{
   text-align:center;
   margin-top:16px;
@@ -173,7 +173,7 @@ h1{
 .message.ok{color:var(--ok);}
 .message.error{color:var(--error);}
 
-/* RESET */
+/* RESET discret */
 .reset-btn{
   position:fixed;
   bottom:12px;
@@ -194,107 +194,159 @@ h1{
 
 <div class="container">
 
-<h1>🚆 Temps de trajet en train</h1>
-<div class="subtitle">Trouver le temps de trajet en train avec Google Maps</div>
+  <h1>🚆 Temps de trajet en train</h1>
+  <div class="subtitle">Trouver le temps de trajet en train avec Google Maps</div>
 
-<div class="progress-bg">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-<div class="progress-text" id="progressText"></div>
+  <div class="progress-bg">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText"></div>
 
-<div class="card">
-<h2>📍 Consigne</h2>
-<div class="steps">
-  <div class="step"><span>1</span>Ouvrir Google Maps</div>
-  <div class="step"><span>2</span>Départ : <b>Gare de Vevey</b></div>
-  <div class="step"><span>3</span>🏁 Destination : <b id="destinationText"></b></div>
-  <div class="step"><span>4</span>Train 🚆</div>
-</div>
-</div>
+  <div class="card">
+    <h2>📍 Consigne</h2>
+    <div class="steps">
+      <div class="step"><span>1</span>Ouvrir Google Maps</div>
+      <div class="step"><span>2</span>Départ : <b>Gare de Vevey</b></div>
+      <div class="step"><span>3</span>🏁 Destination : <b id="destinationText"></b></div>
+      <div class="step"><span>4</span>Train 🚆</div>
+    </div>
+  </div>
 
-<a class="maps-btn" href="https://www.google.com/maps" target="_blank">📍 Ouvrir Google Maps</a>
+  <a class="maps-btn" href="https://www.google.com/maps" target="_blank">
+    📍 Ouvrir Google Maps
+  </a>
 
-<div class="card">
-<h2>⏱️ Temps de trajet (minutes)</h2>
-<input id="display" class="display" disabled value="0">
+  <div class="card">
+    <h2>⏱️ Temps de trajet (minutes)</h2>
+    <input id="display" class="display" disabled value="0">
 
-<div class="keypad">
-  <button onclick="addDigit(1)">1</button><button onclick="addDigit(2)">2</button><button onclick="addDigit(3)">3</button>
-  <button onclick="addDigit(4)">4</button><button onclick="addDigit(5)">5</button><button onclick="addDigit(6)">6</button>
-  <button onclick="addDigit(7)">7</button><button onclick="addDigit(8)">8</button><button onclick="addDigit(9)">9</button>
-  <button class="del" onclick="delDigit()">⌫</button><button onclick="addDigit(0)">0</button>
-  <button class="ok" onclick="valider()">OK</button>
-</div>
+    <div class="keypad">
+      <button onclick="addDigit(1)">1</button>
+      <button onclick="addDigit(2)">2</button>
+      <button onclick="addDigit(3)">3</button>
+      <button onclick="addDigit(4)">4</button>
+      <button onclick="addDigit(5)">5</button>
+      <button onclick="addDigit(6)">6</button>
+      <button onclick="addDigit(7)">7</button>
+      <button onclick="addDigit(8)">8</button>
+      <button onclick="addDigit(9)">9</button>
+      <button class="del" onclick="delDigit()">⌫</button>
+      <button onclick="addDigit(0)">0</button>
+      <button class="ok" onclick="valider()">OK</button>
+    </div>
 
-<div id="msgOk" class="message ok">✔️ Correct. Continue.</div>
-<div id="msgErr" class="message error">⛔ Temps incorrect. Recommence.</div>
-</div>
+    <div id="msgOk"  class="message ok">✔️ Correct. Continue.</div>
+    <div id="msgErr" class="message error">⛔ Temps incorrect. Recommence.</div>
+  </div>
 
 </div>
 
 <button class="reset-btn" onclick="resetAll()"></button>
 
 <script>
+// 30 gares importantes (tu peux ajuster si tu veux)
 const exercices = [
   {g:"Gare de Lausanne",min:12,max:30},
   {g:"Gare de Montreux",min:8,max:20},
+  {g:"Gare de La Tour-de-Peilz",min:3,max:10},
+  {g:"Gare de Clarens",min:4,max:12},
+  {g:"Gare de Villeneuve",min:8,max:20},
+  {g:"Gare de Renens",min:18,max:40},
+  {g:"Gare de Morges",min:15,max:35},
+  {g:"Gare de Rolle",min:25,max:50},
+  {g:"Gare de Allaman",min:20,max:45},
   {g:"Gare de Nyon",min:35,max:70},
+
+  {g:"Gare de Bussigny",min:20,max:40},
+  {g:"Gare de Cossonay",min:35,max:60},
+  {g:"Gare de Palézieux",min:25,max:50},
+  {g:"Gare de Puidoux",min:10,max:25},
+  {g:"Gare de Cully",min:6,max:15},
+  {g:"Gare de Lutry",min:10,max:25},
+  {g:"Gare de Prilly-Malley",min:15,max:35},
+  {g:"Gare de Lausanne-Flon",min:15,max:35},
+  {g:"Gare d’Aigle",min:25,max:50},
+  {g:"Gare de St-Maurice",min:40,max:70},
+
+  {g:"Gare de Bex",min:35,max:65},
+  {g:"Gare de Roche VD",min:30,max:60},
+  {g:"Gare de Payerne",min:70,max:110},
+  {g:"Gare d’Yverdon-les-Bains",min:60,max:90},
+  {g:"Gare de Grandson",min:65,max:100},
+  {g:"Gare d’Estavayer-le-Lac",min:80,max:120},
+  {g:"Gare de Fribourg",min:90,max:130},
+  {g:"Gare de Sion",min:120,max:180},
+  {g:"Gare de Martigny",min:110,max:170},
   {g:"Gare de Genève",min:70,max:120}
 ];
 
-let i = parseInt(localStorage.getItem("step")) || 0;
+let i   = parseInt(localStorage.getItem("step")) || 0;
 let val = "";
 const display = document.getElementById("display");
 
 function hideMessages(){
-  document.getElementById("msgOk").style.display="none";
-  document.getElementById("msgErr").style.display="none";
+  document.getElementById("msgOk").style.display  = "none";
+  document.getElementById("msgErr").style.display = "none";
   display.classList.remove("correct","error");
 }
 
 function init(){
   const ex = exercices[i];
-  document.getElementById("destinationText").innerText = ex.g;
+  document.getElementById("destinationText").innerText =
+    ex ? ex.g : "";
   document.getElementById("progressText").innerText =
-    `Exercice ${i+1} / ${exercices.length}`;
+    "Exercice " + (i+1) + " / " + exercices.length;
   document.getElementById("progressBar").style.width =
-    ((i+1)/exercices.length*100)+"%";
-  val=""; display.value="0"; hideMessages();
+    ((i+1)/exercices.length*100) + "%";
+  val = "";
+  display.value = "0";
+  hideMessages();
 }
 init();
 
 function addDigit(d){
   hideMessages();
-  if(val.length<3){val+=d;display.value=val;}
+  if(val.length < 3){
+    val += d;
+    display.value = val;
+  }
 }
+
 function delDigit(){
   hideMessages();
-  val=val.slice(0,-1);
-  display.value=val||"0";
+  val = val.slice(0,-1);
+  display.value = val || "0";
 }
 
 function valider(){
-  const m=parseInt(val);
-  const ex=exercices[i];
+  const m  = parseInt(val);
+  const ex = exercices[i];
 
-  if(isNaN(m)||m<ex.min||m>ex.max){
+  if(isNaN(m) || !ex || m < ex.min || m > ex.max){
+    // incorrect
     hideMessages();
     display.classList.add("error");
-    document.getElementById("msgErr").style.display="block";
-    val=""; display.value="0";
+    document.getElementById("msgErr").style.display = "block";
+    val = "";
+    display.value = "0";
     return;
   }
 
+  // correct
   hideMessages();
   display.classList.add("correct");
-  document.getElementById("msgOk").style.display="block";
+  document.getElementById("msgOk").style.display = "block";
 
   setTimeout(()=>{
-    i++; localStorage.setItem("step",i);
-    if(i<exercices.length) init();
-    else document.querySelector(".container").innerHTML =
-      "<h1>✅ Exercice terminé</h1><p style='text-align:center'>Compétence validée.</p>";
-  },700);
+    i++;
+    localStorage.setItem("step", i);
+    if(i < exercices.length){
+      init();
+    }else{
+      document.querySelector(".container").innerHTML =
+        "<h1>✅ Exercice terminé</h1><p style='text-align:center'>Compétence validée.</p>";
+    }
+  }, 700);
 }
 
 function resetAll(){
