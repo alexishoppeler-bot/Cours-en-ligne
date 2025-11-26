@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>50 Questions d'entretien</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f5f9;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  .question {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+  button {
+    background: #0078ff55;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    backdrop-filter: blur(5px);
+  }
+  button:hover {
+    background: #0078ffaa;
+  }
+  .reponse {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    margin-top: 10px;
+    padding: 10px;
+    background: #e8f1ff;
+    border-radius: 8px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<h1 style="text-align:center;margin-bottom:20px;">📝 Exercice : Questions d’entretien d’embauche</h1>
+
+<div id="google_translate_element" style="margin-bottom:20px;"></div>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'fr'}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<p style="background:#fff;padding:15px;border-radius:10px;box-shadow:0 3px 8px rgba(0,0,0,0.1);margin-bottom:20px;">
+<strong>Consignes :</strong><br>
+1️⃣ Répondez à chaque question dans la zone de texte.<br>
+2️⃣ Cliquez sur <strong>Aide</strong> seulement si vous avez besoin d’un exemple.<br>
+3️⃣ Lorsque vous avez terminé toutes les questions, cliquez sur <strong>📄 Télécharger PDF</strong> pour enregistrer votre document.<br>
+4️⃣ Envoyez votre PDF par e-mail à : <strong>alexis.hoppeler@proactif.ch</strong><br><br>
+<em><strong>Texte d’accompagnement recommandé :</strong><br>
+"Objet : Exercice entretien d’embauche"<br>
+« Bonjour, je vous envoie mon document PDF avec mes réponses aux questions d’entretien. Bonne journée. »
+</p>
+
+<h1>50 Questions d'entretien d'embauche</h1>
+
+<button onclick="window.print()" style="margin:10px 0;padding:10px 15px;border-radius:8px;border:none;background:#4caf5077;cursor:pointer;">
+📄 Télécharger PDF
+</button>
+
+<div id="liste"></div>
+
+<script>
+const questions = [
+  "Pouvez-vous vous présenter ?",
+  "Pourquoi voulez-vous travailler ici ?",
+  "Quels sont vos horaires disponibles ?",
+  "Quelles sont vos qualités principales ?",
+  "Quelles sont vos faiblesses ?",
+  "Avez-vous déjà travaillé en équipe ?",
+  "Comment gérez-vous le stress ?",
+  "Parlez-moi de votre dernier emploi.",
+  "Pourquoi avez-vous quitté votre dernier travail ?",
+  "Quand pouvez-vous commencer ?",
+  "Qu'est-ce qui vous motive ?",
+  "Comment réagissez-vous si vous ne comprenez pas une consigne ?",
+  "Donnez un exemple d’une difficulté au travail que vous avez résolue.",
+  "Comment organisez-vous votre journée de travail ?",
+  "Aimez-vous travailler seul ou en équipe ?",
+  "Comment réagissez-vous en cas de conflit ?",
+  "Qu’attendez-vous de votre supérieur ?",
+  "Quelles tâches aimez-vous le plus ?",
+  "Quelles tâches aimez-vous le moins ?",
+  "Avez-vous des connaissances informatiques ?",
+  "Pouvez-vous décrire une journée type dans votre ancien poste ?",
+  "Comment assurez-vous la qualité de votre travail ?",
+  "Avez-vous déjà formé quelqu’un ?",
+  "Parlez-moi d’un succès professionnel.",
+  "Êtes-vous ponctuel ?",
+  "Comment travaillez-vous sous pression ?",
+  "Avez-vous des objectifs professionnels ?",
+  "Comment réagissez-vous quand vous faites une erreur ?",
+  "Comment vous adaptez-vous aux changements ?",
+  "Pourquoi devrions-nous vous choisir ?",
+  "Comment décririez-vous votre personnalité ?",
+  "Êtes-vous flexible avec les horaires ?",
+  "Quelles compétences apportez-vous à l’entreprise ?",
+  "Que savez-vous faire dans ce métier ?",
+  "Comment communiquez-vous avec les collègues ?",
+  "Acceptez-vous les critiques constructives ?",
+  "Comment gérez-vous les priorités ?",
+  "Quelles sont vos attentes salariales ?",
+  "Avez-vous des questions pour nous ?",
+  "Parlez-moi d’un moment où vous avez aidé un collègue.",
+  "Que faites-vous si une tâche est trop difficile ?",
+  "Comment apprenez-vous quelque chose de nouveau ?",
+  "Qu’est-ce qui vous attire dans ce poste ?",
+  "Comment décririez-vous votre rythme de travail ?",
+  "Avez-vous déjà travaillé avec des délais stricts ?",
+  "Comment vous préparez-vous à une journée de travail ?",
+  "Quel est votre plus grand point fort ?",
+  "Quel est votre plus grand défaut ?",
+  "Où vous voyez-vous dans un an ?"
+];
+
+const exemples = {
+  0: "Bonjour, je m'appelle…, j’ai travaillé comme…, je suis motivé et sérieux.",
+  1: "Parce que votre entreprise est connue, stable et le travail correspond à mon expérience.",
+  2: "Je suis disponible du lundi au vendredi, matin et après-midi.",
+  3: "Je suis ponctuel, motivé et j’apprends vite.",
+  4: "Je suis parfois un peu stressé, mais je reste calme et je demande de l’aide si besoin.",
+  5: "Oui, j’aime travailler avec d’autres personnes et je communique facilement.",
+  6: "Je respire, je reste calme et je me concentre sur une chose à la fois.",
+  7: "J’ai travaillé comme…, mes tâches étaient…, j’ai appris beaucoup.",
+  8: "J’ai quitté parce que le contrat était terminé / manque d’horaires / déménagement.",
+  9: "Je peux commencer immédiatement / la semaine prochaine.",
+  10: "Je veux progresser, apprendre et avoir un travail stable.",
+  11: "Je demande poliment de répéter ou de montrer l’exemple.",
+  12: "Une fois il y avait un problème…, j’ai trouvé la solution en…",
+  13: "Je fais une liste : tâches urgentes, importantes, puis le reste.",
+  14: "J’aime les deux : seul pour me concentrer, équipe pour partager le travail.",
+  15: "Je reste calme et je discute pour trouver une solution.",
+  16: "J’attends du respect, de la clarté et des consignes précises.",
+  17: "J’aime surtout les tâches pratiques et organisées.",
+  18: "Je n’aime pas quand il y a trop d’attente, j’aime être actif.",
+  19: "Oui, je sais utiliser Word, e-mail et un peu Excel.",
+  20: "J’arrive, je prépare mon poste, je fais mes tâches dans l’ordre.",
+  21: "Je vérifie toujours deux fois avant de valider mon travail.",
+  22: "Oui, j’ai déjà montré à un collègue comment faire une tâche.",
+  23: "J’ai réussi un travail difficile : j’ai terminé à temps et bien.",
+  24: "Oui, je suis toujours à l’heure, c’est important pour moi.",
+  25: "Je garde mon calme et je travaille étape par étape.",
+  26: "Oui, je veux évoluer et avoir plus de responsabilités.",
+  27: "Je m’excuse, je corrige vite et j’essaie de ne pas refaire l’erreur.",
+  28: "Je m’adapte facilement, j’apprends rapidement les nouvelles méthodes.",
+  29: "Je suis motivé, sérieux et je travaille bien : vous pouvez compter sur moi.",
+  30: "Je suis calme, respectueux, sociable et professionnel.",
+  31: "Oui, je peux travailler tôt, tard ou le week-end si nécessaire.",
+  32: "J’apporte mon expérience, ma motivation et mon organisation.",
+  33: "Je sais faire :…, je suis autonome et efficace.",
+  34: "Je communique clairement, je pose des questions et je respecte les autres.",
+  35: "Oui, les critiques m’aident à progresser, je les accepte.",
+  36: "Je fais d’abord l’urgent, puis l’important, puis le reste.",
+  37: "Je souhaite un salaire juste selon le poste et mon expérience.",
+  38: "Oui, j’aimerais savoir les horaires / l’équipe / le type de travail exact.",
+  39: "J’ai aidé un collègue à finir une tâche pour respecter le délai.",
+  40: "Je demande de l’aide ou je cherche une méthode plus simple.",
+  41: "J’apprends en regardant, en répétant et en posant des questions.",
+  42: "Le poste correspond à mes capacités et je veux progresser ici.",
+  43: "Je travaille vite mais proprement, sans stress inutile.",
+  44: "Oui, j’ai déjà travaillé avec délais : je m’organise bien.",
+  45: "Je prépare mes affaires, je vérifie les horaires et je planifie ma journée.",
+  46: "Mon point fort : la motivation / la précision / la rapidité.",
+  47: "Mon défaut : je suis parfois trop exigeant avec moi-même.",
+  48: "Je veux être plus autonome, avoir un travail stable et progresser.",
+  49: "Je vous envoie la zone remplie plus tard si nécessaire."
+};
+
+const liste = document.getElementById("liste");
+
+questions.forEach((q, i) => {
+  const bloc = document.createElement("div");
+  bloc.className = "question";
+
+  const header = document.createElement("div");
+  header.style.display = "flex";
+  header.style.alignItems = "center";
+  header.style.gap = "10px";
+
+  const titre = document.createElement("div");
+  titre.textContent = (i+1) + ". " + q;
+
+  // audio
+  const audioBtn = document.createElement('button');
+  audioBtn.textContent = "🔊";
+  audioBtn.onclick = () => {
+    const utter = new SpeechSynthesisUtterance(q);
+    utter.lang = 'fr-FR';
+    speechSynthesis.speak(utter);
+  };
+
+  header.appendChild(titre);
+  header.appendChild(audioBtn);
+
+  bloc.appendChild(header);
+
+  // zone de texte
+  const input = document.createElement('textarea');
+  input.placeholder = "Écris ici ta réponse...";
+  input.style.width = "100%";
+  input.style.marginTop = "10px";
+  input.style.padding = "10px";
+  input.style.borderRadius = "8px";
+  input.style.border = "1px solid #ccc";
+
+  // ---- SAUVEGARDE AUTOMATIQUE ----
+  const saved = localStorage.getItem("question_" + i);
+  if (saved) input.value = saved;
+
+  input.addEventListener("input", () => {
+    localStorage.setItem("question_" + i, input.value);
+  });
+
+  bloc.appendChild(input);
+
+  // bouton aide
+  const btn = document.createElement("button");
+  btn.textContent = "Aide";
+  btn.onclick = () => {
+    rep.style.display = "block";
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+  };
+
+  bloc.appendChild(btn);
+
+  const rep = document.createElement("div");
+  rep.className = "reponse";
+  rep.innerHTML = exemples[i] || "";
+
+  bloc.appendChild(rep);
+
+  liste.appendChild(bloc);
+});
+</script>
+
+</body>
+</html>
