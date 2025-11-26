@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Compréhension au travail</title>
+<style>
+  body{
+    font-family:Arial, sans-serif;
+    background:#eef3f9;
+    margin:0;
+    padding:20px;
+  }
+  .container{
+    max-width:800px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  }
+  h2{
+    color:#004c97;
+    margin-top:0;
+  }
+  .scenario{
+    font-weight:bold;
+    margin-bottom:10px;
+  }
+  .option{
+    background:#f0f4ff;
+    border:1px solid #ccd9ff;
+    padding:10px;
+    border-radius:10px;
+    margin:8px 0;
+    cursor:pointer;
+  }
+  .option:hover{
+    background:#dfe8ff;
+  }
+  .correct{
+    color:green;
+    font-weight:bold;
+    margin-top:10px;
+  }
+  .wrong{
+    color:red;
+    font-weight:bold;
+    margin-top:10px;
+  }
+  #resetBtn{
+    display:none;
+    background:#d9534f;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    margin-top:20px;
+    cursor:pointer;
+  }
+  .scoreBox{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:15px;
+    color:#004c97;
+  }
+</style>
+</head>
+<body>
+<div id="intro" style="max-width:800px;margin:auto;background:#ffffff;padding:25px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.2);">
+  <h2 style="color:#004c97;">Bienvenue dans le Quiz – Monde du travail</h2>
+  <p>📘 <b>Objectif :</b> Comprendre des phrases simples utilisées au travail (consignes, affiches, demandes, sécurité).</p>
+  <p>🎯 <b>Compétences travaillées :</b></p>
+  <ul>
+    <li>Comprendre une consigne courte.</li>
+    <li>Identifier ce qu’il faut faire dans une situation.</li>
+    <li>Lire un panneau, une instruction, une information simple.</li>
+    <li>Réagir correctement au travail.</li>
+  </ul>
+  <p>📝 <b>Structure :</b> 50 questions. Une seule bonne réponse.</p>
+  <p>⭐ <b>Score :</b> Tu gagnes 1 point seulement si tu trouves la bonne réponse du premier coup.</p>
+  <button onclick="startQuiz()" style="background:#004c97;color:white;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-size:16px;">Commencer</button>
+</div>
+
+<div class="container" id="quizContainer" style="display:none;">
+  <h2>Quiz – Compréhension écrite : situations au travail</h2>
+  <div class="scoreBox">Score : <span id="score">0</span>/<span id="total">0</span></div>
+
+  <div id="scenario" class="scenario"></div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+
+  <button id="resetBtn" onclick="resetAll()">Réinitialiser tout</button>
+</div>
+
+<script>
+// -------------------------------
+// 50 QUESTIONS A1 – MONDE DU TRAVAIL
+// -------------------------------
+const questions = [
+  {text:"Le chef dit : 'Arrivez demain à 8h.' Que devez-vous faire ?", options:["Venir à 9h","Venir à 8h","Ne pas venir"], correct:1},
+  {text:"Votre collègue dit : 'On fait la pause maintenant.' Que faites-vous ?", options:["Vous continuez à travailler","Vous partez en pause","Vous rentrez chez vous"], correct:1},
+  {text:"Le chef dit : 'Mettez les gants pour nettoyer.'", options:["Vous mettez les gants","Vous changez de tâche","Vous partez"], correct:0},
+  {text:"Une affiche dit : 'Sortie de secours'.", options:["Entrée principale","Sortie pour urgence","Toilettes"], correct:1},
+  {text:"Votre collègue dit : 'Tu peux m’aider ?'", options:["Vous l’ignorez","Vous dites oui et aidez","Vous quittez le lieu"], correct:1},
+  {text:"On vous dit : 'Range le matériel'.", options:["Vous rangez","Vous mangez","Vous dormez"], correct:0},
+  {text:"Le chef dit : 'Travail fini.'", options:["Vous continuez","Vous arrêtez","Vous partez en pause"], correct:1},
+  {text:"Un panneau dit : 'Attention sol mouillé'.", options:["On peut courir","On marche prudemment","On s’assoit"], correct:1},
+  {text:"Votre collègue dit : 'On commence à 7h demain.'", options:["Vous arrivez à 6h","Vous arrivez à 7h","Vous arrivez à 10h"], correct:1},
+  {text:"Le chef dit : 'Prenez un masque.'", options:["Vous prenez un masque","Vous chantez","Vous nettoyez"], correct:0},
+
+  {text:"Le chef dit : 'Nettoyez la table.'", options:["Vous nettoyez la table","Vous sortez","Vous téléphonez"], correct:0},
+  {text:"On vous dit : 'Prenez un balai.'", options:["Vous prenez un balai","Vous prenez une chaise","Vous prenez un café"], correct:0},
+  {text:"Le responsable dit : 'Fermez la porte.'", options:["Vous ouvrez la porte","Vous fermez la porte","Vous partez"], correct:1},
+  {text:"Une collègue dit : 'Tu peux venir ici ?'", options:["Vous partez","Vous venez","Vous dormez"], correct:1},
+  {text:"Une affiche indique : 'Vestiaire'.", options:["Endroit pour manger","Endroit pour se changer","Endroit pour dormir"], correct:1},
+  {text:"Votre chef dit : 'Faites plus doucement.'", options:["Vous travaillez plus vite","Vous arrêtez","Vous travaillez plus doucement"], correct:2},
+  {text:"On vous dit : 'Passe-moi le produit.'", options:["Vous donnez le produit","Vous partez","Vous chantez"], correct:0},
+  {text:"Le manager dit : 'Attendez ici.'", options:["Vous attendez","Vous courez","Vous nettoyez"], correct:0},
+  {text:"Votre collègue dit : 'On mange à midi.'", options:["Vous mangez à midi","Vous mangez à 9h","Vous ne mangez pas"], correct:0},
+  {text:"On vous dit : 'Allume la lumière.'", options:["Vous ouvrez la fenêtre","Vous allumez la lumière","Vous prenez une chaise"], correct:1},
+
+  {text:"Le chef dit : 'Mettez une veste de sécurité.'", options:["Vous mettez la veste","Vous buvez un café","Vous partez"], correct:0},
+  {text:"Un panneau dit : 'Interdit de fumer'.", options:["Vous fumez","Vous ne fumez pas","Vous mangez"], correct:1},
+  {text:"On vous dit : 'Apportez les cartons.'", options:["Vous apportez les cartons","Vous dansez","Vous dormez"], correct:0},
+  {text:"Votre collègue dit : 'Tu peux ouvrir la fenêtre ?'", options:["Vous ouvrez","Vous fermez","Vous criez"], correct:0},
+  {text:"Le responsable dit : 'Posez le sac ici.'", options:["Vous le posez là","Vous le jetez","Vous partez"], correct:0},
+  {text:"On vous dit : 'Lavez les mains.'", options:["Vous lavez vos mains","Vous lavez le sol","Vous lavez la voiture"], correct:0},
+  {text:"Le chef dit : 'Commencez maintenant.'", options:["Vous attendez","Vous commencez","Vous allez manger"], correct:1},
+  {text:"Votre collègue dit : 'Attention, chaud !'", options:["Vous touchez","Vous faites attention","Vous courez"], correct:1},
+  {text:"Une affiche dit : 'Réception'.", options:["Pour dormir","Pour les livraisons","Pour les vêtements"], correct:1},
+  {text:"On vous dit : 'Prenez une pause de 10 minutes.'", options:["Vous faites 10 minutes","Vous faites 1 heure","Vous ne faites pas de pause"], correct:0},
+
+  {text:"Le chef dit : 'Mettez la machine en marche.'", options:["Vous démarrez la machine","Vous l'éteignez","Vous vous asseyez"], correct:0},
+  {text:"On vous dit : 'Ne touchez pas ça.'", options:["Vous touchez","Vous ne touchez pas","Vous nettoyez"], correct:1},
+  {text:"Votre collègue dit : 'Je reviens tout de suite.'", options:["Il revient bientôt","Il part pour la journée","Il dort"], correct:0},
+  {text:"Le responsable dit : 'Videz la poubelle.'", options:["Vous videz la poubelle","Vous la remplissez","Vous partez"], correct:0},
+  {text:"Une affiche dit : 'Toilettes'.", options:["Cuisine","WC","Bureau"], correct:1},
+  {text:"Le chef dit : 'Attendez le camion.'", options:["Vous partez","Vous attendez","Vous dormez"], correct:1},
+  {text:"On vous dit : 'Écrivez votre nom ici.'", options:["Vous écrivez votre nom","Vous écrivez autre chose","Vous ne faites rien"], correct:0},
+  {text:"Votre collègue dit : 'Tiens, voici les clés.'", options:["Vous prenez les clés","Vous refusez","Vous partez"], correct:0},
+  {text:"Le chef dit : 'Fermez les fenêtres avant de partir.'", options:["Vous fermez","Vous ouvrez","Vous cassez"], correct:0},
+  {text:"On vous dit : 'Portez un casque.'", options:["Vous portez un casque","Vous portez un chapeau","Vous ne portez rien"], correct:0},
+
+  {text:"Le responsable dit : 'Va chercher le chariot.'", options:["Vous cherchez le chariot","Vous prenez une pause","Vous partez"], correct:0},
+  {text:"Un panneau dit : 'Café – Salle de pause'.", options:["Endroit pour manger","Endroit pour dormir","Endroit interdit"], correct:0},
+  {text:"Votre collègue dit : 'Je t’attends dehors.'", options:["Vous allez dehors","Vous allez aux toilettes","Vous partez chez vous"], correct:0},
+  {text:"On vous dit : 'Essuyez la table.'", options:["Vous essuyez","Vous cassez la table","Vous partez"], correct:0},
+  {text:"Le chef dit : 'Terminez cette tâche.'", options:["Vous terminez","Vous commencez une autre tâche","Vous dormez"], correct:0},
+  {text:"Votre collègue dit : 'On doit changer les sacs.'", options:["Vous changez les sacs","Vous mangez","Vous partez"], correct:0},
+  {text:"Le responsable dit : 'Éteignez la lumière.'", options:["Vous allumez","Vous éteignez","Vous sautez"], correct:1},
+  {text:"On vous dit : 'Rangez les produits.'", options:["Vous rangez","Vous mettez par terre","Vous jetez"], correct:0},
+  {text:"Le chef dit : 'Suivez-moi.'", options:["Vous suivez","Vous courez ailleurs","Vous dormez"], correct:0},
+  {text:"On vous dit : 'Nettoyez le sol.'", options:["Vous nettoyez le sol","Vous regardez votre téléphone","Vous partez"], correct:0}
+];
+
+console.log("Nombre de questions chargées :", questions.length); // doit afficher 50
+
+// -------------------------------
+// LOGIQUE DU QUIZ
+// -------------------------------
+let index = parseInt(localStorage.getItem('quizA1_index') || '0');
+let score = parseInt(localStorage.getItem('quizA1_score') || '0');
+let answered = false;
+let firstAttempt = true;
+let currentCorrectIndex = null;
+
+const scoreSpan = document.getElementById('score');
+const totalSpan = document.getElementById('total');
+scoreSpan.textContent = score;
+totalSpan.textContent = questions.length;
+
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// Afficher le quiz et cacher l'intro
+function startQuiz(){
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('quizContainer').style.display = 'block';
+}
+
+function loadQuestion(){
+  if(index >= questions.length){
+    document.getElementById('scenario').innerHTML = "Quiz terminé !";
+    document.getElementById('options').innerHTML = "";
+    document.getElementById('feedback').innerHTML = "Votre score final : " + score + "/" + questions.length;
+    document.getElementById('resetBtn').style.display = "block";
+    return;
+  }
+
+  const q = questions[index];
+  answered = false;
+  firstAttempt = true;
+  currentCorrectIndex = null;
+  document.getElementById('feedback').innerHTML = "";
+  document.getElementById('scenario').textContent = q.text;
+
+  // Mélanger les options à chaque affichage
+  const optionObjects = q.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+  shuffleArray(optionObjects);
+
+  optionObjects.forEach((obj, newIdx) => {
+    if(obj.originalIndex === q.correct){
+      currentCorrectIndex = newIdx;
+    }
+  });
+
+  let html = "";
+  optionObjects.forEach((obj, i) => {
+    html += `<div class="option" onclick="choose(${i})">${obj.text}</div>`;
+  });
+  document.getElementById('options').innerHTML = html;
+}
+
+function choose(i){
+  if(answered) return;
+
+  if(i === currentCorrectIndex){
+    if(firstAttempt){
+      score++;
+      localStorage.setItem('quizA1_score', score.toString());
+      scoreSpan.textContent = score;
+    }
+    document.getElementById('feedback').innerHTML = '<div class="correct">✔ Bonne réponse !</div>';
+    answered = true;
+
+    setTimeout(() => {
+      index++;
+      localStorage.setItem('quizA1_index', index.toString());
+      loadQuestion();
+    }, 700);
+  } else {
+    document.getElementById('feedback').innerHTML = '<div class="wrong">✘ Mauvaise réponse</div>';
+    firstAttempt = false;
+  }
+}
+
+function resetAll(){
+  localStorage.removeItem('quizA1_index');
+  localStorage.removeItem('quizA1_score');
+  index = 0;
+  score = 0;
+  answered = false;
+  firstAttempt = true;
+  scoreSpan.textContent = score;
+  document.getElementById('resetBtn').style.display = 'none';
+  loadQuestion();
+}
+
+// Prépare la première question dès le chargement de la page
+loadQuestion();
+</script>
+</body>
+</html>
