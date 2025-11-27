@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulation professionnelle – 50 situations</title>
+
+<style>
+body{
+  font-family:Arial, sans-serif;
+  background:#eef3f9;
+  padding:20px;
+}
+.container{
+  max-width:820px;
+  margin:auto;
+  background:white;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 6px 25px rgba(0,0,0,.12);
+}
+h1{
+  text-align:center;
+  color:#004c97;
+  margin-bottom:10px;
+}
+
+/* RESET */
+.resetBtn{
+  float:right;
+  background:#eee;
+  color:#444;
+  border:1px solid #ccc;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+}
+.resetBtn:hover{background:#ddd}
+
+.progress{
+  text-align:center;
+  font-weight:bold;
+  margin:15px 0;
+}
+.scenario{
+  font-size:18px;
+  background:#f4f7ff;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+button.choice{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#e6ecff;
+}
+button.choice:hover{background:#d6e0ff}
+.correct{background:#c8f2d0}
+.incorrect{background:#f8c8c8}
+
+#feedback{
+  text-align:center;
+  font-weight:bold;
+  margin-top:15px;
+}
+#next{
+  display:none;
+  background:#3f71ff;
+  color:white;
+  margin-top:15px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+}
+#end{
+  display:none;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<button class="resetBtn" onclick="resetGame()">♻️ Réinitialiser</button>
+
+<h1>🎭 Simulation de situations professionnelles</h1>
+
+<div class="progress" id="progress"></div>
+<div class="scenario" id="scenario"></div>
+<div id="choices"></div>
+<div id="feedback"></div>
+
+<button id="next" onclick="next()">▶️ Situation suivante</button>
+
+<div id="end">
+  <h2>✅ Bravo</h2>
+  <p>Vous avez terminé les 50 situations professionnelles.</p>
+  <p><strong>Message clé :</strong><br>
+  Au travail, restez calme, respectueux et professionnel.</p>
+</div>
+
+</div>
+
+<script>
+const scenarios = [
+["Vous arrivez en retard au travail.",["Vous vous excusez et expliquez la situation.","Vous ne dites rien.","Vous commencez à travailler sans parler."],0],
+["Vous ne comprenez pas une consigne.",["Vous demandez une explication.","Vous faites au hasard.","Vous dites oui sans comprendre."],0],
+["Vous souhaitez faire une pause.",["Vous demandez l’autorisation.","Vous partez sans prévenir.","Vous attendez la fin de la journée."],0],
+["Vous êtes malade.",["Vous prévenez votre responsable.","Vous ne venez pas sans prévenir.","Vous attendez le lendemain."],0],
+["Un collègue vous parle mal.",["Vous répondez calmement.","Vous criez.","Vous l’insultez."],0],
+["Votre responsable vous parle.",["Vous écoutez attentivement.","Vous l’interrompez.","Vous partez."],0],
+["Vous avez terminé votre travail.",["Vous partez.","Vous demandez s’il y a autre chose à faire.","Vous attendez sans rien faire."],1],
+["Vous avez fait une erreur.",["Vous la cachez.","Vous la signalez et demandez comment corriger.","Vous accusez un collègue."],1],
+["Un client n’est pas content.",["Vous l’ignorez.","Vous écoutez et restez poli.","Vous riez."],1],
+["Votre téléphone personnel sonne.",["Vous répondez.","Vous l’ignorez.","Vous demandez l’autorisation."],2],
+
+["Vous devez changer d’horaire.",["Vous prévenez à l’avance.","Vous venez quand vous voulez.","Vous ne dites rien."],0],
+["Une consigne est donnée rapidement.",["Vous prenez des notes.","Vous oubliez.","Vous dites oui."],0],
+["Le travail est difficile.",["Vous refusez.","Vous faites votre travail.","Vous partez."],1],
+["Vous êtes fatigué.",["Vous vous plaignez.","Vous continuez calmement.","Vous dormez."],1],
+["Le matériel est cassé.",["Vous signalez le problème.","Vous cachez le matériel.","Vous le jetez."],0],
+
+["La pause est terminée.",["Vous revenez travailler.","Vous restez en pause.","Vous partez."],0],
+["Votre responsable vous corrige.",["Vous écoutez.","Vous vous énervez.","Vous partez."],0],
+["Un client vous parle longtemps.",["Vous écoutez.","Vous l’ignorez.","Vous riez."],0],
+["Vous ne savez pas quoi faire.",["Vous demandez de l’aide.","Vous faites n’importe quoi.","Vous attendez sans rien dire."],0],
+["Vous avez un retard de transport.",["Vous prévenez.","Vous arrivez sans prévenir.","Vous n’allez pas travailler."],0],
+
+["Vous recevez une nouvelle tâche.",["Vous acceptez.","Vous refusez.","Vous partez."],0],
+["Votre tenue n’est pas propre.",["Vous vous changez.","Vous continuez.","Vous ignorez."],0],
+["Vous avez fini plus tôt.",["Vous regardez votre téléphone.","Vous demandez s’il faut aider.","Vous partez."],1],
+["Un collègue a un problème.",["Vous l’aidez.","Vous l’ignorez.","Vous vous moquez."],0],
+["Votre responsable n’est pas là.",["Vous continuez à travailler.","Vous partez.","Vous ne faites rien."],0],
+
+["Vous ne comprenez pas un e-mail.",["Vous demandez une explication.","Vous l’ignorez.","Vous le supprimez."],0],
+["C’est l’heure de la pause.",["Vous respectez l’horaire.","Vous prenez plus de temps.","Vous partez."],0],
+["Le travail semble dangereux.",["Vous signalez le problème.","Vous continuez.","Vous ignorez."],0],
+["Une nouvelle règle est annoncée.",["Vous écoutez.","Vous refusez.","Vous riez."],0],
+["Un client arrive.",["Vous dites bonjour.","Vous l’ignorez.","Vous fumez."],0],
+
+["Un collègue fait une erreur.",["Vous l’aidez.","Vous l’insultez.","Vous l’ignorez."],0],
+["Vous êtes stressé.",["Vous respirez et continuez.","Vous criez.","Vous abandonnez."],0],
+["Vous terminez une tâche.",["Vous rangez.","Vous partez.","Vous laissez le désordre."],0],
+["Vous ne savez pas écrire un message.",["Vous demandez de l’aide.","Vous inventez.","Vous cachez."],0],
+["Un client est pressé.",["Vous faites de votre mieux.","Vous l’ignorez.","Vous riez."],0],
+
+["La consigne est orale.",["Vous redemandez.","Vous oubliez.","Vous faites faux."],0],
+["Vous devez attendre.",["Vous attendez calmement.","Vous partez.","Vous vous énervez."],0],
+["Votre responsable donne un ordre.",["Vous le respectez.","Vous refusez.","Vous riez."],0],
+["Vous souhaitez fumer.",["Vous demandez l’autorisation.","Vous partez.","Vous fumez."],0],
+
+["Un nouveau collègue arrive.",["Vous l’aidez.","Vous l’ignorez.","Vous jugez."],0],
+["La journée se termine.",["Vous rangez votre poste.","Vous partez vite.","Vous laissez le désordre."],0],
+["Vous recevez un message de l’ORP.",["Vous répondez.","Vous ignorez.","Vous supprimez."],0],
+["Votre planning change.",["Vous vous adaptez.","Vous criez.","Vous partez."],0],
+["Un client est très énervé.",["Vous restez calme.","Vous vous énervez.","Vous partez."],0]
+];
+
+let i=0, score=0;
+const KEY="simulation50_vous";
+
+const saved=JSON.parse(localStorage.getItem(KEY));
+if(saved){i=saved.i; score=saved.score;}
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify({i,score}));
+}
+
+function show(){
+  document.getElementById("progress").innerText=
+    "Situation "+(i+1)+" / 50 — ✅ "+score;
+  document.getElementById("scenario").innerText=scenarios[i][0];
+  const c=document.getElementById("choices");
+  c.innerHTML="";
+  scenarios[i][1].forEach((t,n)=>{
+    const b=document.createElement("button");
+    b.className="choice";
+    b.innerText=t;
+    b.onclick=()=>check(n,b);
+    c.appendChild(b);
+  });
+}
+
+function check(n,b){
+  document.querySelectorAll(".choice").forEach(x=>x.disabled=true);
+  if(n===scenarios[i][2]){
+    b.classList.add("correct");
+    document.getElementById("feedback").innerText="✅ Réaction professionnelle";
+    score++;
+  }else{
+    b.classList.add("incorrect");
+    document.getElementById("feedback").innerText="❌ Réaction non professionnelle";
+  }
+  document.getElementById("next").style.display="block";
+  save();
+}
+
+function next(){
+  document.getElementById("feedback").innerText="";
+  document.getElementById("next").style.display="none";
+  i++;
+  if(i>=scenarios.length){
+    document.getElementById("scenario").style.display="none";
+    document.getElementById("choices").style.display="none";
+    document.getElementById("end").style.display="block";
+    localStorage.removeItem(KEY);
+  }else show();
+}
+
+function resetGame(){
+  localStorage.removeItem(KEY);
+  location.reload();
+}
+
+show();
+</script>
+</body>
+</html>
