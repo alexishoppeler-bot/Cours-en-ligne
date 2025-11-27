@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Mise en forme – Exercices</title>
+<title>Mise en forme – Exercices Word</title>
 
 <style>
 body{
@@ -11,76 +11,108 @@ body{
   background:#eef1f7;
 }
 
-/* BARRE */
-#toolbar{
-  background:#fff;
-  padding:8px;
-  border-bottom:1px solid #ccc;
-  display:flex;
-  gap:6px;
-}
+h1{text-align:center;margin:16px}
 
-button, select{
-  padding:6px 10px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-/* BLOCS */
-h1{text-align:center;margin:15px}
+/* CONTENEURS */
 .box{
-  background:#fff;
   width:80%;
   margin:12px auto;
-  padding:15px;
+  background:#fff;
+  padding:16px;
   border-radius:8px;
 }
 #modele{border:2px solid #4a75f7}
 #consigne{border:2px dashed #4a75f7}
+
+/* BARRE WORD */
+#toolbar{
+  width:80%;
+  margin:0 auto;
+  background:#f9f9fb;
+  border:1px solid #c6ccd8;
+  border-bottom:none;
+  border-radius:8px 8px 0 0;
+  padding:6px;
+  display:flex;
+  gap:6px;
+}
+.btn{
+  min-width:34px;
+  height:30px;
+  border:1px solid #c6ccd8;
+  background:#fff;
+  border-radius:3px;
+  cursor:pointer;
+  font-size:14px;
+}
+.btn:hover{background:#e6edff}
+.btn:active{background:#cddcff}
+
+.sel{
+  height:30px;
+  border:1px solid #c6ccd8;
+  background:#fff;
+}
+
+/* EDITEUR */
 #editor{
-  border:1px solid #aaa;
-  min-height:200px;
+  width:80%;
+  margin:0 auto 16px auto;
+  background:#fff;
+  border:1px solid #c6ccd8;
+  border-top:none;
+  border-radius:0 0 8px 8px;
+  min-height:260px;
+  padding:12px;
 }
 #editor div{min-height:22px}
-mark{background:yellow;padding:0 2px}
+mark{background:#fff59d;padding:0 2px}
+
+/* NAV */
+.nav{
+  text-align:center;
+  margin-bottom:20px;
+}
 </style>
 </head>
 
 <body>
-
-<!-- BARRE WORD SIMPLE -->
-<div id="toolbar">
-  <button onclick="cmd('bold')"><b>B</b></button>
-  <button onclick="cmd('italic')"><i>I</i></button>
-  <button onclick="cmd('underline')"><u>U</u></button>
-  <button onclick="cmd('highlight')">🖍</button>
-
-  <select onchange="cmd('color',this.value)">
-    <option value="black">Noir</option>
-    <option value="blue">Bleu</option>
-    <option value="red">Rouge</option>
-    <option value="green">Vert</option>
-  </select>
-</div>
 
 <h1>📝 Mise en forme du texte</h1>
 
 <div class="box" id="modele"></div>
 <div class="box" id="consigne"></div>
 
-<div class="box">
-<b>J’écris ici :</b>
-<div id="editor" contenteditable="true"><div><br></div></div>
+<!-- BARRE WORD -->
+<div id="toolbar">
+  <button class="btn" onclick="cmd('bold')"><b>B</b></button>
+  <button class="btn" onclick="cmd('italic')"><i>I</i></button>
+  <button class="btn" onclick="cmd('underline')"><u>U</u></button>
+  <button class="btn" onclick="cmd('highlight')">🖍</button>
+
+  <select class="sel" onchange="cmd('color',this.value)">
+    <option value="black">Noir</option>
+    <option value="blue">Bleu</option>
+    <option value="red">Rouge</option>
+    <option value="green">Vert</option>
+  </select>
+
+  <button class="btn" onclick="cmd('align','left')">⬅</button>
+  <button class="btn" onclick="cmd('align','center')">⇤⇥</button>
+  <button class="btn" onclick="cmd('align','right')">➡</button>
 </div>
 
-<div class="box" style="text-align:center">
-<button onclick="prev()">⬅ Exercice précédent</button>
-<button onclick="next()">Exercice suivant ➡</button>
+<!-- EDITEUR -->
+<div id="editor" contenteditable="true"><div><br></div></div>
+
+<div class="nav">
+  <button class="btn" onclick="prev()">⬅ Exercice précédent</button>
+  <button class="btn" onclick="next()">Exercice suivant ➡</button>
 </div>
 
 <script>
-/* -------- OUTILS -------- */
-function cmd(type,val){
+/* ---------- OUTILS ---------- */
+function cmd(type,val=null){
   let s=window.getSelection();
   if(!s.rangeCount||s.isCollapsed)return;
   let r=s.getRangeAt(0);
@@ -95,60 +127,68 @@ function cmd(type,val){
     if(type==="italic") el.style.fontStyle="italic";
     if(type==="underline") el.style.textDecoration="underline";
     if(type==="color") el.style.color=val;
+    if(type==="align"){
+      el.style.display="block";
+      el.style.textAlign=val;
+    }
   }
   el.appendChild(c);
   r.insertNode(el);
+  save();
 }
 
-/* -------- EXERCICES -------- */
+/* ---------- DONNÉES ---------- */
 const exos=[
-{
-texte:"Je m’appelle Alex.<br>Je cherche un emploi.<br>Je suis motivé.",
-consigne:"Ligne 1 : gras<br>Ligne 2 : italique<br>Ligne 3 : normal"
-},
-{
-texte:"Je travaille en équipe.<br>Je respecte les consignes.<br>Je suis ponctuel.",
-consigne:"Ligne 1 : bleu<br>Ligne 2 : rouge<br>Ligne 3 : vert"
-},
-{
-texte:"Je prépare mon CV.<br>J’envoie ma candidature.<br>J’attends une réponse.",
-consigne:"Ligne 1 : gras + bleu<br>Ligne 2 : italique<br>Ligne 3 : surligné"
-},
-{
-texte:"Je commence un nouveau travail.<br>Je suis concentré.<br>Je progresse.",
-consigne:"Ligne 1 : souligné<br>Ligne 2 : vert<br>Ligne 3 : surligné"
-},
-{
-texte:"Je suis autonome.<br>Je sais utiliser Word.<br>Je continue à apprendre.",
-consigne:"Ligne 1 : gras + rouge<br>Ligne 2 : italique + bleu<br>Ligne 3 : surligné"
-}
+{t:"Je m’appelle Alex.<br>Je cherche un emploi.<br>Je suis motivé.",
+ c:"Ligne 1 : gras<br>Ligne 2 : italique<br>Ligne 3 : normal"},
+{t:"Je travaille en équipe.<br>Je respecte les consignes.<br>Je suis ponctuel.",
+ c:"Ligne 1 : bleu<br>Ligne 2 : rouge<br>Ligne 3 : vert"},
+{t:"Je prépare mon CV.<br>J’envoie ma candidature.<br>J’attends une réponse.",
+ c:"Ligne 1 : gras + bleu<br>Ligne 2 : italique<br>Ligne 3 : surligné"},
+{t:"Je commence un nouveau travail.<br>Je suis concentré.<br>Je progresse.",
+ c:"Ligne 1 : centré<br>Ligne 2 : gauche<br>Ligne 3 : droite"},
+{t:"Je suis autonome.<br>Je sais utiliser Word.<br>Je continue à apprendre.",
+ c:"Ligne 1 : rouge + centré<br>Ligne 2 : bleu + gauche<br>Ligne 3 : surligné"},
+{t:"Je lis les consignes.<br>Je fais attention.<br>Je travaille correctement.",
+ c:"Ligne 1 : souligné<br>Ligne 2 : vert<br>Ligne 3 : centré"},
+{t:"Je prépare mes documents.<br>Je sauvegarde mon travail.<br>Je ferme Word.",
+ c:"Ligne 1 : gras<br>Ligne 2 : italique<br>Ligne 3 : droite"},
+{t:"Je respecte les délais.<br>Je suis organisé.<br>Je suis efficace.",
+ c:"Ligne 1 : bleu<br>Ligne 2 : centré<br>Ligne 3 : surligné"},
+{t:"Je commence à 8 heures.<br>Je fais une pause.<br>Je termine à 17 heures.",
+ c:"Ligne 1 : gauche<br>Ligne 2 : centré<br>Ligne 3 : droite"},
+{t:"Je progresse chaque jour.<br>Je pratique Word.<br>Je deviens autonome.",
+ c:"Ligne 1 : gras + rouge<br>Ligne 2 : italique + bleu<br>Ligne 3 : surligné"}
 ];
 
 let i=0;
 
-/* -------- CHARGEMENT -------- */
+/* ---------- CHARGER ---------- */
 function load(){
-  modele.innerHTML="<b>Texte à recopier :</b><br><br>"+exos[i].texte;
-  consigne.innerHTML="<b>Consigne :</b><br><br>"+exos[i].consigne;
-  editor.innerHTML="<div><br></div>";
+  modele.innerHTML="<b>Texte à recopier :</b><br><br>"+exos[i].t;
+  consigne.innerHTML="<b>Consigne :</b><br><br>"+exos[i].c;
+  editor.innerHTML=localStorage.getItem("exo_"+i)||"<div><br></div>";
 }
 load();
 
-/* -------- NAVIGATION -------- */
-function next(){
-  if(i<exos.length-1){i++;load();}
+/* ---------- SAUVEGARDE AUTO ---------- */
+function save(){
+  localStorage.setItem("exo_"+i,editor.innerHTML);
 }
-function prev(){
-  if(i>0){i--;load();}
-}
+editor.addEventListener("input",save);
 
-/* -------- ENTREE PROPRE -------- */
+/* ---------- NAV ---------- */
+function next(){ if(i<exos.length-1){ i++; load(); } }
+function prev(){ if(i>0){ i--; load(); } }
+
+/* ---------- ENTRÉE PROPRE ---------- */
 editor.addEventListener("keydown",e=>{
   if(e.key==="Enter"){
     e.preventDefault();
     let d=document.createElement("div");
     d.innerHTML="<br>";
     window.getSelection().getRangeAt(0).startContainer.parentElement.after(d);
+    save();
   }
 });
 </script>
