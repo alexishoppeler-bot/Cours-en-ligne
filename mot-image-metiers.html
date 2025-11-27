@@ -3,1516 +3,189 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartes Flash – Métiers & Outillage</title>
+<title>Cartes Flash – Outillage essentiel</title>
 
 <style>
-    body{
-        font-family: Arial, sans-serif;
-        background:#eef3f9;
-        margin:0;
-        padding:20px;
-    }
+body{
+    font-family: Arial, sans-serif;
+    background:#eef3f9;
+    margin:0;
+    padding:20px;
+}
+h1,h2{
+    text-align:center;
+    color:#004c97;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+    margin-top:20px;
+}
+.card{
+    background:white;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.12);
+    text-align:center;
+    cursor:pointer;
+}
+.word{
+    font-size:18px;
+    font-weight:bold;
+    color:#003b7d;
+    margin-bottom:10px;
+}
+.img-box{
+    width:100%;
+    height:180px;
+    border:2px dashed #999;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#666;
+    overflow:hidden;
+}
+.img-box img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+button.reset{
+    display:block;
+    margin:25px auto;
+    padding:12px 20px;
+    background:#c20000;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:17px;
+}
 
-    h1{
-        text-align:center;
-        color:#004c97;
-        margin-bottom:30px;
-    }
-
-    /* ----- CONTENEUR CARTES ----- */
-    .grid{
-        display:grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap:25px;
-    }
-
-    /* ----- CARTE ----- */
-    .card{
-        background:white;
-        border-radius:15px;
-        padding:15px;
-        box-shadow:0 4px 20px rgba(0,0,0,0.12);
-        text-align:center;
-        cursor:pointer;
-        transition:.2s;
-    }
-    .card:hover{
-        transform:scale(1.02);
-    }
-
-    .word{
-        font-size:20px;
-        margin-bottom:10px;
-        font-weight:bold;
-        color:#003b7d;
-    }
-
-    /* ----- IMAGE ----- */
-    .img-box{
-        width:100%;
-        height:200px;
-        background:#f4f4f4;
-        border:2px dashed #999;
-        border-radius:10px;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        overflow:hidden;
-        color:#666;
-        font-size:14px;
-    }
-    .img-box img{
-        width:100%;
-        height:100%;
-        object-fit:cover;
-    }
-
-    /* ----- POPUP ----- */
-    #popup{
-        position:fixed;
-        left:0; top:0;
-        width:100%; height:100%;
-        background:rgba(0,0,0,0.5);
-        display:none;
-        justify-content:center;
-        align-items:center;
-    }
-    #popup-content{
-        background:white;
-        width:320px;
-        padding:20px;
-        border-radius:15px;
-        text-align:center;
-    }
-    #popup-content input{
-        width:100%;
-        padding:8px;
-        border-radius:6px;
-        border:1px solid #aaa;
-    }
-    .btn{
-        margin-top:12px;
-        padding:10px 15px;
-        border:none;
-        border-radius:6px;
-        background:#004c97;
-        color:white;
-        cursor:pointer;
-        font-size:15px;
-    }
+/* Popup */
+#popup{
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,.5);
+    justify-content:center;
+    align-items:center;
+}
+#popup-content{
+    background:white;
+    width:320px;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+#popup-content input{
+    width:100%;
+    padding:8px;
+}
+.btn{
+    margin-top:10px;
+    padding:8px 12px;
+    border:none;
+    border-radius:6px;
+    background:#004c97;
+    color:white;
+    cursor:pointer;
+}
 </style>
 </head>
+
 <body>
 
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – NETTOYAGE</h2>
+<h1>🧰 Outillage essentiel</h1>
+
+<button class="reset" onclick="resetAllImages()">🔄 Réinitialiser toutes les images</button>
+
+<h2>🧹 Nettoyage</h2>
 <div class="grid">
-<button onclick="resetAllImages()" 
-style="
-display:block;
-margin:30px auto;
-padding:12px 20px;
-background:#c20000;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-size:18px;
-">
-🔄 Réinitialiser toutes les images
-</button>
-
-
-    <div class="card" onclick="openPopup('img1','Nettoyeur')">
-        <div class="word">Nettoyeur</div>
-        <div class="img-box" id="img1">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img2','Agent d’entretien')">
-        <div class="word">Agent d’entretien</div>
-        <div class="img-box" id="img2">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img3','Technicien de surface')">
-        <div class="word">Technicien de surface</div>
-        <div class="img-box" id="img3">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img4','Laveur de vitres')">
-        <div class="word">Laveur de vitres</div>
-        <div class="img-box" id="img4">Image</div>
-    </div>
-
+<div class="card" onclick="openPopup('img1','Balai')"><div class="word">Balai</div><div class="img-box" id="img1">Image</div></div>
+<div class="card" onclick="openPopup('img2','Serpillère')"><div class="word">Serpillère</div><div class="img-box" id="img2">Image</div></div>
+<div class="card" onclick="openPopup('img3','Seau')"><div class="word">Seau</div><div class="img-box" id="img3">Image</div></div>
+<div class="card" onclick="openPopup('img4','Chiffon microfibre')"><div class="word">Microfibre</div><div class="img-box" id="img4">Image</div></div>
+<div class="card" onclick="openPopup('img5','Aspirateur')"><div class="word">Aspirateur</div><div class="img-box" id="img5">Image</div></div>
+<div class="card" onclick="openPopup('img6','Spray nettoyant')"><div class="word">Spray nettoyant</div><div class="img-box" id="img6">Image</div></div>
+<div class="card" onclick="openPopup('img7','Gants de nettoyage')"><div class="word">Gants</div><div class="img-box" id="img7">Image</div></div>
 </div>
 
-
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – CUISINE / RESTAURATION</h2>
+<h2>🍳 Cuisine</h2>
 <div class="grid">
-
-    <div class="card" onclick="openPopup('img5','Aide-cuisinier')">
-        <div class="word">Aide-cuisinier</div>
-        <div class="img-box" id="img5">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img6','Cuisinier')">
-        <div class="word">Cuisinier</div>
-        <div class="img-box" id="img6">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img7','Plongeur de cuisine')">
-        <div class="word">Plongeur</div>
-        <div class="img-box" id="img7">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img8','Serveur')">
-        <div class="word">Serveur</div>
-        <div class="img-box" id="img8">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img9','Serveuse')">
-        <div class="word">Serveuse</div>
-        <div class="img-box" id="img9">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img10','Barista')">
-        <div class="word">Barista</div>
-        <div class="img-box" id="img10">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img11','Commis de cuisine')">
-        <div class="word">Commis de cuisine</div>
-        <div class="img-box" id="img11">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img12','Aide-pâtissier')">
-        <div class="word">Aide-pâtissier</div>
-        <div class="img-box" id="img12">Image</div>
-    </div>
-
+<div class="card" onclick="openPopup('img8','Couteau')"><div class="word">Couteau</div><div class="img-box" id="img8">Image</div></div>
+<div class="card" onclick="openPopup('img9','Planche à découper')"><div class="word">Planche</div><div class="img-box" id="img9">Image</div></div>
+<div class="card" onclick="openPopup('img10','Poêle')"><div class="word">Poêle</div><div class="img-box" id="img10">Image</div></div>
+<div class="card" onclick="openPopup('img11','Casserole')"><div class="word">Casserole</div><div class="img-box" id="img11">Image</div></div>
+<div class="card" onclick="openPopup('img12','Fouet cuisine')"><div class="word">Fouet</div><div class="img-box" id="img12">Image</div></div>
+<div class="card" onclick="openPopup('img13','Spatule')"><div class="word">Spatule</div><div class="img-box" id="img13">Image</div></div>
 </div>
 
-
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – HÔTELLERIE</h2>
+<h2>🏗️ Bâtiment</h2>
 <div class="grid">
-
-    <div class="card" onclick="openPopup('img13','Employé d’étage')">
-        <div class="word">Employé d’étage</div>
-        <div class="img-box" id="img13">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img14','Femme de chambre')">
-        <div class="word">Femme de chambre</div>
-        <div class="img-box" id="img14">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img15','Réceptionniste')">
-        <div class="word">Réceptionniste</div>
-        <div class="img-box" id="img15">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img16','Portier')">
-        <div class="word">Portier</div>
-        <div class="img-box" id="img16">Image</div>
-    </div>
-
+<div class="card" onclick="openPopup('img14','Marteau')"><div class="word">Marteau</div><div class="img-box" id="img14">Image</div></div>
+<div class="card" onclick="openPopup('img15','Tournevis')"><div class="word">Tournevis</div><div class="img-box" id="img15">Image</div></div>
+<div class="card" onclick="openPopup('img16','Perceuse')"><div class="word">Perceuse</div><div class="img-box" id="img16">Image</div></div>
+<div class="card" onclick="openPopup('img17','Mètre ruban')"><div class="word">Mètre</div><div class="img-box" id="img17">Image</div></div>
+<div class="card" onclick="openPopup('img18','Échelle')"><div class="word">Échelle</div><div class="img-box" id="img18">Image</div></div>
 </div>
 
-
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – LOGISTIQUE / ENTREPOSAGE</h2>
+<h2>📦 Logistique / Bureau</h2>
 <div class="grid">
-
-    <div class="card" onclick="openPopup('img17','Manutentionnaire')">
-        <div class="word">Manutentionnaire</div>
-        <div class="img-box" id="img17">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img18','Magasinier')">
-        <div class="word">Magasinier</div>
-        <div class="img-box" id="img18">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img19','Préparateur de commandes')">
-        <div class="word">Préparateur de commandes</div>
-        <div class="img-box" id="img19">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img20','Chauffeur-livreur')">
-        <div class="word">Chauffeur-livreur</div>
-        <div class="img-box" id="img20">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img21','Agent de tri')">
-        <div class="word">Agent de tri</div>
-        <div class="img-box" id="img21">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img22','Employé entrepôt')">
-        <div class="word">Employé d’entrepôt</div>
-        <div class="img-box" id="img22">Image</div>
-    </div>
-
+<div class="card" onclick="openPopup('img19','Carton')"><div class="word">Carton</div><div class="img-box" id="img19">Image</div></div>
+<div class="card" onclick="openPopup('img20','Chariot')"><div class="word">Chariot</div><div class="img-box" id="img20">Image</div></div>
+<div class="card" onclick="openPopup('img21','Ordinateur')"><div class="word">Ordinateur</div><div class="img-box" id="img21">Image</div></div>
+<div class="card" onclick="openPopup('img22','Clé USB')"><div class="word">Clé USB</div><div class="img-box" id="img22">Image</div></div>
+<div class="card" onclick="openPopup('img23','Imprimante')"><div class="word">Imprimante</div><div class="img-box" id="img23">Image</div></div>
 </div>
-
-
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – BÂTIMENT / CONSTRUCTION</h2>
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img23','Maçon')">
-        <div class="word">Maçon</div>
-        <div class="img-box" id="img23">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img24','Peintre en bâtiment')">
-        <div class="word">Peintre bâtiment</div>
-        <div class="img-box" id="img24">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img25','Électricien')">
-        <div class="word">Électricien</div>
-        <div class="img-box" id="img25">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img26','Plombier')">
-        <div class="word">Plombier</div>
-        <div class="img-box" id="img26">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img27','Charpentier')">
-        <div class="word">Charpentier</div>
-        <div class="img-box" id="img27">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img28','Carreleur')">
-        <div class="word">Carreleur</div>
-        <div class="img-box" id="img28">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img29','Plâtrier')">
-        <div class="word">Plâtrier</div>
-        <div class="img-box" id="img29">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img30','Manœuvre bâtiment')">
-        <div class="word">Manœuvre bâtiment</div>
-        <div class="img-box" id="img30">Image</div>
-    </div>
-
-</div>
-
-
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – SANTÉ / SOCIAL</h2>
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img31','Aide-soignant')">
-        <div class="word">Aide-soignant</div>
-        <div class="img-box" id="img31">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img32','Auxiliaire de vie')">
-        <div class="word">Auxiliaire de vie</div>
-        <div class="img-box" id="img32">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img33','Éducateur social')">
-        <div class="word">Éducateur social</div>
-        <div class="img-box" id="img33">Image</div>
-    </div>
-
-</div>
-
-
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – COMMERCE / VENTE</h2>
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img34','Vendeur')">
-        <div class="word">Vendeur</div>
-        <div class="img-box" id="img34">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img35','Caissier')">
-        <div class="word">Caissier</div>
-        <div class="img-box" id="img35">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img36','Employé de station-service')">
-        <div class="word">Station-service</div>
-        <div class="img-box" id="img36">Image</div>
-    </div>
-
-</div>
-
-
-<h2 style="color:#004c97; margin-top:40px;">MÉTIERS – ADMINISTRATIF</h2>
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img37','Employé administratif')">
-        <div class="word">Employé administratif</div>
-        <div class="img-box" id="img37">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img38','Secrétaire')">
-        <div class="word">Secrétaire</div>
-        <div class="img-box" id="img38">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img39','Agent administratif')">
-        <div class="word">Agent administratif</div>
-        <div class="img-box" id="img39">Image</div>
-    </div>
-
-</div>
-
-
-<!-- 11 cartes restantes pour atteindre 50 métiers -->
-<h2 style="color:#004c97; margin-top:40px;">AUTRES MÉTIERS</h2>
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img40','Livreur à vélo')">
-        <div class="word">Livreur à vélo</div>
-        <div class="img-box" id="img40">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img41','Aide-jardinier')">
-        <div class="word">Aide-jardinier</div>
-        <div class="img-box" id="img41">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img42','Jardinier')">
-        <div class="word">Jardinier</div>
-        <div class="img-box" id="img42">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img43','Employé de pressing')">
-        <div class="word">Pressing</div>
-        <div class="img-box" id="img43">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img44','Agent de sécurité')">
-        <div class="word">Agent de sécurité</div>
-        <div class="img-box" id="img44">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img45','Assistant RH')">
-        <div class="word">Assistant RH</div>
-        <div class="img-box" id="img45">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img46','Agent de call center')">
-        <div class="word">Call center</div>
-        <div class="img-box" id="img46">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img47','Aide-magasinier')">
-        <div class="word">Aide-magasinier</div>
-        <div class="img-box" id="img47">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img48','Employé polyvalent')">
-        <div class="word">Employé polyvalent</div>
-        <div class="img-box" id="img48">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img49','Employé de buanderie')">
-        <div class="word">Buanderie</div>
-        <div class="img-box" id="img49">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img50','Ouvrier de production')">
-        <div class="word">Ouvrier de production</div>
-        <div class="img-box" id="img50">Image</div>
-    </div>
-
-</div>
-<h2 style="color:#004c97; margin-top:40px;">OUTILLAGE – NETTOYAGE</h2>
-
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img51','Balai')">
-        <div class="word">Balai</div>
-        <div class="img-box" id="img51">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img52','Serpillère')">
-        <div class="word">Serpillère</div>
-        <div class="img-box" id="img52">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img53','Seau')">
-        <div class="word">Seau</div>
-        <div class="img-box" id="img53">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img54','Brosse')">
-        <div class="word">Brosse</div>
-        <div class="img-box" id="img54">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img55','Chiffon microfibre')">
-        <div class="word">Microfibre</div>
-        <div class="img-box" id="img55">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img56','Gants de nettoyage')">
-        <div class="word">Gants</div>
-        <div class="img-box" id="img56">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img57','Spray nettoyant')">
-        <div class="word">Spray nettoyant</div>
-        <div class="img-box" id="img57">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img58','Dégraissant')">
-        <div class="word">Dégraissant</div>
-        <div class="img-box" id="img58">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img59','Désinfectant')">
-        <div class="word">Désinfectant</div>
-        <div class="img-box" id="img59">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img60','Aspirateur')">
-        <div class="word">Aspirateur</div>
-        <div class="img-box" id="img60">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img61','Aspirateur eau et poussière')">
-        <div class="word">Aspirateur eau/poussière</div>
-        <div class="img-box" id="img61">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img62','Raclette vitres')">
-        <div class="word">Raclette vitres</div>
-        <div class="img-box" id="img62">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img63','Tige télescopique vitres')">
-        <div class="word">Perche télescopique</div>
-        <div class="img-box" id="img63">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img64','Chariot de ménage')">
-        <div class="word">Chariot de ménage</div>
-        <div class="img-box" id="img64">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img65','Balai-brosse')">
-        <div class="word">Balai-brosse</div>
-        <div class="img-box" id="img65">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img66','Autolaveuse')">
-        <div class="word">Autolaveuse</div>
-        <div class="img-box" id="img66">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img67','Nettoyeur haute pression')">
-        <div class="word">Kärcher</div>
-        <div class="img-box" id="img67">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img68','Pelle et balayette')">
-        <div class="word">Pelle & balayette</div>
-        <div class="img-box" id="img68">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img69','Sacs poubelle')">
-        <div class="word">Sacs poubelle</div>
-        <div class="img-box" id="img69">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img70','Éponge')">
-        <div class="word">Éponge</div>
-        <div class="img-box" id="img70">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img71','Éponge abrasive')">
-        <div class="word">Éponge abrasive</div>
-        <div class="img-box" id="img71">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img72','Gants jetables')">
-        <div class="word">Gants jetables</div>
-        <div class="img-box" id="img72">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img73','Masque de protection')">
-        <div class="word">Masque</div>
-        <div class="img-box" id="img73">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img74','Lingettes désinfectantes')">
-        <div class="word">Lingettes</div>
-        <div class="img-box" id="img74">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img75','Rouleau papier essuie-tout')">
-        <div class="word">Essuie-tout</div>
-        <div class="img-box" id="img75">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img76','Produit vitres')">
-        <div class="word">Produit vitres</div>
-        <div class="img-box" id="img76">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img77','Produit WC')">
-        <div class="word">Produit WC</div>
-        <div class="img-box" id="img77">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img78','Javel')">
-        <div class="word">Javel</div>
-        <div class="img-box" id="img78">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img79','Détartrant')">
-        <div class="word">Détartrant</div>
-        <div class="img-box" id="img79">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img80','Désodorisant')">
-        <div class="word">Désodorisant</div>
-        <div class="img-box" id="img80">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img81','Tampon abrasif')">
-        <div class="word">Tampon abrasif</div>
-        <div class="img-box" id="img81">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img82','Mop')">
-        <div class="word">Mop sol</div>
-        <div class="img-box" id="img82">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img83','Rinçoir sol')">
-        <div class="word">Rinçoir</div>
-        <div class="img-box" id="img83">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img84','Chariot poubelle')">
-        <div class="word">Chariot poubelle</div>
-        <div class="img-box" id="img84">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img85','Bac de lavage')">
-        <div class="word">Bac de lavage</div>
-        <div class="img-box" id="img85">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img86','Raclette sol')">
-        <div class="word">Raclette sol</div>
-        <div class="img-box" id="img86">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img87','Gants en latex')">
-        <div class="word">Gants latex</div>
-        <div class="img-box" id="img87">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img88','Seau double bac')">
-        <div class="word">Double bac</div>
-        <div class="img-box" id="img88">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img89','Nettoyant multi-usages')">
-        <div class="word">Multi-usages</div>
-        <div class="img-box" id="img89">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img90','Désinfectant sols')">
-        <div class="word">Désinfectant sols</div>
-        <div class="img-box" id="img90">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img91','Déboucheur')">
-        <div class="word">Déboucheur</div>
-        <div class="img-box" id="img91">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img92','Papier toilette')">
-        <div class="word">Papier toilette</div>
-        <div class="img-box" id="img92">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img93','Sac aspirateur')">
-        <div class="word">Sac aspirateur</div>
-        <div class="img-box" id="img93">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img94','Balai frange')">
-        <div class="word">Balai frange</div>
-        <div class="img-box" id="img94">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img95','Spray vitres')">
-        <div class="word">Spray vitres</div>
-        <div class="img-box" id="img95">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img96','Torche nettoyage')">
-        <div class="word">Lampe</div>
-        <div class="img-box" id="img96">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img97','Bottes anti-dérapantes')">
-        <div class="word">Bottes</div>
-        <div class="img-box" id="img97">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img98','Seau essoreur')">
-        <div class="word">Seau essoreur</div>
-        <div class="img-box" id="img98">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img99','Spray parfumé')">
-        <div class="word">Parfum</div>
-        <div class="img-box" id="img99">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img100','Produit anti-calcaire')">
-        <div class="word">Anti-calcaire</div>
-        <div class="img-box" id="img100">Image</div>
-    </div>
-
-</div>
-<h2 style="color:#004c97; margin-top:40px;">OUTILLAGE – CUISINE / RESTAURATION</h2>
-
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img101','Couteau de chef')">
-        <div class="word">Couteau de chef</div>
-        <div class="img-box" id="img101">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img102','Couteau office')">
-        <div class="word">Couteau office</div>
-        <div class="img-box" id="img102">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img103','Couteau à pain')">
-        <div class="word">Couteau à pain</div>
-        <div class="img-box" id="img103">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img104','Planche à découper')">
-        <div class="word">Planche à découper</div>
-        <div class="img-box" id="img104">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img105','Éplucheur')">
-        <div class="word">Éplucheur</div>
-        <div class="img-box" id="img105">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img106','Casserole')">
-        <div class="word">Casserole</div>
-        <div class="img-box" id="img106">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img107','Marmite')">
-        <div class="word">Marmite</div>
-        <div class="img-box" id="img107">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img108','Poêle')">
-        <div class="word">Poêle</div>
-        <div class="img-box" id="img108">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img109','Wok')">
-        <div class="word">Wok</div>
-        <div class="img-box" id="img109">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img110','Fouet cuisine')">
-        <div class="word">Fouet</div>
-        <div class="img-box" id="img110">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img111','Spatule')">
-        <div class="word">Spatule</div>
-        <div class="img-box" id="img111">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img112','Louche')">
-        <div class="word">Louche</div>
-        <div class="img-box" id="img112">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img113','Écumoire')">
-        <div class="word">Écumoire</div>
-        <div class="img-box" id="img113">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img114','Passoire')">
-        <div class="word">Passoire</div>
-        <div class="img-box" id="img114">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img115','Râpe de cuisine')">
-        <div class="word">Râpe</div>
-        <div class="img-box" id="img115">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img116','Balance cuisine')">
-        <div class="word">Balance</div>
-        <div class="img-box" id="img116">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img117','Mixeur plongeant')">
-        <div class="word">Mixeur</div>
-        <div class="img-box" id="img117">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img118','Robot culinaire')">
-        <div class="word">Robot culinaire</div>
-        <div class="img-box" id="img118">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img119','Plaque de cuisson')">
-        <div class="word">Plaque de cuisson</div>
-        <div class="img-box" id="img119">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img120','Four professionnel')">
-        <div class="word">Four</div>
-        <div class="img-box" id="img120">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img121','Micro-ondes')">
-        <div class="word">Micro-ondes</div>
-        <div class="img-box" id="img121">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img122','Frigo professionnel')">
-        <div class="word">Frigo</div>
-        <div class="img-box" id="img122">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img123','Congélateur')">
-        <div class="word">Congélateur</div>
-        <div class="img-box" id="img123">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img124','Bac gastro')">
-        <div class="word">Bac gastro</div>
-        <div class="img-box" id="img124">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img125','Plateau service')">
-        <div class="word">Plateau</div>
-        <div class="img-box" id="img125">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img126','Assiette')">
-        <div class="word">Assiette</div>
-        <div class="img-box" id="img126">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img127','Bol')">
-        <div class="word">Bol</div>
-        <div class="img-box" id="img127">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img128','Verre')">
-        <div class="word">Verre</div>
-        <div class="img-box" id="img128">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img129','Tasse')">
-        <div class="word">Tasse</div>
-        <div class="img-box" id="img129">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img130','Couteau table')">
-        <div class="word">Couteau table</div>
-        <div class="img-box" id="img130">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img131','Fourchette')">
-        <div class="word">Fourchette</div>
-        <div class="img-box" id="img131">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img132','Cuillère')">
-        <div class="word">Cuillère</div>
-        <div class="img-box" id="img132">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img133','Torchon cuisine')">
-        <div class="word">Torchon</div>
-        <div class="img-box" id="img133">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img134','Tablier cuisine')">
-        <div class="word">Tablier</div>
-        <div class="img-box" id="img134">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img135','Gants thermiques')">
-        <div class="word">Gants thermiques</div>
-        <div class="img-box" id="img135">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img136','Film alimentaire')">
-        <div class="word">Film alimentaire</div>
-        <div class="img-box" id="img136">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img137','Papier cuisson')">
-        <div class="word">Papier cuisson</div>
-        <div class="img-box" id="img137">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img138','Spatule bois')">
-        <div class="word">Cuillère bois</div>
-        <div class="img-box" id="img138">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img139','Tamis cuisine')">
-        <div class="word">Tamis</div>
-        <div class="img-box" id="img139">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img140','Couteau désosseur')">
-        <div class="word">Désosseur</div>
-        <div class="img-box" id="img140">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img141','Écailleur poisson')">
-        <div class="word">Écailleur</div>
-        <div class="img-box" id="img141">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img142','Couteau à légumes')">
-        <div class="word">Couteau légumes</div>
-        <div class="img-box" id="img142">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img143','Poêle grill')">
-        <div class="word">Poêle grill</div>
-        <div class="img-box" id="img143">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img144','Cocotte en fonte')">
-        <div class="word">Cocotte fonte</div>
-        <div class="img-box" id="img144">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img145','Couteau japonais')">
-        <div class="word">Couteau japonais</div>
-        <div class="img-box" id="img145">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img146','Mandoline cuisine')">
-        <div class="word">Mandoline</div>
-        <div class="img-box" id="img146">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img147','Rouleau pâtisserie')">
-        <div class="word">Rouleau pâtisserie</div>
-        <div class="img-box" id="img147">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img148','Thermomètre cuisine')">
-        <div class="word">Thermomètre</div>
-        <div class="img-box" id="img148">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img149','Ciseaux cuisine')">
-        <div class="word">Ciseaux cuisine</div>
-        <div class="img-box" id="img149">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img150','Pince cuisine')">
-        <div class="word">Pince cuisine</div>
-        <div class="img-box" id="img150">Image</div>
-    </div>
-
-</div>
-<h2 style="color:#004c97; margin-top:40px;">OUTILLAGE – BÂTIMENT / ÉLECTRICITÉ / PLOMBERIE / ATELIER</h2>
-
-<div class="grid">
-
-    <div class="card" onclick="openPopup('img151','Marteau')">
-        <div class="word">Marteau</div>
-        <div class="img-box" id="img151">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img152','Tournevis')">
-        <div class="word">Tournevis</div>
-        <div class="img-box" id="img152">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img153','Perceuse')">
-        <div class="word">Perceuse</div>
-        <div class="img-box" id="img153">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img154','Visseuse')">
-        <div class="word">Visseuse</div>
-        <div class="img-box" id="img154">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img155','Clé anglaise')">
-        <div class="word">Clé anglaise</div>
-        <div class="img-box" id="img155">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img156','Clé plate')">
-        <div class="word">Clé plate</div>
-        <div class="img-box" id="img156">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img157','Pince')">
-        <div class="word">Pince</div>
-        <div class="img-box" id="img157">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img158','Pince coupante')">
-        <div class="word">Pince coupante</div>
-        <div class="img-box" id="img158">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img159','Scie')">
-        <div class="word">Scie</div>
-        <div class="img-box" id="img159">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img160','Scie sauteuse')">
-        <div class="word">Scie sauteuse</div>
-        <div class="img-box" id="img160">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img161','Scie circulaire')">
-        <div class="word">Scie circulaire</div>
-        <div class="img-box" id="img161">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img162','Cutter')">
-        <div class="word">Cutter</div>
-        <div class="img-box" id="img162">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img163','Mètre ruban')">
-        <div class="word">Mètre ruban</div>
-        <div class="img-box" id="img163">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img164','Niveau à bulle')">
-        <div class="word">Niveau à bulle</div>
-        <div class="img-box" id="img164">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img165','Truelle')">
-        <div class="word">Truelle</div>
-        <div class="img-box" id="img165">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img166','Taloche')">
-        <div class="word">Taloche</div>
-        <div class="img-box" id="img166">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img167','Spatule')">
-        <div class="word">Spatule chantier</div>
-        <div class="img-box" id="img167">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img168','Rouleau peinture')">
-        <div class="word">Rouleau peinture</div>
-        <div class="img-box" id="img168">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img169','Pinceau')">
-        <div class="word">Pinceau</div>
-        <div class="img-box" id="img169">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img170','Enduit')">
-        <div class="word">Enduit</div>
-        <div class="img-box" id="img170">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img171','Perforateur')">
-        <div class="word">Perforateur</div>
-        <div class="img-box" id="img171">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img172','Marteau piqueur')">
-        <div class="word">Marteau piqueur</div>
-        <div class="img-box" id="img172">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img173','Disqueuse')">
-        <div class="word">Disqueuse</div>
-        <div class="img-box" id="img173">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img174','Pistolet silicone')">
-        <div class="word">Pistolet silicone</div>
-        <div class="img-box" id="img174">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img175','Clé à molette')">
-        <div class="word">Clé à molette</div>
-        <div class="img-box" id="img175">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img176','Multimètre')">
-        <div class="word">Multimètre</div>
-        <div class="img-box" id="img176">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img177','Tournevis électrique')">
-        <div class="word">Tournevis électrique</div>
-        <div class="img-box" id="img177">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img178','Serre-joint')">
-        <div class="word">Serre-joint</div>
-        <div class="img-box" id="img178">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img179','Échelle')">
-        <div class="word">Échelle</div>
-        <div class="img-box" id="img179">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img180','Échafaudage')">
-        <div class="word">Échafaudage</div>
-        <div class="img-box" id="img180">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img181','Casque de chantier')">
-        <div class="word">Casque de chantier</div>
-        <div class="img-box" id="img181">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img182','Gants de protection')">
-        <div class="word">Gants protection</div>
-        <div class="img-box" id="img182">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img183','Chaussures de sécurité')">
-        <div class="word">Chaussures sécurité</div>
-        <div class="img-box" id="img183">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img184','Lunettes de protection')">
-        <div class="word">Lunettes protection</div>
-        <div class="img-box" id="img184">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img185','Masque anti-poussière')">
-        <div class="word">Masque anti-poussière</div>
-        <div class="img-box" id="img185">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img186','Seau de chantier')">
-        <div class="word">Seau chantier</div>
-        <div class="img-box" id="img186">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img187','Maillet')">
-        <div class="word">Maillet</div>
-        <div class="img-box" id="img187">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img188','Coupe-carreaux')">
-        <div class="word">Coupe-carreaux</div>
-        <div class="img-box" id="img188">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img189','Pince multiprise')">
-        <div class="word">Pince multiprise</div>
-        <div class="img-box" id="img189">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img190','Déboucheur plomberie')">
-        <div class="word">Déboucheur</div>
-        <div class="img-box" id="img190">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img191','Clé à pipe')">
-        <div class="word">Clé à pipe</div>
-        <div class="img-box" id="img191">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img192','Soudure PVC')">
-        <div class="word">Soudure PVC</div>
-        <div class="img-box" id="img192">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img193','Lampe de chantier')">
-        <div class="word">Lampe chantier</div>
-        <div class="img-box" id="img193">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img194','Papier abrasif')">
-        <div class="word">Papier abrasif</div>
-        <div class="img-box" id="img194">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img195','Pince à dénuder')">
-        <div class="word">Pince à dénuder</div>
-        <div class="img-box" id="img195">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img196','Boîte à outils')">
-        <div class="word">Boîte à outils</div>
-        <div class="img-box" id="img196">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img197','Coffret douilles')">
-        <div class="word">Coffret douilles</div>
-        <div class="img-box" id="img197">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img198','Tournevis isolé')">
-        <div class="word">Tournevis isolé</div>
-        <div class="img-box" id="img198">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img199','Détecteur de tension')">
-        <div class="word">Détecteur tension</div>
-        <div class="img-box" id="img199">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img200','Boîte dérivation')">
-        <div class="word">Boîte dérivation</div>
-        <div class="img-box" id="img200">Image</div>
-    </div>
-
-</div>
-<h2 style="color:#004c97; margin-top:40px;">OUTILLAGE – LOGISTIQUE / SÉCURITÉ / BUREAU / INFORMATIQUE</h2>
-
-<div class="grid">
-
-    <!-- LOGISTIQUE -->
-    <div class="card" onclick="openPopup('img201','Transpalette')">
-        <div class="word">Transpalette</div>
-        <div class="img-box" id="img201">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img202','Chariot élévateur')">
-        <div class="word">Chariot élévateur</div>
-        <div class="img-box" id="img202">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img203','Diable de transport')">
-        <div class="word">Diable</div>
-        <div class="img-box" id="img203">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img204','Palette')">
-        <div class="word">Palette</div>
-        <div class="img-box" id="img204">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img205','Cartons')">
-        <div class="word">Cartons</div>
-        <div class="img-box" id="img205">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img206','Ruban adhésif')">
-        <div class="word">Ruban adhésif</div>
-        <div class="img-box" id="img206">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img207','Film étirable palette')">
-        <div class="word">Film étirable</div>
-        <div class="img-box" id="img207">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img208','Cutter logistique')">
-        <div class="word">Cutter</div>
-        <div class="img-box" id="img208">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img209','Scanner code-barres')">
-        <div class="word">Scanner code-barres</div>
-        <div class="img-box" id="img209">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img210','Balance industrielle')">
-        <div class="word">Balance</div>
-        <div class="img-box" id="img210">Image</div>
-    </div>
-
-
-    <!-- OUTILS DE TRI / STOCKAGE -->
-    <div class="card" onclick="openPopup('img211','Bac plastique')">
-        <div class="word">Bac plastique</div>
-        <div class="img-box" id="img211">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img212','Étagère métal')">
-        <div class="word">Étagère métal</div>
-        <div class="img-box" id="img212">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img213','Chariot de transport')">
-        <div class="word">Chariot</div>
-        <div class="img-box" id="img213">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img214','Filet de sécurité palette')">
-        <div class="word">Filet sécurit.</div>
-        <div class="img-box" id="img214">Image</div>
-    </div>
-
-
-    <!-- SÉCURITÉ -->
-    <div class="card" onclick="openPopup('img215','Casque de sécurité')">
-        <div class="word">Casque</div>
-        <div class="img-box" id="img215">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img216','Gants anti-coupure')">
-        <div class="word">Gants anti-coup.</div>
-        <div class="img-box" id="img216">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img217','Chaussures de sécurité')">
-        <div class="word">Chaussures sec.</div>
-        <div class="img-box" id="img217">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img218','Gilet de sécurité')">
-        <div class="word">Gilet sécurité</div>
-        <div class="img-box" id="img218">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img219','Protections auditives')">
-        <div class="word">Anti-bruit</div>
-        <div class="img-box" id="img219">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img220','Masque FFP2')">
-        <div class="word">Masque FFP2</div>
-        <div class="img-box" id="img220">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img221','Lunettes de protection')">
-        <div class="word">Lunettes</div>
-        <div class="img-box" id="img221">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img222','Trousse de secours')">
-        <div class="word">Trousse secours</div>
-        <div class="img-box" id="img222">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img223','Extincteur')">
-        <div class="word">Extincteur</div>
-        <div class="img-box" id="img223">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img224','Panneau de sécurité')">
-        <div class="word">Panneau sécurité</div>
-        <div class="img-box" id="img224">Image</div>
-    </div>
-
-
-    <!-- INFORMATIQUE -->
-    <div class="card" onclick="openPopup('img225','Ordinateur portable')">
-        <div class="word">Ordinateur</div>
-        <div class="img-box" id="img225">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img226','Ordinateur fixe')">
-        <div class="word">PC bureau</div>
-        <div class="img-box" id="img226">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img227','Clavier')">
-        <div class="word">Clavier</div>
-        <div class="img-box" id="img227">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img228','Souris ordinateur')">
-        <div class="word">Souris</div>
-        <div class="img-box" id="img228">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img229','Écran ordinateur')">
-        <div class="word">Écran</div>
-        <div class="img-box" id="img229">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img230','Imprimante')">
-        <div class="word">Imprimante</div>
-        <div class="img-box" id="img230">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img231','Photocopieuse')">
-        <div class="word">Photocopieuse</div>
-        <div class="img-box" id="img231">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img232','Scanner documents')">
-        <div class="word">Scanner</div>
-        <div class="img-box" id="img232">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img233','Multiprise')">
-        <div class="word">Multiprise</div>
-        <div class="img-box" id="img233">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img234','Clé USB')">
-        <div class="word">Clé USB</div>
-        <div class="img-box" id="img234">Image</div>
-    </div>
-
-
-    <!-- BUREAU -->
-    <div class="card" onclick="openPopup('img235','Stylo')">
-        <div class="word">Stylo</div>
-        <div class="img-box" id="img235">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img236','Crayon')">
-        <div class="word">Crayon</div>
-        <div class="img-box" id="img236">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img237','Feutre')">
-        <div class="word">Feutre</div>
-        <div class="img-box" id="img237">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img238','Surligneur')">
-        <div class="word">Surligneur</div>
-        <div class="img-box" id="img238">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img239','Carnet')">
-        <div class="word">Carnet</div>
-        <div class="img-box" id="img239">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img240','Classeur')">
-        <div class="word">Classeur</div>
-        <div class="img-box" id="img240">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img241','Agrafeuse')">
-        <div class="word">Agrafeuse</div>
-        <div class="img-box" id="img241">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img242','Trombones')">
-        <div class="word">Trombones</div>
-        <div class="img-box" id="img242">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img243','Bloc-notes')">
-        <div class="word">Bloc-notes</div>
-        <div class="img-box" id="img243">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img244','Pochette plastique')">
-        <div class="word">Pochette plastique</div>
-        <div class="img-box" id="img244">Image</div>
-    </div>
-
-
-    <!-- DIVERS LOGISTIQUE & BUREAU -->
-    <div class="card" onclick="openPopup('img245','Ruban correcteur')">
-        <div class="word">Ruban correcteur</div>
-        <div class="img-box" id="img245">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img246','Perforatrice')">
-        <div class="word">Perforatrice</div>
-        <div class="img-box" id="img246">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img247','Étiqueteuse')">
-        <div class="word">Étiqueteuse</div>
-        <div class="img-box" id="img247">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img248','Colle en bâton')">
-        <div class="word">Colle bâton</div>
-        <div class="img-box" id="img248">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img249','Règle bureau')">
-        <div class="word">Règle</div>
-        <div class="img-box" id="img249">Image</div>
-    </div>
-
-    <div class="card" onclick="openPopup('img250','Ciseaux bureau')">
-        <div class="word">Ciseaux bureau</div>
-        <div class="img-box" id="img250">Image</div>
-    </div>
-
-</div>
-
 
 <!-- POPUP -->
 <div id="popup">
-    <div id="popup-content">
-        <h3>Colle le lien de l’image</h3>
-        <input type="text" id="imgUrl" placeholder="https://...">
-        <button class="btn" onclick="insertImage()">Insérer</button>
-        <button class="btn" style="background:#999;" onclick="closePopup()">Annuler</button>
-    </div>
+<div id="popup-content">
+<h3 id="popup-title"></h3>
+<a id="googleLink" target="_blank">🔎 Ouvrir Google Images</a>
+<input type="url" id="imgUrl" placeholder="Coller le lien de l’image">
+<button class="btn" onclick="insertImage()">Insérer</button>
+<button class="btn" style="background:#999" onclick="closePopup()">Annuler</button>
+</div>
 </div>
 
-
 <script>
-let currentBox = "";
-
-function openPopup(boxId, word){
-    currentBox = boxId;
-    document.getElementById("popup").style.display = "flex";
-
-    // ouvrir Google images
-    window.open(
-        "https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(word),
-        "_blank"
-    );
+let currentBox="";
+function openPopup(id,word){
+    currentBox=id;
+    document.getElementById("popup").style.display="flex";
+    document.getElementById("popup-title").textContent=word;
+    document.getElementById("googleLink").href="https://www.google.com/search?tbm=isch&q="+encodeURIComponent(word);
 }
-
 function closePopup(){
-    document.getElementById("popup").style.display = "none";
+    document.getElementById("popup").style.display="none";
 }
-
 function insertImage(){
-    const url = document.getElementById("imgUrl").value.trim();
-    if(url==="") return;
-
-    document.getElementById(currentBox).innerHTML = `<img src="${url}">`;
-    localStorage.setItem(currentBox, url);
-
-    document.getElementById("imgUrl").value = "";
+    const url=document.getElementById("imgUrl").value.trim();
+    if(!url.startsWith("http")){alert("Lien incorrect");return;}
+    document.getElementById(currentBox).innerHTML=`<img src="${url}">`;
+    localStorage.setItem(currentBox,url);
+    document.getElementById("imgUrl").value="";
     closePopup();
 }
-
-window.onload = function(){
-    for(let i=1;i<=300;i++){
-        const id = "img"+i;
-        const saved = localStorage.getItem(id);
-        if(saved && document.getElementById(id)){
-            document.getElementById(id).innerHTML = `<img src="${saved}">`;
+window.onload=()=>{
+    for(let i=1;i<=23;i++){
+        const id="img"+i;
+        if(localStorage.getItem(id)){
+            document.getElementById(id).innerHTML=`<img src="${localStorage.getItem(id)}">`;
         }
     }
-};
+}
 function resetAllImages(){
-    if(confirm("Voulez-vous vraiment effacer toutes les images ?")){
-        for(let i=1; i<=250; i++){
-            localStorage.removeItem("img"+i);
-        }
+    if(confirm("Tout effacer ?")){
+        for(let i=1;i<=23;i++) localStorage.removeItem("img"+i);
         location.reload();
     }
 }
-
 </script>
 
 </body>
