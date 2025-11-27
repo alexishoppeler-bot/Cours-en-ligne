@@ -2,119 +2,68 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>MiniWord – Exercices de mise en forme</title>
-
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>Mise en forme – Exercices</title>
 
 <style>
 body{
-  margin:0;
   font-family:Calibri, Arial;
+  margin:0;
   background:#eef1f7;
 }
 
-/* RUBAN */
-#ribbon{
+/* BARRE */
+#toolbar{
   background:#fff;
-  border-bottom:1px solid #cfd6e3;
-  padding:6px 10px;
+  padding:8px;
+  border-bottom:1px solid #ccc;
   display:flex;
-  gap:10px;
+  gap:6px;
 }
-.group{display:flex;gap:4px;padding-right:10px;border-right:1px solid #e1e6f0}
-.group:last-child{border:none}
 
-button.btn, select.sel{
-  height:30px;
-  background:#f3f4f7;
-  border:1px solid #c6ccd8;
-  border-radius:3px;
-  cursor:pointer;
+button, select{
+  padding:6px 10px;
   font-size:14px;
+  cursor:pointer;
 }
-button.btn:hover{background:#e4ebff}
 
-h1{text-align:center;margin:12px}
-
+/* BLOCS */
+h1{text-align:center;margin:15px}
 .box{
-  width:80%;
-  margin:10px auto;
   background:#fff;
-  padding:16px;
+  width:80%;
+  margin:12px auto;
+  padding:15px;
   border-radius:8px;
 }
-
 #modele{border:2px solid #4a75f7}
 #consigne{border:2px dashed #4a75f7}
 #editor{
-  min-height:260px;
-  border:1px solid #bbb;
+  border:1px solid #aaa;
+  min-height:200px;
 }
 #editor div{min-height:22px}
-mark{background:#fff59d;padding:0 2px}
-
-/* BOUTONS FIN */
-#actions{
-  text-align:center;
-  margin:20px;
-  display:none;
-}
-.actionBtn{
-  margin:6px;
-  padding:10px 18px;
-  border-radius:6px;
-  border:none;
-  background:#4a75f7;
-  color:white;
-  cursor:pointer;
-}
-#statusBar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#dfe6f5;
-  border-top:1px solid #bfc7d6;
-  font-size:13px;
-  padding:6px 10px;
-}
+mark{background:yellow;padding:0 2px}
 </style>
 </head>
 
 <body>
 
-<!-- RUBAN -->
-<div id="ribbon">
-  <div class="group">
-    <button class="btn" onclick="cmd('bold')"><b>B</b></button>
-    <button class="btn" onclick="cmd('italic')"><i>I</i></button>
-    <button class="btn" onclick="cmd('underline')"><u>U</u></button>
-    <button class="btn" onclick="cmd('highlight')">🖍</button>
-  </div>
+<!-- BARRE WORD SIMPLE -->
+<div id="toolbar">
+  <button onclick="cmd('bold')"><b>B</b></button>
+  <button onclick="cmd('italic')"><i>I</i></button>
+  <button onclick="cmd('underline')"><u>U</u></button>
+  <button onclick="cmd('highlight')">🖍</button>
 
-  <div class="group">
-    <select class="sel" onchange="cmd('size',this.value)">
-      <option>14</option><option>16</option><option>18</option><option>20</option>
-    </select>
-    <select class="sel" onchange="cmd('color',this.value)">
-      <option value="black">Noir</option>
-      <option value="blue">Bleu</option>
-      <option value="red">Rouge</option>
-      <option value="green">Vert</option>
-    </select>
-  </div>
-
-  <div class="group">
-    <select class="sel" onchange="cmd('align',this.value)">
-      <option value="left">Gauche</option>
-      <option value="center">Centré</option>
-      <option value="right">Droite</option>
-    </select>
-  </div>
+  <select onchange="cmd('color',this.value)">
+    <option value="black">Noir</option>
+    <option value="blue">Bleu</option>
+    <option value="red">Rouge</option>
+    <option value="green">Vert</option>
+  </select>
 </div>
 
-<h1>📝 Exercices de mise en forme</h1>
+<h1>📝 Mise en forme du texte</h1>
 
 <div class="box" id="modele"></div>
 <div class="box" id="consigne"></div>
@@ -124,16 +73,14 @@ mark{background:#fff59d;padding:0 2px}
 <div id="editor" contenteditable="true"><div><br></div></div>
 </div>
 
-<div id="actions">
-  <button class="actionBtn" onclick="exportPDF()">📄 Télécharger le PDF</button>
-  <button class="actionBtn" onclick="resetAll()">🔄 Réinitialiser</button>
+<div class="box" style="text-align:center">
+<button onclick="prev()">⬅ Exercice précédent</button>
+<button onclick="next()">Exercice suivant ➡</button>
 </div>
 
-<div id="statusBar">Exercice 1 / 5</div>
-
 <script>
-// ---------- STYLE ----------
-function cmd(type,val=null){
+/* -------- OUTILS -------- */
+function cmd(type,val){
   let s=window.getSelection();
   if(!s.rangeCount||s.isCollapsed)return;
   let r=s.getRangeAt(0);
@@ -147,85 +94,61 @@ function cmd(type,val=null){
     if(type==="bold") el.style.fontWeight="bold";
     if(type==="italic") el.style.fontStyle="italic";
     if(type==="underline") el.style.textDecoration="underline";
-    if(type==="size") el.style.fontSize=val+"px";
     if(type==="color") el.style.color=val;
-    if(type==="align"){el.style.display="block";el.style.textAlign=val;}
   }
   el.appendChild(c);
   r.insertNode(el);
 }
 
-// ---------- EXERCICES ----------
-const exercices=[
+/* -------- EXERCICES -------- */
+const exos=[
 {
-modele:"Je m’appelle Alex.<br>Je cherche un emploi.<br>Je suis motivé.",
-consigne:"Ligne 1 : gras<br>Ligne 2 : italique<br>Ligne 3 : surligné"
+texte:"Je m’appelle Alex.<br>Je cherche un emploi.<br>Je suis motivé.",
+consigne:"Ligne 1 : gras<br>Ligne 2 : italique<br>Ligne 3 : normal"
 },
 {
-modele:"Je travaille en équipe.<br>Je respecte les consignes.<br>Je suis ponctuel.",
-consigne:"Ligne 1 : bleu<br>Ligne 2 : taille 18<br>Ligne 3 : centré"
+texte:"Je travaille en équipe.<br>Je respecte les consignes.<br>Je suis ponctuel.",
+consigne:"Ligne 1 : bleu<br>Ligne 2 : rouge<br>Ligne 3 : vert"
 },
 {
-modele:"Je prépare mon CV.<br>J’envoie ma candidature.<br>J’attends une réponse.",
+texte:"Je prépare mon CV.<br>J’envoie ma candidature.<br>J’attends une réponse.",
 consigne:"Ligne 1 : gras + bleu<br>Ligne 2 : italique<br>Ligne 3 : surligné"
 },
 {
-modele:"Je commence un nouveau travail.<br>Je suis concentré.<br>Je progresse.",
-consigne:"Ligne 1 : taille 20<br>Ligne 2 : vert<br>Ligne 3 : centré"
+texte:"Je commence un nouveau travail.<br>Je suis concentré.<br>Je progresse.",
+consigne:"Ligne 1 : souligné<br>Ligne 2 : vert<br>Ligne 3 : surligné"
 },
 {
-modele:"Je suis autonome.<br>Je sais utiliser Word.<br>Je continue à apprendre.",
+texte:"Je suis autonome.<br>Je sais utiliser Word.<br>Je continue à apprendre.",
 consigne:"Ligne 1 : gras + rouge<br>Ligne 2 : italique + bleu<br>Ligne 3 : surligné"
 }
 ];
 
-let index=0;
+let i=0;
 
-// ---------- CHARGER ----------
-function loadExo(){
-  modele.innerHTML="<b>Texte à recopier :</b><br><br>"+exercices[index].modele;
-  consigne.innerHTML="<b>Consigne :</b><br>"+exercices[index].consigne;
-  editor.innerHTML=localStorage.getItem("exo"+index)||"<div><br></div>";
-  statusBar.textContent=`Exercice ${index+1} / 5`;
-  save();
+/* -------- CHARGEMENT -------- */
+function load(){
+  modele.innerHTML="<b>Texte à recopier :</b><br><br>"+exos[i].texte;
+  consigne.innerHTML="<b>Consigne :</b><br><br>"+exos[i].consigne;
+  editor.innerHTML="<div><br></div>";
 }
-loadExo();
+load();
 
-// ---------- SAUVEGARDE AUTO ----------
-editor.addEventListener("input",()=>save());
-function save(){
-  localStorage.setItem("exo"+index,editor.innerHTML);
+/* -------- NAVIGATION -------- */
+function next(){
+  if(i<exos.length-1){i++;load();}
 }
-
-// ---------- NAVIGATION ----------
-document.addEventListener("keydown",e=>{
-  if(e.ctrlKey && e.key==="ArrowRight" && index<4){index++;loadExo();}
-  if(e.ctrlKey && e.key==="ArrowLeft" && index>0){index--;loadExo();}
-  if(index===4) actions.style.display="block";
-});
-
-// ---------- PDF ----------
-function exportPDF(){
-  const {jsPDF}=window.jspdf;
-  let pdf=new jsPDF();
-  pdf.text(editor.innerText,10,10);
-  pdf.save("exercice_mise_en_forme.pdf");
+function prev(){
+  if(i>0){i--;load();}
 }
 
-// ---------- RESET ----------
-function resetAll(){
-  if(!confirm("Tout effacer ?"))return;
-  for(let i=0;i<5;i++) localStorage.removeItem("exo"+i);
-  index=0;loadExo();
-}
-
-// ---------- CORRECTION FORMATEUR ----------
-document.addEventListener("keydown",e=>{
-  if(e.ctrlKey && e.key==="k"){
-    let code=prompt("Code formateur ?");
-    if(code==="fide"){
-      alert("Correction : vérifier couleurs, taille, alignement et surlignement.");
-    }
+/* -------- ENTREE PROPRE -------- */
+editor.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    let d=document.createElement("div");
+    d.innerHTML="<br>";
+    window.getSelection().getRangeAt(0).startContainer.parentElement.after(d);
   }
 });
 </script>
