@@ -3,186 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Organiser des documents professionnels</title>
+<title>📘 Cours en ligne – Proactif</title>
 
 <style>
-body{font-family:Arial,sans-serif;background:#eef3f9;padding:20px}
-.container{max-width:1200px;margin:auto;background:#fff;padding:30px;border-radius:20px;box-shadow:0 6px 25px rgba(0,0,0,.12)}
-h1{text-align:center;color:#004c97}
-.subtitle{text-align:center;color:#555;margin-bottom:10px}
-.counter{text-align:center;font-weight:bold;font-size:18px;color:#004c97;margin-bottom:15px}
-
-.zone{display:flex;gap:24px}
-.docs{flex:1;max-height:620px;overflow-y:auto;padding-right:14px;border-right:2px solid #e0e6f7}
-.folders{flex:1;max-height:620px;overflow-y:auto;padding-left:14px}
-
-.docs h2,.folders h2{position:sticky;top:0;background:#fff;color:#004c97}
-
-.doc{background:#f8faff;padding:10px;border-radius:8px;margin-bottom:8px;border:1px solid #cfd8ff;cursor:grab}
-.folder{background:#eaf1ff;padding:14px;border-radius:14px;border:2px dashed #004c97;margin-bottom:12px}
-.folder-title{font-weight:bold;margin-bottom:6px}
-.folder.correct{border-color:#2e8b57;background:#e8f6ee}
-.folder.error{border-color:#b00020;background:#fdeaea}
-
-#reset{
-  position:fixed;
-  bottom:6px;
-  right:6px;
-  opacity:0;
-  width:30px;
-  height:30px;
-  border:none;
-  background:transparent;
+body{
+  font-family: Arial, sans-serif;
+  background:#eef3f9;
+  margin:0;
+  padding:0;
 }
-#reset::after{content:"♻️";}
+header{
+  background:#004c97;
+  color:white;
+  padding:25px;
+  text-align:center;
+  font-size:26px;
+  font-weight:bold;
+}
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 6px 25px rgba(0,0,0,0.12);
+}
+h2{
+  color:#004c97;
+  border-bottom:2px solid #cfd8ff;
+  padding-bottom:6px;
+}
+.section{
+  margin-bottom:40px;
+}
+.link-box{
+  padding:14px;
+  background:#f5f7ff;
+  border-radius:12px;
+  margin-bottom:10px;
+  border:1px solid #dce3ff;
+  transition:0.2s;
+}
+.link-box:hover{
+  background:#eaf1ff;
+  transform:translateX(4px);
+}
+a{
+  text-decoration:none;
+  color:#003f7d;
+  font-size:18px;
+  font-weight:bold;
+}
+.subtitle{
+  font-size:15px;
+  color:#666;
+}
+footer{
+  text-align:center;
+  margin-top:40px;
+  padding:20px;
+  color:#777;
+}
 </style>
-</head>
-
-<body>
-<div class="container">
-  <h1>📂 Organiser des documents professionnels</h1>
-  <div class="subtitle">Classe chaque document dans le bon dossier</div>
-  <div id="counter" class="counter">0 / 80 classés</div>
-
-  <div class="zone">
-    <div class="docs">
-      <h2>📄 Documents</h2>
-      <div id="docsContainer"></div>
-    </div>
-
-    <div class="folders">
-      <h2>📁 Dossiers</h2>
-      <div class="folder" data-accept="orp"><div class="folder-title">📁 ORP / Chômage</div></div>
-      <div class="folder" data-accept="salaires"><div class="folder-title">📁 Fiches de salaire</div></div>
-      <div class="folder" data-accept="attestations"><div class="folder-title">📁 Attestations / Certificats</div></div>
-      <div class="folder" data-accept="contrats"><div class="folder-title">📁 Contrats de travail</div></div>
-      <div class="folder" data-accept="assurances"><div class="folder-title">📁 Assurances</div></div>
-      <div class="folder" data-accept="factures"><div class="folder-title">📁 Factures / Impôts</div></div>
-      <div class="folder" data-accept="cv"><div class="folder-title">📁 CV</div></div>
-      <div class="folder" data-accept="lm"><div class="folder-title">📁 Lettres de motivation</div></div>
-    </div>
-  </div>
-</div>
-
-<button id="reset" onclick="resetAll()"></button>
 
 <script>
-const STORAGE_KEY = "docs_state_v1";
-
-/* ====== DONNÉES ====== */
-const docsData = [
-  ["orp","Convocation_ORP"],["orp","Preuve_postulation"],["orp","Decision_ORP"],["orp","Controle_recherches"],["orp","Inscription_ORP"],
-  ["orp","Email_conseiller"],["orp","Rendez-vous_ORP"],["orp","Suspension_ORP"],["orp","Attestation_ORP"],["orp","Courrier_ORP"],
-  ["salaires","Fiche_salaire_janvier"],["salaires","Fiche_salaire_fevrier"],["salaires","Fiche_salaire_mars"],["salaires","Fiche_salaire_avril"],
-  ["salaires","Fiche_salaire_mai"],["salaires","Fiche_salaire_juin"],["salaires","Fiche_salaire_juillet"],["salaires","Fiche_salaire_aout"],
-  ["salaires","Fiche_salaire_septembre"],["salaires","Fiche_salaire_octobre"],
-  ["attestations","Attestation_travail"],["attestations","Certificat_employeur"],["attestations","Attestation_stage"],
-  ["attestations","Attestation_presence"],["attestations","Certificat_CFC"],["attestations","Attestation_experience"],
-  ["attestations","Certificat_service"],["attestations","Attestation_scolaire"],["attestations","Attestation_langue"],
-  ["attestations","Certificat_formation"],
-  ["contrats","Contrat_travail"],["contrats","Avenant_contrat"],["contrats","Renouvellement_contrat"],
-  ["contrats","Fin_contrat"],["contrats","Contrat_stage"],["contrats","Contrat_temporaire"],
-  ["contrats","Contrat_CDD"],["contrats","Contrat_CDI"],["contrats","Contrat_interim"],["contrats","Convention"],
-  ["assurances","Assurance_maladie"],["assurances","Assurance_accident"],["assurances","Assurance_RC"],
-  ["assurances","Prime_assurance"],["assurances","Police_assurance"],["assurances","Facture_assurance"],
-  ["assurances","Carte_assurance"],["assurances","Email_assurance"],["assurances","Attestation_assurance"],
-  ["assurances","Courrier_assurance"],
-  ["factures","Facture_electricite"],["factures","Facture_loyer"],["factures","Facture_tel"],
-  ["factures","Facture_internet"],["factures","Facture_impots"],["factures","Facture_medicale"],
-  ["factures","Facture_gaz"],["factures","Rappel_facture"],["factures","Paiement_facture"],["factures","Decompte"],
-  ["cv","CV_simple"],["cv","CV_complet"],["cv","CV_emploi"],["cv","CV_stage"],["cv","CV_corrige"],
-  ["cv","CV_francais"],["cv","CV_pdf"],["cv","CV_word"],["cv","CV_2024"],["cv","CV_pro"],
-  ["lm","LM_simple"],["lm","LM_complete"],["lm","LM_spontanee"],["lm","LM_reponse_annonce"],["lm","LM_stage"],
-  ["lm","LM_corrigee"],["lm","LM_pdf"],["lm","LM_word"],["lm","LM_emploi"],["lm","LM_entreprise"]
-];
-
-/* ====== INIT ====== */
-const docsContainer = document.getElementById("docsContainer");
-const counterEl = document.getElementById("counter");
-
-let state = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-if(!state){
-  state = {
-    docs: [...docsData].sort(()=>Math.random()-0.5),
-    placed: {}
-  };
-  save();
-}
-
-render();
-
-/* ====== RENDER ====== */
-function render(){
-  docsContainer.innerHTML="";
-  document.querySelectorAll(".folder").forEach(f=>f.querySelectorAll(".doc").forEach(d=>d.remove()));
-
-  state.docs.forEach(d=>{
-    if(state.placed[d[1]]) return;
-    createDoc(d, docsContainer);
-  });
-
-  Object.keys(state.placed).forEach(name=>{
-    const d = state.docs.find(x=>x[1]===name);
-    const folder = document.querySelector(`.folder[data-accept="${state.placed[name]}"]`);
-    if(d && folder) createDoc(d, folder);
-  });
-
-  updateCounter();
-}
-
-/* ====== DOC ====== */
-function createDoc([type,name], target){
-  const el=document.createElement("div");
-  el.className="doc";
-  el.draggable=true;
-  el.dataset.type=type;
-  el.dataset.name=name;
-  el.textContent="📄 "+name+".pdf";
-  el.addEventListener("dragstart",()=>dragged=el);
-  target.appendChild(el);
-}
-
-let dragged=null;
-
-/* ====== DROP ====== */
-document.querySelectorAll(".folder").forEach(folder=>{
-  folder.addEventListener("dragover",e=>e.preventDefault());
-  folder.addEventListener("drop",()=>{
-    if(!dragged) return;
-    const name = dragged.dataset.name;
-    if(dragged.dataset.type===folder.dataset.accept){
-      state.placed[name]=folder.dataset.accept;
-      save();
-      render();
-      folder.classList.add("correct");
-    }else{
-      folder.classList.add("error");
-      setTimeout(()=>folder.classList.remove("error"),600);
-    }
-    dragged=null;
-  });
-});
-
-/* ====== COUNTER ====== */
-function updateCounter(){
-  const done = Object.keys(state.placed).length;
-  counterEl.textContent = `${done} / ${state.docs.length} classés`;
-}
-
-/* ====== SAVE ====== */
-function save(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-/* ====== RESET (FORMATEUR) ====== */
-function resetAll(){
-  if(confirm("Réinitialiser l’exercice ?")){
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
-  }
-}
+// On enregistre que l’utilisateur commence bien depuis l’index
+sessionStorage.setItem("startFromIndex", "yes");
 </script>
+
+</head>
+<body>
+
+<header>📘 Cours en ligne – Exercices Proactif</header>
+
+<div class="container">
+
+  <h2>📂 Organisation des documents</h2>
+  <div class="section">
+      <div class="link-box">
+        <a href="exercice_documents.html">📁 Organiser des documents professionnels</a>
+        <div class="subtitle">Classer CV, LM, ORP, factures, attestations…</div>
+      </div>
+  </div>
+
+  <h2>🕒 Exercices Horloge</h2>
+  <div class="section">
+      <div class="link-box">
+        <a href="horloge_400.html">🕒 Horloge 400px – Aiguilles interactives</a>
+        <div class="subtitle">Lire l’heure suisse, tourner les aiguilles</div>
+      </div>
+      <div class="link-box">
+        <a href="horloge_digital.html">⏱️ Horloge digitale – Heure exacte</a>
+        <div class="subtitle">Écrire l’heure en lettres et vérifier</div>
+      </div>
+  </div>
+
+  <h2>📄 Exercices Word / PDF</h2>
+  <div class="section">
+      <div class="link-box">
+        <a href="miniword.html">✏️ MiniWord – Écrire et convertir en PDF</a>
+        <div class="subtitle">Exercice d’écriture + export PDF</div>
+      </div>
+  </div>
+
+  <h2>📝 Compréhension – Lecture / Écriture</h2>
+  <div class="section">
+      <div class="link-box">
+        <a href="copier_coller.html">📄 Copier–coller les informations</a>
+        <div class="subtitle">Remplir un formulaire avec les données correctes</div>
+      </div>
+
+      <div class="link-box">
+        <a href="mot_a_trous.html">🔤 Mots à trous</a>
+        <div class="subtitle">Présent – Passé composé – Futur</div>
+      </div>
+
+      <div class="link-box">
+        <a href="comprehension_orale.html">🎧 Compréhension orale (texte audio)</a>
+        <div class="subtitle">Écouter puis répondre</div>
+      </div>
+  </div>
+
+  <h2>📍 Google Maps – Orientation</h2>
+  <div class="section">
+      <div class="link-box">
+        <a href="google_maps.html">📍 Trouver un trajet</a>
+        <div class="subtitle">Calculer le temps, trouver la bonne gare</div>
+      </div>
+  </div>
+
+</div>
+
+<footer>Proactif – Exercices en ligne – © 2025</footer>
 
 </body>
 </html>
