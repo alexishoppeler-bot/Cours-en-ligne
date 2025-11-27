@@ -1,80 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<title>MiniWord – Exercice aléatoire</title>
+<meta charset="UTF-8">
+<title>MiniWord – Version stable</title>
 
 <style>
 body{
-  font-family:Arial;
   margin:0;
+  font-family:Calibri, Arial;
   background:#eef1f7;
 }
 
 /* RUBAN */
 #ribbon{
   background:#fff;
-  border-bottom:2px solid #d0d7e3;
-  padding:8px;
+  border-bottom:1px solid #cfd6e3;
+  padding:6px 10px;
   display:flex;
-  gap:18px;
+  gap:12px;
 }
 
+/* GROUPES */
 .group{
   display:flex;
-  gap:6px;
-  padding-right:14px;
-  border-right:2px solid #e0e6f1;
+  gap:4px;
+  padding-right:12px;
+  border-right:1px solid #e1e6f0;
 }
 .group:last-child{border:none}
 
 /* BOUTONS WORD-LIKE */
-button.btn{
-  background:#f8f9fb;
-  border:1px solid #c6cdd9;
-  border-radius:4px;
-  padding:6px 10px;
+.btn{
+  min-width:34px;
+  height:30px;
+  background:#f3f4f7;
+  border:1px solid #c6ccd8;
+  border-radius:3px;
   cursor:pointer;
-  font-size:14px;
+  font-size:15px;
 }
-button.btn:hover{background:#e9eef6}
+.btn:hover{background:#e4ebff}
+.btn:active{background:#cddcff}
 
-select.sel{
-  background:#f8f9fb;
-  border:1px solid #c6cdd9;
-  border-radius:4px;
-  padding:6px;
+/* SELECTS */
+.sel{
+  height:30px;
+  background:#f3f4f7;
+  border:1px solid #c6ccd8;
+  border-radius:3px;
 }
 
 /* ZONES */
-h2{text-align:center;margin-top:20px}
+h2{text-align:center;margin:16px 0}
 
 #texteARecopier,#consigneForme,#editor{
-  background:#fff;
   width:80%;
-  margin:15px auto;
-  padding:20px;
-  border-radius:8px;
+  margin:12px auto;
+  padding:16px;
+  background:#fff;
+  border-radius:6px;
 }
 
 #texteARecopier{border:2px solid #4a75f7}
 #consigneForme{border:2px dashed #4a75f7}
+
 #editor{
   min-height:320px;
-  border:1px solid #ccc;
+  border:1px solid #bfc7d6;
 }
 #editor div{min-height:22px}
 
-/* STATUS BAR */
+/* SURIGNEMENT WORD */
+mark{
+  background:#fff59d;
+  padding:0 2px;
+}
+
+/* BARRE BAS */
 #statusBar{
   position:fixed;
   bottom:0;
   left:0;
   width:100%;
   background:#dfe6f5;
-  padding:6px 12px;
-  font-size:14px;
-  border-top:1px solid #bfc9d4;
+  border-top:1px solid #bfc7d6;
+  font-size:13px;
+  padding:6px 10px;
 }
 </style>
 </head>
@@ -84,40 +95,33 @@ h2{text-align:center;margin-top:20px}
 <!-- RUBAN -->
 <div id="ribbon">
   <div class="group">
-    <button class="btn" onclick="applyStyle('bold')">🅱</button>
-    <button class="btn" onclick="applyStyle('italic')"><i>I</i></button>
-    <button class="btn" onclick="applyStyle('underline')"><u>S</u></button>
-    <button class="btn" onclick="applyStyle('highlight','yellow')">🖍</button>
+    <button class="btn" onclick="cmd('bold')"><b>B</b></button>
+    <button class="btn" onclick="cmd('italic')"><i>I</i></button>
+    <button class="btn" onclick="cmd('underline')"><u>U</u></button>
+    <button class="btn" onclick="cmd('highlight')">🖍</button>
   </div>
 
   <div class="group">
-    <select class="sel" onchange="applyStyle('fontFamily',this.value)">
+    <select class="sel" onchange="cmd('font',this.value)">
       <option>Arial</option>
-      <option>Calibri</option>
+      <option selected>Calibri</option>
       <option>Verdana</option>
-      <option>Georgia</option>
-      <option>Times New Roman</option>
     </select>
 
-    <select class="sel" onchange="applyStyle('fontSize',this.value)">
-      <option>14</option><option>16</option><option>18</option>
-      <option>20</option><option>22</option><option>24</option>
+    <select class="sel" onchange="cmd('size',this.value)">
+      <option>14</option>
+      <option>16</option>
+      <option>18</option>
+      <option>20</option>
     </select>
   </div>
 
   <div class="group">
-    <select class="sel" onchange="applyStyle('color',this.value)">
+    <select class="sel" onchange="cmd('color',this.value)">
       <option value="black">Noir</option>
       <option value="blue">Bleu</option>
       <option value="red">Rouge</option>
       <option value="green">Vert</option>
-      <option value="purple">Violet</option>
-    </select>
-
-    <select class="sel" onchange="applyStyle('align',this.value)">
-      <option value="left">Gauche</option>
-      <option value="center">Centré</option>
-      <option value="right">Droite</option>
     </select>
   </div>
 </div>
@@ -127,95 +131,54 @@ h2{text-align:center;margin-top:20px}
 <div id="texteARecopier"></div>
 <div id="consigneForme"></div>
 
-<button onclick="nouvelExercice()" style="margin-left:10%;padding:10px 20px;background:#4a75f7;color:#fff;border:none;border-radius:6px">
+<button onclick="nouvelExercice()" style="margin-left:10%;padding:8px 18px;background:#4a75f7;color:#fff;border:none;border-radius:5px">
 🔄 Nouvel exercice
 </button>
 
-<div id="editor" contenteditable="true">
-  <div><br></div>
-</div>
+<div id="editor" contenteditable="true"><div><br></div></div>
 
-<div id="statusBar">Clique sur un mot pour voir sa mise en forme</div>
+<div id="statusBar">Sélectionne du texte → clique un bouton</div>
 
 <script>
-// STYLE APPLICATION (STABLE)
-function applyStyle(type,val=null){
+function cmd(type,val=null){
   let sel=window.getSelection();
   if(!sel.rangeCount||sel.isCollapsed)return;
-
-  let range=sel.getRangeAt(0);
-  let content=range.extractContents();
+  let r=sel.getRangeAt(0);
+  let c=r.extractContents();
   let el;
 
   if(type==="highlight"){
     el=document.createElement("mark");
-    el.style.backgroundColor=val;
   }else{
     el=document.createElement("span");
     if(type==="bold") el.style.fontWeight="bold";
     if(type==="italic") el.style.fontStyle="italic";
     if(type==="underline") el.style.textDecoration="underline";
-    if(type==="fontFamily") el.style.fontFamily=val;
-    if(type==="fontSize") el.style.fontSize=val+"px";
+    if(type==="font") el.style.fontFamily=val;
+    if(type==="size") el.style.fontSize=val+"px";
     if(type==="color") el.style.color=val;
-    if(type==="align"){
-      el.style.display="block";
-      el.style.textAlign=val;
-    }
   }
 
-  el.appendChild(content);
-  range.insertNode(el);
+  el.appendChild(c);
+  r.insertNode(el);
 }
 
-// ENTRÉE STABLE
-document.getElementById("editor").addEventListener("keydown",e=>{
-  if(e.key==="Enter"){
-    e.preventDefault();
-    let d=document.createElement("div");
-    d.innerHTML="<br>";
-    document.getSelection().getRangeAt(0).startContainer.parentElement.after(d);
-    placeCursor(d);
-  }
-});
-
-function placeCursor(el){
-  let r=document.createRange();
-  let s=window.getSelection();
-  r.setStart(el,0);
-  r.collapse(true);
-  s.removeAllRanges();
-  s.addRange(r);
-}
-
-// EXERCICES
 const textes=[
 "Aujourd’hui je suis motivé.<br>Je veux progresser.<br>Je vais réussir.",
-"Je commence une nouvelle journée.<br>Je veux apprendre Word.<br>Je fais attention."
+"Je lis la consigne.<br>Je copie le texte.<br>Je respecte la mise en forme."
 ];
 
 const consignes=[
-"Ligne 1 : Arial 20 bleu centré gras<br>Ligne 2 : Calibri 18 rouge italique<br>Ligne 3 : Verdana 16 vert surligné",
-"Ligne 1 : Verdana 18 violet italique<br>Ligne 2 : Arial 20 noir gras<br>Ligne 3 : Georgia 16 bleu"
+"Ligne 1 : Gras et bleu<br>Ligne 2 : Italique<br>Ligne 3 : Surligné",
+"Ligne 1 : Calibri 18<br>Ligne 2 : Rouge<br>Ligne 3 : Surligné"
 ];
 
 function nouvelExercice(){
-  document.getElementById("texteARecopier").innerHTML =
-    textes[Math.floor(Math.random()*textes.length)];
-  document.getElementById("consigneForme").innerHTML =
-    "<b>Consigne :</b><br>"+consignes[Math.floor(Math.random()*consignes.length)];
-  document.getElementById("editor").innerHTML="<div><br></div>";
+  texteARecopier.innerHTML=textes[Math.floor(Math.random()*textes.length)];
+  consigneForme.innerHTML="<b>Consigne :</b><br>"+consignes[Math.floor(Math.random()*consignes.length)];
+  editor.innerHTML="<div><br></div>";
 }
 nouvelExercice();
-
-// STATUS BAR
-document.getElementById("editor").addEventListener("click",()=>{
-  let sel=window.getSelection();
-  if(!sel.rangeCount)return;
-  let n=sel.focusNode.nodeType===3?sel.focusNode.parentElement:sel.focusNode;
-  let cs=getComputedStyle(n);
-  statusBar.textContent=`Police: ${cs.fontFamily} | Taille: ${cs.fontSize} | Couleur: ${cs.color}`;
-});
 </script>
 
 </body>
