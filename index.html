@@ -6,110 +6,183 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-    body{
-        font-family: Arial, sans-serif;
-        background:#eef3f9;
-        margin:0;
-        padding:20px;
-    }
-    .container{
-        max-width:900px;
-        margin:auto;
-        background:white;
-        padding:30px;
-        border-radius:20px;
-        box-shadow:0 6px 25px rgba(0,0,0,0.12);
-    }
-    h1{
-        text-align:center;
-        color:#004c97;
-        margin-top:0;
-    }
-    .section-title{
-        margin-top:35px;
-        font-size:22px;
-        color:#003366;
-        border-left:6px solid #3f71ff;
-        padding-left:10px;
-        font-weight:bold;
-    }
-    ul{list-style:none;padding-left:0;}
-    li{
-        background:#f3f7ff;
-        margin:8px 0;
-        padding:12px 14px;
-        border-radius:12px;
-        border:1px solid #dce3ee;
-        transition:0.2s;
-    }
-    li:hover{
-        background:#e8f0ff;
-        transform:translateX(4px);
-    }
-    a{
-        text-decoration:none;
-        color:#004c97;
-        font-weight:bold;
-    }
-</style>
+:root{
+    --blue:#3f71ff;
+    --dark:#003366;
+    --bg:#eef3f9;
+    --card:#ffffff;
+}
 
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(180deg,#eef3f9,#dfe7f5);
+}
+
+/* ======= HEADER ======= */
+header{
+    background:linear-gradient(120deg,#3f71ff,#004c97);
+    padding:35px 20px;
+    color:white;
+    text-align:center;
+}
+header h1{
+    margin:0;
+    font-size:32px;
+}
+header p{
+    margin-top:10px;
+    font-size:18px;
+    opacity:.95;
+}
+
+/* ======= CONTAINER ======= */
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:35px 20px 60px;
+}
+
+/* ======= GRID ======= */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:25px;
+}
+
+/* ======= CARD ======= */
+.card{
+    background:var(--card);
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.12);
+    transition:.25s;
+    border-top:6px solid var(--blue);
+}
+.card:hover{
+    transform:translateY(-6px);
+}
+
+.card h2{
+    margin:0 0 15px;
+    color:var(--dark);
+    font-size:22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.card ul{
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+.card li{
+    margin:8px 0;
+}
+
+.card a{
+    text-decoration:none;
+    display:block;
+    padding:10px 12px;
+    border-radius:10px;
+    background:#f3f6ff;
+    color:#003366;
+    font-weight:bold;
+    transition:.2s;
+}
+.card a:hover{
+    background:#e6ecff;
+    transform:translateX(6px);
+}
+
+/* ======= FOOTER ======= */
+footer{
+    text-align:center;
+    padding:20px;
+    color:#555;
+    font-size:14px;
+}
+</style>
 </head>
+
 <body>
+
+<header>
+    <h1>📘 Cours en ligne</h1>
+    <p>Apprendre le français, le numérique et la vie professionnelle – pas à pas</p>
+</header>
 
 <div class="container">
 
-<h1>📘 Cours en ligne – Exercices</h1>
+<div class="grid">
 
-<!-- ================= HORLOGES ================= -->
-<div class="section-title">🕒 Horloges</div>
-<ul>
-    <li><a href="heure.html">Heure – Exercice</a></li>
-</ul>
+    <!-- HORLOGES -->
+    <div class="card">
+        <h2>🕒 Horloges</h2>
+        <ul>
+            <li><a href="heure.html">Lire et régler l’heure</a></li>
+        </ul>
+    </div>
 
-<!-- ============= DOCUMENTS ET DOSSIERS ============= -->
-<div class="section-title">📁 Documents & Dossiers</div>
-<ul>
-    <li><a href="organiser-documents-dossiers.html">Organiser des documents</a></li>
-    <li><a href="miniwindows-mise-en-forme.html">MiniWord – Mise en forme</a></li>
-    <li><a href="editeur-a4.html">MiniWord – App / PDF</a></li>
-</ul>
+    <!-- DOCUMENTS -->
+    <div class="card">
+        <h2>📁 Documents & numérique</h2>
+        <ul>
+            <li><a href="organiser-documents-dossiers.html">Organiser les documents</a></li>
+            <li><a href="miniwindows-mise-en-forme.html">MiniWord – Mise en forme</a></li>
+            <li><a href="editeur-a4.html">MiniWord → PDF</a></li>
+        </ul>
+    </div>
 
-<!-- =============== FORMULAIRES ================ -->
-<div class="section-title">📄 Formulaires</div>
-<ul>
-    <li><a href="formulaire-profil.html">Formulaire – Profil</a></li>
-    <li><a href="emails-professionnels.html">Emails professionnels</a></li>
-    <li><a href="lettre-motivation.html">Lettre de motivation</a></li>
-</ul>
+    <!-- FORMULAIRES -->
+    <div class="card">
+        <h2>📄 Formulaires</h2>
+        <ul>
+            <li><a href="formulaire-profil.html">Profil professionnel</a></li>
+            <li><a href="emails-professionnels.html">Emails professionnels</a></li>
+            <li><a href="lettre-motivation.html">Lettre de motivation</a></li>
+        </ul>
+    </div>
 
-<!-- =============== FRANÇAIS / FIDE ================ -->
-<div class="section-title">🗣️ Français</div>
-<ul>
-    <li><a href="clavier-reecriture.html">Réécriture clavier</a></li>
-    <li><a href="comprehension-a1.html">Compréhension 1</a></li>
-    <li><a href="communication-c1.html">Communication 3</a></li>
-    <li><a href="comprehension-a2-b1.html">Compréhension 2</a></li>
-    <li><a href="scenarios-professionnels.html">Scénarios professionnels</a></li>
-    <li><a href="Écrire-en-français -situations-professionnelle.html">On écrit en français !</a></li>
-</ul>
+    <!-- FRANÇAIS -->
+    <div class="card">
+        <h2>🗣️ Français / FIDE</h2>
+        <ul>
+            <li><a href="clavier-reecriture.html">Réécriture au clavier</a></li>
+            <li><a href="comprehension-a1.html">Compréhension – Niveau 1</a></li>
+            <li><a href="comprehension-a2-b1.html">Compréhension – Niveau 2</a></li>
+            <li><a href="scenarios-professionnels.html">Scénarios professionnels</a></li>
+            <li><a href="Écrire-en-français -situations-professionnelle.html">Écrire en français</a></li>
+        </ul>
+    </div>
 
-<!-- =============== EMPLOI / PROFESSIONNEL ================ -->
-<div class="section-title">💼 Emploi & Vie professionnelle</div>
-<ul>
-    <li><a href="questions-entretien.html">Questions d’entretien</a></li>
-    <li><a href="parler-de-mon-dernier-travail.html">Parler de mon dernier travail</a></li>
-    <li><a href="Simulation-de-situations-professionnelles.html">Simulation de situations professionnelles</a></li>
-</ul>
+    <!-- EMPLOI -->
+    <div class="card">
+        <h2>💼 Emploi & travail</h2>
+        <ul>
+            <li><a href="questions-entretien.html">Questions d’entretien</a></li>
+            <li><a href="parler-de-mon-dernier-travail.html">Parler de son dernier travail</a></li>
+            <li><a href="Simulation-de-situations-professionnelles.html">Situations professionnelles</a></li>
+        </ul>
+    </div>
 
-<!-- =============== JEUX ================ -->
-<div class="section-title">🎮 Jeux</div>
-<ul>
-    <li><a href="jeu-clics.html">Jeu – Clics</a></li>
-    <li><a href="jeu-directions.html">Jeu – Directions</a></li>
-    <li><a href="mot-image-metiers.html">Métiers – Associer images / mots</a></li>
-</ul>
+    <!-- JEUX -->
+    <div class="card">
+        <h2>🎮 Jeux d’apprentissage</h2>
+        <ul>
+            <li><a href="jeu-clics.html">Jeu de clics</a></li>
+            <li><a href="jeu-directions.html">Jeu des directions</a></li>
+            <li><a href="mot-image-metiers.html">Métiers – Images / mots</a></li>
+        </ul>
+    </div>
 
 </div>
+</div>
+
+<footer>
+    © Cours en ligne – Apprendre pour devenir autonome
+</footer>
 
 </body>
 </html>
