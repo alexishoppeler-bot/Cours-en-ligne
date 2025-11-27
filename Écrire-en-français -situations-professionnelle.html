@@ -3,95 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Écrire en français – sauvegarde et PDF</title>
+<title>Tu → Vous – validation pro</title>
 
-<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{
-  font-family: Arial, sans-serif;
-  background:#eef3f9;
-  margin:0;
-  padding:20px;
-}
-
+body{font-family:Arial;background:#eef3f9;padding:20px}
 .container{
-  max-width:900px;
-  margin:auto;
-  background:white;
-  padding:30px;
-  border-radius:20px;
-  box-shadow:0 6px 25px rgba(0,0,0,0.12);
+  max-width:1100px;margin:auto;background:#fff;padding:30px;
+  border-radius:20px;box-shadow:0 6px 25px rgba(0,0,0,.12)
 }
-
-h1{
-  text-align:center;
-  color:#004c97;
-}
+h1{text-align:center;color:#004c97}
 
 .consigne{
-  background:#f3f7ff;
-  padding:20px;
-  border-radius:16px;
-  margin-bottom:22px;
-  border-left:6px solid #004c97;
+  background:#f3f7ff;padding:20px;border-radius:16px;
+  border-left:6px solid #004c97;margin-bottom:24px
 }
 
-.consigne h3{
-  margin-top:0;
-  color:#004c97;
-}
-
-.consigne ul{
-  margin:10px 0 0 20px;
+.item{
+  background:#fff7e6;
+  padding:15px;border-radius:14px;margin-bottom:16px
 }
 
 textarea{
-  width:100%;
-  height:260px;
-  font-size:16px;
-  padding:16px;
-  border-radius:16px;
-  border:1px solid #ccc;
-  resize:none;
+  width:100%;height:60px;padding:12px;font-size:16px;
+  border-radius:12px;border:1px solid #ccc;resize:none;margin-top:6px
 }
 
-.actions{
-  display:flex;
-  gap:15px;
-  margin-top:15px;
-  flex-wrap:wrap;
+.row{
+  display:flex;justify-content:space-between;align-items:center;margin-top:6px
 }
+
+.result{font-size:14px;font-weight:bold}
+.ok{color:green}
+.ko{color:red}
 
 button{
-  flex:1;
-  padding:14px;
-  font-size:16px;
-  border:none;
-  border-radius:16px;
-  cursor:pointer;
+  padding:10px 16px;border:none;border-radius:14px;
+  cursor:pointer;font-size:14px
+}
+.valider{background:#004c97;color:white}
+
+.actions{
+  display:flex;gap:15px;margin-top:25px;flex-wrap:wrap
 }
 
-.trad{background:#004c97;color:white;}
-.trad:hover{background:#003366;}
+.pdf{background:#2e8b57;color:white}
+.reset{background:#ddd}
+.formateur{background:#444;color:white}
 
-.pdf{background:#2e8b57;color:white;}
-.pdf:hover{background:#246b44;}
-
-.clear{background:#ddd;}
-
-.note{
-  margin-top:20px;
-  text-align:center;
-  font-size:14px;
-  color:#555;
+.score{
+  text-align:center;font-size:18px;font-weight:bold;
+  margin-top:15px;color:#004c97
 }
+
 .saved{
-  text-align:center;
-  font-size:13px;
-  color:#2e8b57;
-  margin-top:8px;
+  text-align:center;font-size:13px;color:#2e8b57;margin-top:8px
 }
 </style>
 </head>
@@ -99,106 +66,156 @@ button{
 <body>
 
 <div class="container">
-
-<h1>✍️ Écrire en français – situation professionnelle</h1>
+<h1>🗣️ Passer de « tu » à « vous »</h1>
 
 <div class="consigne">
-<h3>Consignes</h3>
-
-<b>1. Choisissez un sujet :</b>
-<ul>
-  <li>vous présenter pour un travail</li>
-  <li>décrire une expérience professionnelle</li>
-  <li>parler de vos compétences</li>
-  <li>écrire un petit email professionnel</li>
-</ul>
-
-<b>2. Règles :</b>
-<ul>
-  <li>5 à 8 phrases courtes</li>
-  <li>phrases simples</li>
-  <li>pas d’informations privées</li>
-  <li>écrivez d’abord en français</li>
-</ul>
-
-<b>3. La traduction :</b><br>
-Utilisez-la seulement pour vérifier ou comprendre,  
-pas pour écrire à votre place.
+<b>Consigne – mode examen :</b><br>
+Transformez chaque phrase avec <b>tu</b> en phrase professionnelle avec <b>vous</b>.<br>
+Changez seulement le pronom et le verbe.
 </div>
 
-<textarea id="texte" placeholder="Exemple :
+<div id="liste"></div>
 
-Je cherche un emploi dans le nettoyage.
-J’ai travaillé deux ans dans une entreprise.
-Je suis ponctuel et sérieux.
-Je sais travailler en équipe.
-Je suis disponible le matin.
-"></textarea>
-
+<div class="score" id="score"></div>
 <div class="saved" id="savedMsg"></div>
 
 <div class="actions">
-  <button class="trad" onclick="ouvrirTraduction()">🌍 Aide à la traduction</button>
-  <button class="pdf" onclick="telechargerPDF()">📄 Télécharger le PDF</button>
-  <button class="clear" onclick="effacer()">🗑 Effacer</button>
-</div>
-
-<div class="note">
-✅ Le texte est sauvegardé automatiquement.
+  <button class="pdf" onclick="exportPDF()">📄 PDF</button>
+  <button class="reset" onclick="resetAll()">🗑 Réinitialiser</button>
+  <button class="formateur" onclick="accesFormateur()">🔐 Formateur</button>
 </div>
 
 </div>
 
 <script>
-const zone = document.getElementById("texte");
-const msg = document.getElementById("savedMsg");
+// 🔐 code formateur
+const CODE_FORMATEUR = "1984";
 
-// CHARGEMENT AUTO
-zone.value = localStorage.getItem("textePA") || "";
+// ✅ phrases TU
+const phrases = [
+"Tu peux venir demain.","Tu es disponible cet après-midi.","Tu arrives en retard.","Tu peux m’appeler.",
+"Tu confirmes le rendez-vous.","Tu es bien arrivé.","Tu commences à quelle heure.","Tu peux envoyer le document.",
+"Tu es libre demain matin.","Tu as compris le message.","Tu peux travailler demain.","Tu viens à l’entretien.",
+"Tu es prêt.","Tu peux changer l’horaire.","Tu termines à quelle heure.","Tu es absent aujourd’hui.",
+"Tu peux me répondre.","Tu es disponible cette semaine.","Tu peux confirmer ta présence.","Tu peux attendre un moment.",
+"Tu as reçu mon message.","Tu es d’accord.","Tu peux commencer lundi.","Tu es en route.",
+"Tu es intéressé par le poste.","Tu peux me dire quand.","Tu es déjà passé.","Tu peux venir plus tôt.",
+"Tu es motivé.","Tu peux signer le document.","Tu es disponible demain.","Tu as terminé la tâche.",
+"Tu peux rester un peu.","Tu es en pause.","Tu peux revenir plus tard.","Tu es malade aujourd’hui.",
+"Tu peux confirmer l’heure.","Tu es bien inscrit.","Tu peux participer à la réunion.",
+"Tu es libre cet après-midi.","Tu réponds au message.","Tu peux expliquer la situation.",
+"Tu es absent demain.","Tu peux prévenir en cas de retard.",
+"Tu es disponible lundi.","Tu peux envoyer un email.",
+"Tu es à l’heure.","Tu peux modifier la date.",
+"Tu es d’accord avec la proposition.","Tu confirmes ta disponibilité."
+];
 
-// SAUVEGARDE AUTO
-zone.addEventListener("input", ()=>{
-  localStorage.setItem("textePA", zone.value);
-  msg.textContent = "💾 Texte sauvegardé automatiquement";
-  setTimeout(()=>msg.textContent="",1500);
+// ✅ corrigé VOUS
+const solutions = phrases.map(p =>
+  p.replace(/^Tu /,"Vous ")
+   .replace(" peux "," pouvez ")
+   .replace(" es "," êtes ")
+   .replace(" arrives "," arrivez ")
+   .replace(" confirmes "," confirmez ")
+   .replace(" commences "," commencez ")
+   .replace(" termines "," terminez ")
+   .replace(" as "," avez ")
+   .replace(" viens "," venez ")
+   .replace(" réponds "," répondez ")
+);
+
+// affichage
+const zone = document.getElementById("liste");
+let resultats = Array(phrases.length).fill(null);
+
+phrases.forEach((p,i)=>{
+  zone.innerHTML += `
+  <div class="item">
+    <b>${i+1}.</b> ${p}
+    <textarea id="r${i}" placeholder="Version avec « vous »..."></textarea>
+    <div class="row">
+      <div id="res${i}" class="result"></div>
+      <button class="valider" onclick="valider(${i})">Valider</button>
+    </div>
+  </div>`;
 });
 
-// GOOGLE TRANSLATE
-function ouvrirTraduction(){
-  const txt = zone.value.trim();
-  if(!txt){
-    alert("Écrivez un texte avant d’utiliser la traduction.");
-    return;
-  }
-  const url = "https://translate.google.com/?sl=fr&tl=en&text=" +
-              encodeURIComponent(txt);
-  window.open(url,"_blank");
+// 💾 sauvegarde auto
+phrases.forEach((_,i)=>{
+  const t=document.getElementById("r"+i);
+  t.value=localStorage.getItem("r"+i)||"";
+  t.addEventListener("input",()=>{
+    localStorage.setItem("r"+i,t.value);
+    savedMsg.textContent="💾 Sauvegarde automatique";
+    setTimeout(()=>savedMsg.textContent="",1200);
+  });
+});
+
+// ✅ NORMALISATION
+function clean(txt){
+  return txt.toLowerCase()
+    .replace(/[’‘`´]/g, "'")
+    .replace(/[‐-–—−]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-// PDF
-function telechargerPDF(){
-  const txt = zone.value.trim();
-  if(!txt){
-    alert("Aucun texte à télécharger.");
-    return;
-  }
+// ✅ validation
+function valider(i){
+  const user=clean(document.getElementById("r"+i).value);
+  const sol=clean(solutions[i]);
+  const res=document.getElementById("res"+i);
 
+  if(!user){
+    res.textContent="❌ Vide";res.className="result ko";resultats[i]=false;
+  } else if(user===sol){
+    res.textContent="✅ Correct";res.className="result ok";resultats[i]=true;
+  } else{
+    res.textContent="❌ À corriger";res.className="result ko";resultats[i]=false;
+  }
+  updateScore();
+}
+
+function updateScore(){
+  const ok=resultats.filter(x=>x===true).length;
+  score.textContent=`Score : ${ok} / ${phrases.length}`;
+}
+
+// 🔐 formateur
+function accesFormateur(){
+  const code=prompt("Code formateur :");
+  if(code!==CODE_FORMATEUR){alert("Code incorrect");return;}
+  phrases.forEach((_,i)=>{
+    document.getElementById("r"+i).value=solutions[i];
+    resultats[i]=true;
+    document.getElementById("res"+i).textContent="✅ Corrigé";
+    document.getElementById("res"+i).className="result ok";
+  });
+  updateScore();
+}
+
+// 📄 PDF
+function exportPDF(){
   const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  pdf.setFont("Times","Normal");
-  pdf.setFontSize(12);
-
-  const lines = pdf.splitTextToSize(txt, 180);
-  pdf.text(lines,15,20);
-
-  pdf.save("mon_texte_francais.pdf");
+  const pdf=new jsPDF();
+  let y=20;
+  phrases.forEach((_,i)=>{
+    pdf.text(`${i+1}. ${document.getElementById("r"+i).value||""}`,15,y);
+    y+=10;if(y>270){pdf.addPage();y=20;}
+  });
+  pdf.save("tu_vers_vous.pdf");
 }
 
-// EFFACER
-function effacer(){
-  if(confirm("Voulez-vous vraiment effacer le texte ?")){
-    zone.value="";
-    localStorage.removeItem("textePA");
+// 🔄 reset
+function resetAll(){
+  if(confirm("Tout effacer ?")){
+    phrases.forEach((_,i)=>{
+      localStorage.removeItem("r"+i);
+      document.getElementById("r"+i).value="";
+      document.getElementById("res"+i).textContent="";
+      resultats[i]=null;
+    });
+    score.textContent="";
   }
 }
 </script>
