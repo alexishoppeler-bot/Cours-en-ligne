@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savoir-faire professionnels – 50 appariements</title>
+
+<style>
+body{
+  font-family:Arial, sans-serif;
+  background:#eef3f9;
+  padding:20px;
+}
+.app{
+  max-width:1100px;
+  margin:auto;
+  background:#fff;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 6px 25px rgba(0,0,0,.15);
+}
+h1{text-align:center;color:#004c97;margin-top:0}
+p{text-align:center;color:#333}
+
+.zone{
+  display:flex;
+  gap:25px;
+  margin-top:25px;
+  flex-wrap:wrap;
+}
+.col{
+  flex:1;
+  min-width:320px;
+}
+
+/* ----- ITEMS ----- */
+.item{
+  background:#f3f7ff;
+  padding:14px;
+  margin-bottom:10px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+.item:hover{background:#e4edff}
+
+.selected{outline:3px solid #3f71ff}
+.correct{background:#d4f5dd !important; cursor:default}
+.wrong{animation:shake .3s; background:#ffd6d6 !important}
+
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  50%{transform:translateX(4px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
+}
+
+footer{text-align:center;margin-top:30px}
+button{
+  padding:12px 22px;
+  font-size:16px;
+  border:none;
+  border-radius:12px;
+  background:#004c97;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <h1>🛠️ Savoir-faire professionnels</h1>
+  <p>Clique sur un savoir-faire, puis sur la phrase correcte.</p>
+
+  <div class="zone">
+    <!-- ===== COLONNE SAVOIR-FAIRE ===== -->
+    <div class="col" id="skills">
+      <div class="item" data-skill="sf1">Nettoyer un espace</div>
+      <div class="item" data-skill="sf2">Utiliser des outils</div>
+      <div class="item" data-skill="sf3">Utiliser l’ordinateur</div>
+      <div class="item" data-skill="sf4">Suivre un planning</div>
+      <div class="item" data-skill="sf5">Accueillir des clients</div>
+
+      <div class="item" data-skill="sf6">Travailler en équipe</div>
+      <div class="item" data-skill="sf7">Respecter les règles</div>
+      <div class="item" data-skill="sf8">Préparer du matériel</div>
+      <div class="item" data-skill="sf9">Ranger un stock</div>
+      <div class="item" data-skill="sf10">Lire des consignes</div>
+
+      <div class="item" data-skill="sf11">Répondre au téléphone</div>
+      <div class="item" data-skill="sf12">Écrire un e-mail simple</div>
+      <div class="item" data-skill="sf13">Faire un rapport</div>
+      <div class="item" data-skill="sf14">Utiliser une caisse</div>
+      <div class="item" data-skill="sf15">Encaisser un paiement</div>
+
+      <div class="item" data-skill="sf16">Nettoyer le sol</div>
+      <div class="item" data-skill="sf17">Porter des charges</div>
+      <div class="item" data-skill="sf18">Respecter les horaires</div>
+      <div class="item" data-skill="sf19">Gérer son temps</div>
+      <div class="item" data-skill="sf20">Signaler un problème</div>
+
+      <div class="item" data-skill="sf21">Préparer une commande</div>
+      <div class="item" data-skill="sf22">Contrôler la qualité</div>
+      <div class="item" data-skill="sf23">Travailler debout</div>
+      <div class="item" data-skill="sf24">Utiliser des gants</div>
+      <div class="item" data-skill="sf25">Suivre des instructions</div>
+
+      <div class="item" data-skill="sf26">Servir des clients</div>
+      <div class="item" data-skill="sf27">Noter des informations</div>
+      <div class="item" data-skill="sf28">Respecter la sécurité</div>
+      <div class="item" data-skill="sf29">Organiser son poste</div>
+      <div class="item" data-skill="sf30">Travailler seul</div>
+
+      <div class="item" data-skill="sf31">Préparer un espace</div>
+      <div class="item" data-skill="sf32">Utiliser le téléphone pro</div>
+      <div class="item" data-skill="sf33">Suivre une procédure</div>
+      <div class="item" data-skill="sf34">Faire un contrôle visuel</div>
+      <div class="item" data-skill="sf35">Utiliser Word</div>
+
+      <div class="item" data-skill="sf36">Utiliser Excel</div>
+      <div class="item" data-skill="sf37">Préparer un planning</div>
+      <div class="item" data-skill="sf38">Classer des documents</div>
+      <div class="item" data-skill="sf39">Respecter la confidentialité</div>
+      <div class="item" data-skill="sf40">Suivre un responsable</div>
+
+      <div class="item" data-skill="sf41">Demander de l’aide</div>
+      <div class="item" data-skill="sf42">Comprendre une tâche</div>
+      <div class="item" data-skill="sf43">Faire un nettoyage final</div>
+      <div class="item" data-skill="sf44">Utiliser une checklist</div>
+      <div class="item" data-skill="sf45">Fermer un poste</div>
+
+      <div class="item" data-skill="sf46">Préparer son matériel</div>
+      <div class="item" data-skill="sf47">Gérer le stress</div>
+      <div class="item" data-skill="sf48">Travailler avec précision</div>
+      <div class="item" data-skill="sf49">Respecter un délai</div>
+      <div class="item" data-skill="sf50">S’adapter au travail</div>
+    </div>
+
+    <!-- ===== COLONNE PHRASES ===== -->
+    <div class="col" id="sentences">
+      <div class="item" data-match="sf1">Je nettoie les locaux après le travail.</div>
+      <div class="item" data-match="sf2">J’utilise les outils nécessaires.</div>
+      <div class="item" data-match="sf3">J’envoie des e-mails et j’utilise l’ordinateur.</div>
+      <div class="item" data-match="sf4">Je respecte les heures et les tâches prévues.</div>
+      <div class="item" data-match="sf5">Je reçois les clients avec politesse.</div>
+
+      <div class="item" data-match="sf6">Je travaille bien avec mes collègues.</div>
+      <div class="item" data-match="sf7">Je respecte les règles de l’entreprise.</div>
+      <div class="item" data-match="sf8">Je prépare le matériel avant de commencer.</div>
+      <div class="item" data-match="sf9">Je range les produits dans le stock.</div>
+      <div class="item" data-match="sf10">Je lis attentivement les consignes.</div>
+
+      <div class="item" data-match="sf11">Je réponds au téléphone professionnel.</div>
+      <div class="item" data-match="sf12">J’écris un e-mail simple et clair.</div>
+      <div class="item" data-match="sf13">Je fais un petit rapport écrit.</div>
+      <div class="item" data-match="sf14">J’utilise la caisse du magasin.</div>
+      <div class="item" data-match="sf15">J’encaisse l’argent correctement.</div>
+
+      <div class="item" data-match="sf16">Je nettoie le sol.</div>
+      <div class="item" data-match="sf17">Je porte des charges si nécessaire.</div>
+      <div class="item" data-match="sf18">J’arrive à l’heure chaque jour.</div>
+      <div class="item" data-match="sf19">Je gère mes tâches dans le temps.</div>
+      <div class="item" data-match="sf20">Je signale un problème au responsable.</div>
+
+      <div class="item" data-match="sf21">Je prépare les commandes.</div>
+      <div class="item" data-match="sf22">Je vérifie la qualité du travail.</div>
+      <div class="item" data-match="sf23">Je travaille debout.</div>
+      <div class="item" data-match="sf24">J’utilise des gants de protection.</div>
+      <div class="item" data-match="sf25">Je suis les instructions données.</div>
+
+      <div class="item" data-match="sf26">Je sers les clients.</div>
+      <div class="item" data-match="sf27">Je note les informations importantes.</div>
+      <div class="item" data-match="sf28">Je respecte les règles de sécurité.</div>
+      <div class="item" data-match="sf29">J’organise mon poste de travail.</div>
+      <div class="item" data-match="sf30">Je travaille seul quand il faut.</div>
+
+      <div class="item" data-match="sf31">Je prépare l’espace de travail.</div>
+      <div class="item" data-match="sf32">J’utilise le téléphone professionnel.</div>
+      <div class="item" data-match="sf33">Je respecte la procédure.</div>
+      <div class="item" data-match="sf34">Je fais un contrôle visuel.</div>
+      <div class="item" data-match="sf35">J’utilise Word.</div>
+
+      <div class="item" data-match="sf36">J’utilise Excel.</div>
+      <div class="item" data-match="sf37">Je prépare un planning.</div>
+      <div class="item" data-match="sf38">Je classe les documents.</div>
+      <div class="item" data-match="sf39">Je respecte la confidentialité.</div>
+      <div class="item" data-match="sf40">Je suis les consignes du responsable.</div>
+
+      <div class="item" data-match="sf41">Je demande de l’aide si besoin.</div>
+      <div class="item" data-match="sf42">Je comprends la tâche demandée.</div>
+      <div class="item" data-match="sf43">Je fais le nettoyage final.</div>
+      <div class="item" data-match="sf44">J’utilise une checklist.</div>
+      <div class="item" data-match="sf45">Je ferme le poste de travail.</div>
+
+      <div class="item" data-match="sf46">Je prépare mon matériel.</div>
+      <div class="item" data-match="sf47">Je gère mon stress.</div>
+      <div class="item" data-match="sf48">Je travaille avec précision.</div>
+      <div class="item" data-match="sf49">Je respecte les délais.</div>
+      <div class="item" data-match="sf50">Je m’adapte au travail.</div>
+    </div>
+  </div>
+
+  <footer>
+    <button onclick="resetAll()">🔄 Réinitialiser</button>
+  </footer>
+</div>
+
+<script>
+let selectedSkill = null;
+const STORAGE_KEY = "savoirfaire_pairs_50";
+
+/* ===== SELECTION SAVOIR-FAIRE ===== */
+document.querySelectorAll('#skills .item').forEach(el=>{
+  el.addEventListener('click',()=>{
+    if(el.classList.contains('correct')) return;
+    document.querySelectorAll('#skills .item').forEach(i=>i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedSkill = el;
+  });
+});
+
+/* ===== SELECTION PHRASE ===== */
+document.querySelectorAll('#sentences .item').forEach(el=>{
+  el.addEventListener('click',()=>{
+    if(!selectedSkill || el.classList.contains('correct')) return;
+
+    if(el.dataset.match === selectedSkill.dataset.skill){
+      // Correct
+      el.classList.add('correct');
+      selectedSkill.classList.add('correct');
+      selectedSkill.classList.remove('selected');
+      selectedSkill = null;
+      saveProgress();
+    } else {
+      // Faux : petit shake + reset du mot choisi
+      el.classList.add('wrong');
+      setTimeout(()=>el.classList.remove('wrong'),300);
+      selectedSkill.classList.remove('selected');
+      selectedSkill = null;
+    }
+  });
+});
+
+/* ===== RESET ===== */
+function resetAll(){
+  document.querySelectorAll('.item').forEach(el=>{
+    el.classList.remove('correct','selected','wrong');
+  });
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+/* ===== SAUVEGARDE AUTO ===== */
+function saveProgress(){
+  const doneSkills = Array.from(
+    document.querySelectorAll('#skills .item.correct')
+  ).map(el => el.dataset.skill);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(doneSkills));
+}
+
+/* ===== RECHARGER PROGRESSION ===== */
+window.addEventListener('load', ()=>{
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(!saved) return;
+  try{
+    const list = JSON.parse(saved);
+    list.forEach(skillId=>{
+      const skillEl = document.querySelector('#skills .item[data-skill="'+skillId+'"]');
+      const sentEl = document.querySelector('#sentences .item[data-match="'+skillId+'"]');
+      if(skillEl && sentEl){
+        skillEl.classList.add('correct');
+        sentEl.classList.add('correct');
+      }
+    });
+  }catch(e){
+    console.error(e);
+  }
+});
+</script>
+</body>
+</html>
