@@ -11,6 +11,7 @@
     --dark:#003366;
     --bg:#eef3f9;
     --card:#ffffff;
+    --green:#2ecc71;
 }
 
 body{
@@ -72,16 +73,25 @@ header p{
     gap:10px;
 }
 
+/* ======= EXERCICES ======= */
 .card ul{
     list-style:none;
     padding:0;
     margin:0;
 }
-.card li{
+
+.exercise{
+    display:flex;
+    align-items:center;
+    gap:10px;
     margin:8px 0;
+    padding:6px;
+    border-radius:10px;
+    transition:.2s;
 }
 
-.card a{
+.exercise a{
+    flex:1;
     text-decoration:none;
     display:block;
     padding:10px 12px;
@@ -91,9 +101,23 @@ header p{
     font-weight:bold;
     transition:.2s;
 }
-.card a:hover{
+.exercise a:hover{
     background:#e6ecff;
     transform:translateX(6px);
+}
+
+.exercise.done{
+    background:#e6ffe9;
+}
+.exercise.done a{
+    background:transparent;
+    color:#116b2d;
+}
+
+/* checkbox plus visible */
+.exercise input[type="checkbox"]{
+    transform:scale(1.4);
+    cursor:pointer;
 }
 
 /* ======= FOOTER ======= */
@@ -110,7 +134,7 @@ footer{
 
 <header>
     <h1>📘 Cours en ligne</h1>
-    <p>Apprendre le français, le numérique et la vie professionnelle – pas à pas</p>
+    <p>Coche quand l’exercice est fait – tu peux modifier à tout moment</p>
 </header>
 
 <div class="container">
@@ -121,7 +145,10 @@ footer{
     <div class="card">
         <h2>🕒 Horloges</h2>
         <ul>
-            <li><a href="heure.html">Lire et régler l’heure</a></li>
+            <li class="exercise" data-id="heure-1">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="heure.html">Lire et régler l’heure</a>
+            </li>
         </ul>
     </div>
 
@@ -129,9 +156,18 @@ footer{
     <div class="card">
         <h2>📁 Documents & numérique</h2>
         <ul>
-            <li><a href="organiser-documents-dossiers.html">Organiser les documents</a></li>
-            <li><a href="miniwindows-mise-en-forme.html">MiniWord – Mise en forme</a></li>
-            <li><a href="editeur-a4.html">MiniWord → PDF</a></li>
+            <li class="exercise" data-id="docs-1">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="organiser-documents-dossiers.html">Organiser les documents</a>
+            </li>
+            <li class="exercise" data-id="docs-2">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="miniwindows-mise-en-forme.html">MiniWord – Mise en forme</a>
+            </li>
+            <li class="exercise" data-id="docs-3">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="editeur-a4.html">MiniWord → PDF</a>
+            </li>
         </ul>
     </div>
 
@@ -139,9 +175,18 @@ footer{
     <div class="card">
         <h2>📄 Formulaires</h2>
         <ul>
-            <li><a href="formulaire-profil.html">Profil professionnel</a></li>
-            <li><a href="emails-professionnels.html">Emails professionnels</a></li>
-            <li><a href="lettre-motivation.html">Lettre de motivation</a></li>
+            <li class="exercise" data-id="form-1">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="formulaire-profil.html">Profil professionnel</a>
+            </li>
+            <li class="exercise" data-id="form-2">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="emails-professionnels.html">Emails professionnels</a>
+            </li>
+            <li class="exercise" data-id="form-3">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="lettre-motivation.html">Lettre de motivation</a>
+            </li>
         </ul>
     </div>
 
@@ -149,12 +194,30 @@ footer{
     <div class="card">
         <h2>🗣️ Français / FIDE</h2>
         <ul>
-            <li><a href="clavier-reecriture.html">Réécriture au clavier</a></li>
-            <li><a href="comprehension-a1.html">Compréhension – Niveau 1</a></li>
-            <li><a href="comprehension-a2-b1.html">Compréhension – Niveau 2</a></li>
-            <li><a href="communication-c1.html">Compréhension – Niveau 3</a></li>
-            <li><a href="scenarios-professionnels.html">Scénarios professionnels</a></li>
-            <li><a href="Écrire-en-français -situations-professionnelle.html">Écrire en français</a></li>
+            <li class="exercise" data-id="fr-1">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="clavier-reecriture.html">Réécriture au clavier</a>
+            </li>
+            <li class="exercise" data-id="fr-2">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="comprehension-a1.html">Compréhension – Niveau 1</a>
+            </li>
+            <li class="exercise" data-id="fr-3">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="comprehension-a2-b1.html">Compréhension – Niveau 2</a>
+            </li>
+            <li class="exercise" data-id="fr-4">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="communication-c1.html">Compréhension – Niveau 3</a>
+            </li>
+            <li class="exercise" data-id="fr-5">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="scenarios-professionnels.html">Scénarios professionnels</a>
+            </li>
+            <li class="exercise" data-id="fr-6">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="Écrire-en-français -situations-professionnelle.html">Écrire en français</a>
+            </li>
         </ul>
     </div>
 
@@ -162,9 +225,18 @@ footer{
     <div class="card">
         <h2>💼 Emploi & travail</h2>
         <ul>
-            <li><a href="questions-entretien.html">Questions d’entretien</a></li>
-            <li><a href="parler-de-mon-dernier-travail.html">Parler de son dernier travail</a></li>
-            <li><a href="Simulation-de-situations-professionnelles.html">Situations professionnelles</a></li>
+            <li class="exercise" data-id="emp-1">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="questions-entretien.html">Questions d’entretien</a>
+            </li>
+            <li class="exercise" data-id="emp-2">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="parler-de-mon-dernier-travail.html">Parler de son dernier travail</a>
+            </li>
+            <li class="exercise" data-id="emp-3">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="Simulation-de-situations-professionnelles.html">Situations professionnelles</a>
+            </li>
         </ul>
     </div>
 
@@ -172,9 +244,18 @@ footer{
     <div class="card">
         <h2>🎮 Jeux d’apprentissage</h2>
         <ul>
-            <li><a href="jeu-clics.html">Jeu de clics</a></li>
-            <li><a href="jeu-directions.html">Jeu des directions</a></li>
-            <li><a href="mot-image-metiers.html">Métiers – Images / mots</a></li>
+            <li class="exercise" data-id="jeu-1">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="jeu-clics.html">Jeu de clics</a>
+            </li>
+            <li class="exercise" data-id="jeu-2">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="jeu-directions.html">Jeu des directions</a>
+            </li>
+            <li class="exercise" data-id="jeu-3">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="mot-image-metiers.html">Métiers – Images / mots</a>
+            </li>
         </ul>
     </div>
 
@@ -182,8 +263,33 @@ footer{
 </div>
 
 <footer>
-    © Cours en ligne – Apprendre pour devenir autonome
+    ✔ Avancement sauvegardé automatiquement
 </footer>
+
+<script>
+function toggleDone(cb){
+    const ex = cb.closest(".exercise");
+    const id = ex.dataset.id;
+
+    if(cb.checked){
+        ex.classList.add("done");
+        localStorage.setItem("done_"+id,"1");
+    }else{
+        ex.classList.remove("done");
+        localStorage.removeItem("done_"+id);
+    }
+}
+
+/* Restauration au chargement */
+document.querySelectorAll(".exercise").forEach(ex=>{
+    const id = ex.dataset.id;
+    const cb = ex.querySelector("input[type='checkbox']");
+    if(localStorage.getItem("done_"+id)){
+        cb.checked = true;
+        ex.classList.add("done");
+    }
+});
+</script>
 
 </body>
 </html>
