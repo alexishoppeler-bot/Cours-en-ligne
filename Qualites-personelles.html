@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wordwall – Appariement intuitif</title>
+<style>
+body{font-family:Arial,sans-serif;background:#eef3f9;margin:0;padding:20px}
+.container{max-width:900px;margin:auto;background:#fff;padding:25px;border-radius:20px;box-shadow:0 6px 25px rgba(0,0,0,.12)}
+h1{text-align:center;color:#004c97;margin-top:0}
+.instruction{text-align:center;color:#333;margin-bottom:15px;font-size:18px}
+.helper{text-align:center;font-size:15px;color:#666;margin-bottom:25px}
+.game{display:flex;gap:20px}
+.column{flex:1}
+.column h2{text-align:center;color:#003366;margin-bottom:10px}
+.card{padding:16px;margin:12px 0;background:#f3f7ff;border-radius:14px;text-align:center;cursor:pointer;font-size:18px;border:3px solid transparent;transition:.15s}
+.card:hover{background:#e7efff}
+.card.selected{border-color:#3f71ff;background:#dbe6ff}
+.card.matched{background:#d2f2dc;border-color:#2eaf65;cursor:default}
+.card.wrong{animation:shake .3s;border-color:#e03a3a;background:#fde0e0}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)}}
+
+/* clignotement léger côté gauche */
+@keyframes blink{
+  0%{background:#dbe6ff}
+  50%{background:#f3f7ff}
+  100%{background:#dbe6ff}
+}
+.card.blink{animation:blink .6s ease-in-out}
+.bottom{text-align:center;margin-top:25px}
+button{padding:14px 28px;font-size:17px;border:none;border-radius:30px;cursor:pointer;background:#3f71ff;color:#fff}
+button:hover{background:#2f5fe0}
+.score{margin-top:8px;font-weight:bold;color:#004c97;font-size:18px}
+.done{font-size:20px;color:#2eaf65;margin-top:15px;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Qualités professionnelles – niveau plus difficile</h1>
+  <p class="instruction">Associez la qualité avec la phrase la plus précise (attention : phrases proches).</p>
+  <p class="helper">💡 Astuce : une réponse fausse bouge, une bonne réponse devient verte.</p>
+
+  <div class="game">
+    <div class="column" id="left">
+      <h2>Qualités</h2>
+    </div>
+    <div class="column" id="right">
+      <h2>Phrases</h2>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="score" id="progress">Série 1 / 5</div>
+    <div class="score" id="score">0 / 10</div>
+    <button onclick="resetAll()">🔄 Réinitialiser tout</button>
+    <div id="done" class="done" style="display:none">✅ Série terminée</div>
+  </div>
+</div>
+
+<script>
+// 50 paires qualité ↔ phrase
+const allPairs = [
+  {a:"Ponctuel", b:"Je respecte toujours les horaires de travail et les délais."},
+  {a:"Autonome", b:"Je peux organiser mes tâches sans surveillance constante."},
+  {a:"Fiable", b:"Mon employeur peut compter sur moi sur la durée."},
+  {a:"Organisé", b:"Je planifie mon travail pour éviter les oublis."},
+  {a:"Flexible", b:"J’accepte des changements d’horaires ou de tâches."},
+  {a:"Motivé", b:"Je montre de l’envie et de l’engagement dans mon travail."},
+  {a:"Sérieux", b:"Je respecte les règles et je fais mon travail avec attention."},
+  {a:"Dynamique", b:"Je travaille avec énergie et implication."},
+  {a:"Responsable", b:"J’assume mes tâches et mes décisions."},
+  {a:"Patient", b:"Je prends le temps nécessaire pour bien faire."},
+
+  {a:"Respectueux", b:"Je traite les autres avec politesse et considération."},
+  {a:"Discret", b:"Je respecte la confidentialité au travail."},
+  {a:"Rigoureux", b:"Je fais attention aux détails et aux consignes."},
+  {a:"Polyvalent", b:"Je peux effectuer différentes tâches."},
+  {a:"Efficace", b:"Je travaille rapidement sans perdre en qualité."},
+  {a:"Consciencieux", b:"Je fais mon travail avec soin et responsabilité."},
+  {a:"Disponible", b:"Je suis prêt à aider quand on a besoin de moi."},
+  {a:"Proactif", b:"Je prends des initiatives adaptées à mon poste."},
+  {a:"Adaptable", b:"Je m’ajuste facilement aux nouvelles situations."},
+  {a:"Ponctualité", b:"Le respect des horaires fait partie de mes priorités."},
+
+  {a:"Travail d’équipe", b:"Je collabore efficacement avec mes collègues."},
+  {a:"Communication", b:"Je transmets les informations de manière claire."},
+  {a:"Fiabilité", b:"On peut me faire confiance dans la durée."},
+  {a:"Organisation", b:"Je structure mon travail pour être efficace."},
+  {a:"Autonomie", b:"Je gère mon travail sans supervision constante."},
+  {a:"Persévérant", b:"Je continue même quand le travail est difficile."},
+  {a:"Calme", b:"Je garde le contrôle dans les situations stressantes."},
+  {a:"Précis", b:"Je respecte exactement les consignes données."},
+  {a:"Engagé", b:"Je m’investis pleinement dans mes tâches."},
+  {a:"Professionnel", b:"J’adopte une attitude correcte en toute situation."},
+
+  {a:"Réactif", b:"Je réagis rapidement quand un problème apparaît."},
+  {a:"Fiable sur les horaires", b:"Je suis toujours présent aux heures prévues."},
+  {a:"Méthodique", b:"J’utilise une méthode claire pour travailler."},
+  {a:"Ouvert", b:"J’accepte les remarques et les conseils."},
+  {a:"Appliqué", b:"Je fais attention à la qualité de mon travail."},
+  {a:"Résistant", b:"Je supporte bien le rythme et la charge de travail."},
+  {a:"Stable", b:"Je garde une attitude constante au travail."},
+  {a:"Confiant", b:"Je crois en ma capacité à bien faire mon travail."},
+  {a:"Ordonné", b:"Je maintiens un espace de travail en ordre."},
+  {a:"Disponible mentalement", b:"Je reste concentré pendant mes heures de travail."}
+];
+
+let selectedLeft = null;
+let score = 0;
+let serie = 0;
+let errors = 0; // compteur d'erreurs au premier choix
+const totalSeries = 5;
+const perSerie = 10;
+let pairs = [];
+
+// 🔐 sauvegarde locale automatique (série atteinte)
+function saveProgress(){
+  localStorage.setItem('wordwall_serie', serie.toString());
+}
+
+function loadProgress(){
+  const s = localStorage.getItem('wordwall_serie');
+  if(s !== null){
+    const value = parseInt(s);
+    if(!isNaN(value) && value >= 0 && value < totalSeries){
+      serie = value;
+    }
+  }
+}
+
+function shuffle(array){
+  return array.sort(()=>Math.random()-0.5);
+}
+
+function initSerie(){
+  score = 0;
+  selectedLeft = null;
+  document.getElementById('done').style.display='none';
+  document.getElementById('progress').textContent = `Série ${serie+1} / ${totalSeries}`;
+
+  pairs = allPairs.slice(serie*perSerie, serie*perSerie + perSerie);
+  document.getElementById('score').textContent = `0 / ${pairs.length} · Erreurs : ${errors}`;
+
+  const left = document.getElementById('left');
+  const right = document.getElementById('right');
+  left.querySelectorAll('.card').forEach(c=>c.remove());
+  right.querySelectorAll('.card').forEach(c=>c.remove());
+
+  shuffle([...pairs]).forEach(p=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.textContent=p.a;
+    d.dataset.match=p.b;
+    d.onclick=()=>selectLeft(d);
+    left.appendChild(d);
+  });
+
+  shuffle([...pairs]).forEach(p=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.textContent=p.b;
+    d.onclick=()=>selectRight(d);
+    right.appendChild(d);
+  });
+}
+
+function selectLeft(el){
+  if(el.classList.contains('matched')) return;
+  document.querySelectorAll('#left .card').forEach(c=>c.classList.remove('selected'));
+  selectedLeft = el;
+  el.classList.add('selected');
+}
+
+function selectRight(el){
+  if(!selectedLeft || el.classList.contains('matched')) return;
+
+  if(selectedLeft.dataset.match === el.textContent){
+    // ✅ Bonne réponse
+    selectedLeft.classList.remove('selected');
+    selectedLeft.classList.add('matched');
+    el.classList.add('matched');
+    score++;
+    document.getElementById('score').textContent = `${score} / ${pairs.length} · Erreurs : ${errors}`;
+
+    if(score === pairs.length){
+      const done = document.getElementById('done');
+      done.style.display='block';
+      done.textContent = `✅ Série terminée — ${errors} erreur(s)`;
+      setTimeout(()=>{
+        if(serie < totalSeries - 1){
+          serie++;
+          saveProgress();
+          initSerie();
+        } else {
+          done.textContent = `✅ Toutes les séries terminées — Total erreurs : ${errors}`;
+        }
+      }, 1400);
+    }
+  } else {
+    // ❌ Mauvaise réponse au premier choix → comptabilisée
+    errors++; // erreur comptée
+    document.getElementById('score').textContent = `${score} / ${pairs.length} · Erreurs : ${errors}`;
+
+    // reset du dernier mot choisi + clignotement
+    selectedLeft.classList.remove('selected');
+    selectedLeft.classList.add('blink');
+    setTimeout(()=>selectedLeft.classList.remove('blink'),600);
+    el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'),300);
+  }
+
+  selectedLeft = null;
+}
+
+function resetAll(){
+  // efface sauvegarde
+  localStorage.removeItem('wordwall_serie');
+
+  // reset état global
+  serie = 0;
+  score = 0;
+  errors = 0;
+  selectedLeft = null;
+
+  // efface toutes les listes visibles
+  const left = document.getElementById('left');
+  const right = document.getElementById('right');
+  left.querySelectorAll('.card').forEach(c=>c.remove());
+  right.querySelectorAll('.card').forEach(c=>c.remove());
+
+  const done = document.getElementById('done');
+  done.style.display = 'none';
+  done.textContent = '✅ Série terminée';
+
+  // relance depuis le début
+  initSerie();
+}
+
+// ▶️ Lancement
+loadProgress();
+initSerie();
+</script>
+</body>
+</html>
