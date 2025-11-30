@@ -1,505 +1,374 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>💼 Générateur de lettres de motivation – Version complète</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-body {
-  font-family: "Calibri", sans-serif;
-  background-color: #f3f4f6;
-  display: flex;
-  justify-content: center;
-  padding: 40px;
-}
-.container {
-  width: 880px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 40px 60px;
-}
-h1 { text-align: center; color: #1a73e8; }
-label { font-weight: bold; display: block; margin-top: 12px; }
-input, select {
-  width: 100%; padding: 8px; border-radius: 6px;
-  border: 1px solid #ccc; margin-top: 4px; font-size: 14px;
-}
-.ligne { display: flex; gap: 10px; }
-.ligne input { flex: 1; }
-.zone { margin-top: 14px; padding: 10px; border-radius: 8px; }
-.qualites { background: #f1f1f1; }
-.competences { background: #e7f6e7; }
-.exemples label { display: block; font-weight: normal; margin-top: 4px; }
-button {
-  margin-top: 20px; background-color: #1a73e8; color: #fff;
-  border: none; padding: 10px 20px; border-radius: 8px;
-  cursor: pointer; font-size: 16px;
-}
-button:hover { background-color: #0c5fd1; }
-.actions { display: flex; gap: 10px; }
-.result {
-  margin-top: 40px; white-space: pre-wrap;
-  font-size: 15px; line-height: 1.6;
-  font-family: "Calibri", sans-serif;
-}
-.result .expediteur { margin-bottom: 20px; }
-.result .destinataire { margin-left: 10cm; margin-bottom: 20px; }
-</style>
+  <meta charset="UTF-8">
+  <title>Lettre de candidature – base universelle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Librairies pour l'export PDF avec mise en forme -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    body{
+      font-family:Arial, sans-serif;
+      background:#eef2f6;
+      display:flex;
+      justify-content:center;
+      padding:30px 10px;
+    }
+    .app{
+      width:820px;
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 6px 25px rgba(0,0,0,.12);
+      overflow:hidden;
+    }
+    header{
+      background:#004c97;
+      color:#fff;
+      padding:20px;
+      text-align:center;
+      font-size:20px;
+    }
+    section{padding:20px}
+    input,select{
+      width:100%;
+      padding:10px;
+      border-radius:6px;
+      border:1px solid #bbb;
+      margin-bottom:10px;
+      font-size:15px;
+    }
+    h3{margin-top:25px;color:#003366}
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      padding:12px 20px;
+      background:#eef3f9;
+      border-top:1px solid #ddd;
+    }
+    .toolbar button{
+      padding:8px 14px;
+      border-radius:6px;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    .letter{
+      background:#f9fafb;
+      padding:25px;
+      white-space:pre-line;
+      line-height:1.7;
+      border-top:1px solid #ddd;
+      font-size:15px;
+      min-height:260px;
+    }
+
+    button{
+      margin:20px auto;
+      display:block;
+      background:#3f71ff;
+      color:white;
+      border:none;
+      padding:12px 35px;
+      font-size:16px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+    button:disabled{
+      background:#b0b8c4;
+      cursor:not-allowed;
+    }
+    .reset{background:#777}
+
+    .qual-buttons{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+      gap:8px;
+      margin-top:10px;
+    }
+    .qbtn{
+      background:#eef3f9;
+      color:#003366;
+      border:1px solid #aac2ff;
+      padding:8px;
+      border-radius:8px;
+      font-size:14px;
+      cursor:pointer;
+    }
+    .qbtn.active{
+      background:#3f71ff;
+      color:white;
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
-  <h1>💼 Générateur de lettres de motivation – Ciblée / Spontanée</h1>
+<div class="app">
+  <header>📄 Lettre de candidature professionnelle</header>
 
-  <label>Genre :</label>
-  <select id="genre" onchange="majGenre()">
-    <option value="homme">Homme</option>
-    <option value="femme">Femme</option>
-  </select>
+  <section>
+    <h3>👤 Expéditeur</h3>
+    <input id="prenom" placeholder="Prénom" oninput="updateLetter()">
+    <input id="nom" placeholder="Nom" oninput="updateLetter()">
+    <!-- Version unisex : pas de genre -->
+    <input id="adresse" placeholder="Adresse" oninput="updateLetter()">
+    <input id="npa" placeholder="NPA" oninput="updateLetter()">
+    <input id="ville" placeholder="Ville" oninput="updateLetter()">
+    <input id="tel" placeholder="Téléphone" oninput="updateLetter()">
+    <input id="mail" placeholder="E-mail" oninput="updateLetter()">
 
-  <label>Type de candidature :</label>
-  <select id="type" onchange="majLettre()">
-    <option value="ciblee">Ciblée (pour une annonce)</option>
-    <option value="spontanee">Spontanée (sans annonce)</option>
-  </select>
+    <h3>🏢 Destinataire</h3>
+    <input id="entreprise" placeholder="Nom de l’entreprise" oninput="saveDestinataire();updateLetter()">
+    <input id="adresseEnt" placeholder="Adresse de l’entreprise" oninput="saveDestinataire();updateLetter()">
+    <input id="npaEnt" placeholder="NPA et ville de l’entreprise" oninput="saveDestinataire();updateLetter()">
 
-  <label>Expérience professionnelle :</label>
-  <select id="experience" onchange="majLettre()">
-    <option value="avec">J’ai déjà travaillé dans ce domaine</option>
-    <option value="sans">Je débute mais je suis motivé(e)</option>
-  </select>
+    <h3>📌 Type de candidature</h3>
+    <select id="typeCand" onchange="updateLetter()">
+      <option value="">Choisir</option>
+      <option value="spontanee">Candidature spontanée</option>
+      <option value="ciblee">Candidature ciblée</option>
+    </select>
+    <input id="site" placeholder="Site d’annonce (ex. JobRoom, Indeed…)" oninput="updateLetter()">
+    <input id="poste" placeholder="Poste recherché (à écrire)" oninput="updateLetter()">
 
-  <label>Nom et prénom :</label>
-  <input id="nom" oninput="majLettre()" placeholder="Ex : Alex Dupont">
+    <h3>⭐ Qualités personnelles (max. 3)</h3>
+    <div class="qual-buttons">
+      <button type="button" class="qbtn" data-key="ponctuel" onclick="toggleQualite('ponctuel')">Ponctuel</button>
+      <button type="button" class="qbtn" data-key="motive" onclick="toggleQualite('motive')">Motivé·e</button>
+      <button type="button" class="qbtn" data-key="serieux" onclick="toggleQualite('serieux')">Sérieux·se</button>
+      <button type="button" class="qbtn" data-key="autonome" onclick="toggleQualite('autonome')">Autonome</button>
+      <button type="button" class="qbtn" data-key="organise" onclick="toggleQualite('organise')">Organisé·e</button>
+      <button type="button" class="qbtn" data-key="fiable" onclick="toggleQualite('fiable')">Fiable</button>
+      <button type="button" class="qbtn" data-key="respectueux" onclick="toggleQualite('respectueux')">Respectueux·se</button>
+      <button type="button" class="qbtn" data-key="polyvalent" onclick="toggleQualite('polyvalent')">Polyvalent·e</button>
+      <button type="button" class="qbtn" data-key="soigneux" onclick="toggleQualite('soigneux')">Soigneux·se</button>
+      <button type="button" class="qbtn" data-key="rapide" onclick="toggleQualite('rapide')">Rapide</button>
+    </div>
+  </section>
 
-  <label>Adresse :</label>
-  <input id="adresse" oninput="majLettre()" placeholder="Ex : Rue du Lac 4">
-  <div class="ligne">
-    <input id="npa" oninput="majLettre()" placeholder="Ex : 1800">
-    <input id="ville" oninput="majLettre()" placeholder="Ex : Vevey">
+  <div class="toolbar">
+    <button type="button" onclick="boldSelection()">🅱️ Gras (sélection)</button>
+    <button type="button" onclick="indentSelection()">↦ Retrait (sélection)</button>
+    <button type="button" onclick="exportPDF()">📄 Export PDF</button>
   </div>
 
-  <label>Email :</label>
-  <input id="email" oninput="majLettre()" placeholder="Ex : alex.dupont@gmail.com">
-
-  <label>Téléphone :</label>
-  <input id="tel" oninput="majLettre()" placeholder="Ex : 078 123 45 67">
-
-  <label>Entreprise :</label>
-  <input id="entreprise" oninput="majLettre()" placeholder="Ex : Hôtel du Lac">
-
-  <label>Adresse de l’entreprise :</label>
-  <input id="adresseEntreprise" oninput="majLettre()" placeholder="Ex : Rue du Port 3">
-  <div class="ligne">
-    <input id="npaEntreprise" oninput="majLettre()" placeholder="Ex : 1800">
-    <input id="villeEntreprise" oninput="majLettre()" placeholder="Ex : Vevey">
-  </div>
-
-  <label>Date :</label>
-  <input id="date" type="date" onchange="majLettre()">
-
-  <label>Poste souhaité :</label>
-  <input id="poste" oninput="majLettre()" placeholder="Ex : employé polyvalent / employée polyvalente">
-
-  <label>Métier :</label>
-  <select id="metier" onchange="majQualites();majCompetences();majLettre()">
-    <option value="">Choisir...</option>
-  </select>
-
-  <div class="zone qualites">
-    <label>Qualités personnelles :</label>
-    <div id="zoneExemplesQualites" class="exemples"></div>
-  </div>
-
-  <div class="zone competences">
-    <label>Compétences techniques :</label>
-    <div id="zoneExemplesCompetences" class="exemples"></div>
-  </div>
-
-  <div class="actions">
-    <button onclick="telechargerPDF()">📄 Télécharger PDF</button>
-    <button onclick="effacerTout()">🧹 Effacer tout</button>
-  </div>
-
-  <div id="lettre" class="result">👉 Remplissez les champs pour générer votre lettre.</div>
+  <div id="letter" class="letter" contenteditable="true"></div>
+  <button class="reset" type="button" onclick="resetLetterOnly()">🧹 Vider la lettre</button>
+  <button class="reset" type="button" onclick="resetAll()">🔄 Réinitialiser tout</button>
 </div>
 
 <script>
-// ===============================
-//  MÉTIERS HOMME
-// ===============================
-const metiersHomme = {
-  "agent de nettoyage": {
-    domaine: "du nettoyage",
-    qualites: ["soigneux", "ponctuel", "organisé", "discret", "fiable"],
-    competences: ["utilisation du matériel", "entretien des sols", "nettoyage des vitres", "produits d’entretien", "sécurité au travail"],
-    exemplesQualites: {
-      soigneux: ["Je veille à la propreté irréprochable des locaux.", "Je respecte les produits et règles d’hygiène."],
-      ponctuel: ["J’arrive toujours à l’heure.", "Je respecte les horaires de travail et les délais fixés."],
-      organisé: ["Je planifie mon travail selon les priorités.", "Je garde mon matériel bien rangé."],
-      discret: ["Je travaille sans déranger les occupants.", "Je garde une attitude calme et polie."],
-      fiable: ["On peut me faire confiance pour la qualité du travail.", "Je respecte les consignes de sécurité."]
-    },
-    exemplesCompetences: {
-      "utilisation du matériel": ["J’utilise la monobrosse et l’aspirateur industriel.", "Je connais les produits adaptés à chaque surface."],
-      "entretien des sols": ["Je nettoie, cire et entretiens les sols selon le type de revêtement."],
-      "nettoyage des vitres": ["Je nettoie les vitres avec précision et sécurité."],
-      "produits d’entretien": ["Je dose les produits selon les instructions et pictogrammes."],
-      "sécurité au travail": ["Je respecte les consignes et porte les équipements de protection."]
-    }
-  },
-  "aide de cuisine": {
-    domaine: "de la cuisine",
-    qualites: ["rapide", "attentif", "propre", "collaboratif", "patient"],
-    competences: ["préparation des aliments", "hygiène alimentaire", "plonge", "aide au chef", "gestion du poste"],
-    exemplesQualites: {
-      rapide: ["Je garde un bon rythme pendant le service.", "Je prépare les plats efficacement."],
-      attentif: ["J’écoute les consignes du chef et je vérifie la qualité des plats."],
-      propre: ["Je garde mon poste de travail propre et respecte les règles d’hygiène."],
-      collaboratif: ["Je travaille en bonne entente avec mes collègues."],
-      patient: ["Je garde mon calme pendant les moments de forte activité."]
-    },
-    exemplesCompetences: {
-      "préparation des aliments": ["Je coupe, épluche et prépare les légumes.", "Je prépare les salades et entrées."],
-      "hygiène alimentaire": ["Je respecte les normes HACCP.", "Je nettoie régulièrement les surfaces et ustensiles."],
-      "plonge": ["Je lave et range la vaisselle rapidement."],
-      "aide au chef": ["Je soutiens le chef pendant le service et prépare les ingrédients."],
-      "gestion du poste": ["Je garde mon poste organisé et propre en tout temps."]
-    }
-  },
-  "plongeur": {
-    domaine: "de la restauration",
-    qualites: ["rapide", "résistant", "propre", "calme", "fiable"],
-    competences: ["lavage de la vaisselle", "entretien du matériel", "organisation du poste", "respect des règles d’hygiène", "aide en cuisine"],
-    exemplesQualites: {
-      rapide: ["Je maintiens un bon rythme sans négliger la qualité."],
-      résistant: ["Je supporte le travail debout et le rythme soutenu."],
-      propre: ["Je garde la zone de lavage propre."],
-      calme: ["Je garde mon calme pendant les périodes de forte activité."],
-      fiable: ["On peut compter sur moi pour la propreté du matériel."]
-    },
-    exemplesCompetences: {
-      "lavage de la vaisselle": ["Je nettoie la vaisselle avec soin et efficacité."],
-      "entretien du matériel": ["Je nettoie la machine à laver après usage."],
-      "organisation du poste": ["Je garde mon espace de travail bien rangé."],
-      "respect des règles d’hygiène": ["Je respecte strictement les consignes sanitaires."],
-      "aide en cuisine": ["Je soutiens les cuisiniers selon les besoins."]
-    }
-  },
-  "employé de production": {
-    domaine: "de la production",
-    qualites: ["précis", "rapide", "concentré", "soigneux", "responsable"],
-    competences: ["manipulation de machines", "contrôle qualité", "emballage", "sécurité en production", "travail en équipe"],
-    exemplesQualites: {
-      précis: ["Je vérifie mon travail avec rigueur avant de poursuivre."],
-      rapide: ["Je garde un rythme soutenu sans perte de qualité."],
-      concentré: ["Je reste attentif tout au long de la journée."],
-      soigneux: ["Je manipule les produits avec précaution."],
-      responsable: ["Je respecte les consignes et les délais."]
-    },
-    exemplesCompetences: {
-      "manipulation de machines": ["Je sais utiliser les machines de production en sécurité."],
-      "contrôle qualité": ["Je contrôle la conformité des produits avant emballage."],
-      "emballage": ["Je conditionne les produits proprement."],
-      "sécurité en production": ["Je respecte les consignes de sécurité."],
-      "travail en équipe": ["Je communique efficacement avec mes collègues."]
-    }
-  },
-  "blanchisseur": {
-    domaine: "de la blanchisserie",
-    qualites: ["soigneux", "rapide", "organisé", "propre", "responsable"],
-    competences: ["tri du linge", "lavage", "repassage", "pliage", "contrôle qualité"],
-    exemplesQualites: {
-      soigneux: ["Je respecte les températures et les cycles adaptés."],
-      rapide: ["Je garde un bon rythme pendant le repassage."],
-      organisé: ["Je planifie les cycles de lavage."],
-      propre: ["Je garde mon poste de travail propre."],
-      responsable: ["Je signale toute anomalie sur le linge."]
-    },
-    exemplesCompetences: {
-      "tri du linge": ["Je trie le linge selon la couleur et la matière."],
-      "lavage": ["Je maîtrise les programmes de lavage adaptés."],
-      "repassage": ["Je repasse avec précision et soin."],
-      "pliage": ["Je plie le linge proprement avant livraison."],
-      "contrôle qualité": ["Je vérifie la propreté et l’état du linge."]
-    }
-  },
-  "ouvrier en bâtiment": {
-    domaine: "du bâtiment",
-    qualites: ["ponctuel", "résistant", "prudent", "attentif", "polyvalent"],
-    competences: ["maçonnerie", "peinture", "préparation de chantier", "utilisation d’outils", "travail en équipe"],
-    exemplesQualites: {
-      ponctuel: ["Je respecte toujours les horaires de début de chantier."],
-      résistant: ["Je supporte le travail physique et les conditions extérieures."],
-      prudent: ["Je respecte les règles de sécurité sur le chantier."],
-      attentif: ["Je suis attentif aux consignes du chef d’équipe."],
-      polyvalent: ["Je peux m’adapter à différents types de tâches."]
-    },
-    exemplesCompetences: {
-      "maçonnerie": ["Je prépare et applique le mortier, pose des briques et blocs."],
-      "peinture": ["Je prépare les murs et applique la peinture proprement."],
-      "préparation de chantier": ["J’aide à la mise en place du matériel et des protections."],
-      "utilisation d’outils": ["Je sais utiliser correctement les outils manuels et électriques."],
-      "travail en équipe": ["Je collabore efficacement avec mes collègues sur le chantier."]
-    }
-  },
-  "livreur": {
-    domaine: "de la logistique",
-    qualites: ["ponctuel", "responsable", "organisé", "autonome", "souriant"],
-    competences: ["conduite", "respect des délais", "contact client", "chargement", "livraison"],
-    exemplesQualites: {
-      ponctuel: ["Je respecte toujours les horaires de livraison."],
-      responsable: ["Je veille à la sécurité des marchandises."],
-      organisé: ["Je planifie mes tournées efficacement."],
-      autonome: ["Je gère les imprévus avec calme."],
-      souriant: ["J’entretiens un bon contact avec les clients."]
-    },
-    exemplesCompetences: {
-      "conduite": ["Je conduis avec prudence et respecte le code de la route."],
-      "respect des délais": ["Je livre toujours dans les temps prévus."],
-      "contact client": ["Je reste courtois et professionnel lors des livraisons."],
-      "chargement": ["Je charge le véhicule de manière sécurisée."],
-      "livraison": ["Je livre les produits en bon état et récupère les bons signés."]
-    }
-  },
-  "chauffeur": {
-    domaine: "du transport",
-    qualites: ["ponctuel", "attentif", "responsable", "calme", "fiable"],
-    competences: ["conduite professionnelle", "sécurité routière", "navigation", "entretien du véhicule", "relation client"],
-    exemplesQualites: {
-      ponctuel: ["Je respecte toujours les horaires fixés."],
-      attentif: ["Je reste concentré sur la route et anticipe les risques."],
-      responsable: ["Je veille à la sécurité des passagers et des biens transportés."],
-      calme: ["Je garde mon calme dans les embouteillages ou situations stressantes."],
-      fiable: ["On peut compter sur moi pour la ponctualité et le sérieux."]
-    },
-    exemplesCompetences: {
-      "conduite professionnelle": ["Je conduis prudemment et efficacement."],
-      "sécurité routière": ["Je respecte toutes les règles du trafic routier."],
-      "navigation": ["Je planifie les itinéraires avec GPS ou cartes."],
-      "entretien du véhicule": ["Je vérifie régulièrement l’état du véhicule."],
-      "relation client": ["Je reste poli et serviable avec les passagers."]
-    }
-  },
-  "peintre": {
-    domaine: "de la construction",
-    qualites: ["soigneux", "patient", "minutieux", "autonome", "créatif"],
-    competences: ["préparation des surfaces", "application de peinture", "finition", "utilisation du matériel", "choix des couleurs"],
-    exemplesQualites: {
-      soigneux: ["Je travaille proprement et protège bien les surfaces."],
-      patient: ["Je prends le temps d’obtenir un résultat parfait."],
-      minutieux: ["Je fais attention aux détails et aux finitions."],
-      autonome: ["Je gère mon travail avec méthode."],
-      créatif: ["J’aime harmoniser les couleurs et les matières."]
-    },
-    exemplesCompetences: {
-      "préparation des surfaces": ["Je ponce, nettoie et apprête avant de peindre."],
-      "application de peinture": ["J’applique la peinture avec précision."],
-      "finition": ["Je réalise les finitions et retouches impeccablement."],
-      "utilisation du matériel": ["J’entretiens mes outils pour un bon rendu."],
-      "choix des couleurs": ["Je conseille les clients sur les teintes adaptées."]
-    }
-  }
-};
+// --- ÉTAT ---
+let qualitesChoisies = [];
 
-// ===============================
-//  MÉTIERS FEMME
-// ===============================
-const metiersFemme = {
-  "agente de nettoyage": JSON.parse(JSON.stringify(metiersHomme["agent de nettoyage"])),
-  "aide de cuisine": JSON.parse(JSON.stringify(metiersHomme["aide de cuisine"])),
-  "plongeuse": JSON.parse(JSON.stringify(metiersHomme["plongeur"])),
-  "employée de production": JSON.parse(JSON.stringify(metiersHomme["employé de production"])),
-  "blanchisseuse": JSON.parse(JSON.stringify(metiersHomme["blanchisseur"])),
-  "ouvrière en bâtiment": JSON.parse(JSON.stringify(metiersHomme["ouvrier en bâtiment"])),
-  "livreuse": JSON.parse(JSON.stringify(metiersHomme["livreur"])),
-  "chauffeuse": JSON.parse(JSON.stringify(metiersHomme["chauffeur"])),
-  "peintre": JSON.parse(JSON.stringify(metiersHomme["peintre"])),
-  "coiffeuse": {
-    domaine: "de la coiffure",
-    qualites: ["accueillante", "soigneuse", "créative", "patiente", "attentive"],
-    competences: ["coupe", "coloration", "brushing", "entretien du matériel", "relation client"],
-    exemplesQualites: {
-      accueillante: ["Je mets les clients à l’aise dès leur arrivée."],
-      soigneuse: ["Je fais attention aux détails dans chaque coupe."],
-      créative: ["J’aime proposer de nouvelles idées de coiffure."],
-      patiente: ["Je prends le temps d’écouter les besoins du client."],
-      attentive: ["Je respecte les consignes et les souhaits du client."]
-    },
-    exemplesCompetences: {
-      "coupe": ["Je réalise les coupes selon le style demandé."],
-      "coloration": ["Je prépare et applique les couleurs avec soin."],
-      "brushing": ["Je maîtrise les techniques de brushing et coiffage."],
-      "entretien du matériel": ["Je nettoie et désinfecte les outils après usage."],
-      "relation client": ["Je conseille et fidélise la clientèle."]
-    }
-  }
-};
-// ===============================
-//  FONCTIONS GÉNÉRALES
-// ===============================
-function majGenre(){
-  const genre=document.getElementById("genre").value;
-  const data=genre==="homme"?metiersHomme:metiersFemme;
-  const sel=document.getElementById("metier");
-  sel.innerHTML='<option value="">Choisir...</option>';
-  Object.keys(data).forEach(m=>{
-    const o=document.createElement("option");
-    o.value=m;o.textContent=m.charAt(0).toUpperCase()+m.slice(1);
-    sel.appendChild(o);
-  });
-  document.getElementById("zoneExemplesQualites").innerHTML="";
-  document.getElementById("zoneExemplesCompetences").innerHTML="";
-  document.getElementById("lettre").textContent="";
+// --- OUTIL ---
+function lowerFirst(str){
+  if(!str) return '';
+  return str.charAt(0).toLowerCase() + str.slice(1);
 }
 
-function majQualites(){
-  const genre=document.getElementById("genre").value,m=document.getElementById("metier").value;
-  const z=document.getElementById("zoneExemplesQualites");z.innerHTML="";
-  const d=genre==="homme"?metiersHomme:metiersFemme;if(!m||!d[m])return;
-  const t=document.createElement("p");t.innerHTML="<b>Choisissez vos qualités :</b>";z.appendChild(t);
-  d[m].qualites.forEach(q=>{
-    const cb=document.createElement("input");cb.type="checkbox";cb.value=q;cb.onchange=afficherExemplesQualites;
-    const l=document.createElement("label");l.textContent=" "+q;z.appendChild(cb);z.appendChild(l);z.appendChild(document.createElement("br"));
-  });
-}
-
-function majCompetences(){
-  const genre=document.getElementById("genre").value,m=document.getElementById("metier").value;
-  const z=document.getElementById("zoneExemplesCompetences");z.innerHTML="";
-  const d=genre==="homme"?metiersHomme:metiersFemme;if(!m||!d[m])return;
-  const t=document.createElement("p");t.innerHTML="<b>Choisissez vos compétences :</b>";z.appendChild(t);
-  d[m].competences.forEach(c=>{
-    const cb=document.createElement("input");cb.type="checkbox";cb.value=c;cb.onchange=afficherExemplesCompetences;
-    const l=document.createElement("label");l.textContent=" "+c;z.appendChild(cb);z.appendChild(l);z.appendChild(document.createElement("br"));
-  });
-}
-
-function afficherExemplesQualites(){
-  const g=document.getElementById("genre").value,m=document.getElementById("metier").value;
-  const d=g==="homme"?metiersHomme:metiersFemme;
-  const z=document.getElementById("zoneExemplesQualites");
-  z.querySelectorAll(".liste-exemples").forEach(el=>el.remove());
-  Array.from(z.querySelectorAll("input[type=checkbox]:checked")).forEach(q=>{
-    const div=document.createElement("div");div.className="liste-exemples";
-    d[m].exemplesQualites[q.value].forEach(ex=>{
-      const cb=document.createElement("input");cb.type="checkbox";cb.value=ex;cb.onchange=majLettre;
-      const l=document.createElement("label");l.textContent=ex;div.appendChild(cb);div.appendChild(l);div.appendChild(document.createElement("br"));
-    });z.appendChild(div);
-  });
-}
-
-function afficherExemplesCompetences(){
-  const g=document.getElementById("genre").value,m=document.getElementById("metier").value;
-  const d=g==="homme"?metiersHomme:metiersFemme;
-  const z=document.getElementById("zoneExemplesCompetences");
-  z.querySelectorAll(".liste-exemples").forEach(el=>el.remove());
-  Array.from(z.querySelectorAll("input[type=checkbox]:checked")).forEach(c=>{
-    const div=document.createElement("div");div.className="liste-exemples";
-    d[m].exemplesCompetences[c.value].forEach(ex=>{
-      const cb=document.createElement("input");cb.type="checkbox";cb.value=ex;cb.onchange=majLettre;
-      const l=document.createElement("label");l.textContent=ex;div.appendChild(cb);div.appendChild(l);div.appendChild(document.createElement("br"));
-    });z.appendChild(div);
-  });
-}
-
-// ===============================
-//  LETTRE AUTOMATIQUE
-// ===============================
-function majLettre(){
-  const g=document.getElementById("genre").value,
-        type=document.getElementById("type").value,
-        exp=document.getElementById("experience").value,
-        nom=document.getElementById("nom").value,
-        adresse=document.getElementById("adresse").value,
-        npa=document.getElementById("npa").value,
-        ville=document.getElementById("ville").value,
-        email=document.getElementById("email").value,
-        tel=document.getElementById("tel").value,
-        entreprise=document.getElementById("entreprise").value,
-        adresseEnt=document.getElementById("adresseEntreprise").value,
-        npaEnt=document.getElementById("npaEntreprise").value,
-        villeEnt=document.getElementById("villeEntreprise").value,
-        date=document.getElementById("date").value,
-        poste=document.getElementById("poste").value,
-        metier=document.getElementById("metier").value;
-  const d=g==="homme"?metiersHomme:metiersFemme;
-  if(!metier||!d[metier]){document.getElementById("lettre").textContent="";return;}
-
-  const qEx=Array.from(document.querySelectorAll("#zoneExemplesQualites .liste-exemples input:checked")).map(c=>c.value).join(" ");
-  const cEx=Array.from(document.querySelectorAll("#zoneExemplesCompetences .liste-exemples input:checked")).map(c=>c.value).join(" ");
-  const dom=d[metier].domaine;
-  const e=g==="femme"?"e":"";
-  const motive=g==="femme"?"motivée":"motivé";
-  const ravi=g==="femme"?"ravie":"ravi";
-  const pret=g==="femme"?"prête":"prêt";
-
-  // Intro selon type
-  const intro = type==="ciblee"
-    ? `Suite à votre annonce, je souhaite postuler pour le poste de ${poste||metier} au sein de votre entreprise.`
-    : `Je me permets de vous adresser ma candidature spontanée pour un poste de ${poste||metier} au sein de votre entreprise.`;
-
-  let p1,p2,p3,p4;
-  if(exp==="avec"){
-    p1=`${intro} F${g==="femme"?"orte":"ort"} de mon expérience dans le domaine ${dom}, je suis ${motive} à mettre mes compétences au service de votre équipe.`;
-    p2=`De nature sérieus${e} et appliqué${e}, ${qEx||"je veille à la qualité du travail tout en respectant les consignes."}`;
-    p3=`Par ailleurs, ${cEx||"je maîtrise les principales techniques de mon métier et respecte les normes de sécurité."}`;
+// --- QUALITÉS ---
+function toggleQualite(key){
+  const i = qualitesChoisies.indexOf(key);
+  if(i > -1){
+    qualitesChoisies.splice(i,1); // retirer
   } else {
-    p1=`${intro} Souhaitant apprendre un nouveau métier, je suis ${motive} à développer mes compétences dans le domaine ${dom}.`;
-    p2=`Sérieus${e} et appliqué${e}, ${qEx||"je fais preuve de soin dans tout ce que j’entreprends."}`;
-    p3=`De plus, ${cEx||"je suis "+pret+" à apprendre de nouvelles méthodes et à suivre les consignes de sécurité."}`;
+    if(qualitesChoisies.length >= 3) return; // max 3
+    qualitesChoisies.push(key);
   }
-  p4=`Souhaitant rejoindre une équipe dynamique, je serais ${ravi} de vous rencontrer afin d’échanger sur ma candidature. Dans l’attente de votre réponse, je vous prie d’agréer, Madame, Monsieur, mes salutations distinguées.`;
 
-  const lettre=`${nom}
-${adresse}
-${npa} ${ville}
-${email}
-${tel}
+  document.querySelectorAll('.qbtn').forEach(b => {
+    b.classList.toggle('active', qualitesChoisies.includes(b.dataset.key));
+  });
 
-${entreprise}
-${adresseEnt}
-${npaEnt} ${villeEnt}
-
-${ville}, le ${date?new Date(date).toLocaleDateString('fr-CH'):'...date...'}
-
-Objet : Candidature pour le poste de ${poste||metier}
-
-${p1}
-
-${p2}
-
-${p3}
-
-${p4}
-
-${nom}`;
-  document.getElementById("lettre").textContent=lettre;
+  updateLetter();
 }
 
-// ===============================
-//  PDF + EFFACER
-// ===============================
-function telechargerPDF(){
-  const {jsPDF}=window.jspdf;
-  const txt=document.getElementById("lettre").textContent;
-  if(!txt.trim()){alert("Veuillez d’abord générer la lettre !");return;}
-  const doc=new jsPDF({unit:"mm",format:"a4"});
-  const lignes=doc.splitTextToSize(txt,170);
-  doc.setFont("helvetica","normal");doc.setFontSize(12);
-  doc.text(lignes,20,20);doc.save("Lettre_de_motivation.pdf");
+// --- LOGIQUE PRINCIPALE ---
+function updateLetter(){
+  const val = id => document.getElementById(id)?.value.trim() || '';
+
+  const p   = val('prenom');
+  const n   = val('nom');
+  const adr = val('adresse');
+  const npa = val('npa');
+  const v   = val('ville');
+  const tel = val('tel');
+  const mail= val('mail');
+
+  const ent  = val('entreprise');
+  const adrE = val('adresseEnt');
+  const npaE = val('npaEnt');
+
+  const type = val('typeCand');
+  const site = val('site');
+  const poste= val('poste');
+
+  const L = document.getElementById('letter');
+  if(!L) return;
+
+  if(!(p && n)){
+    L.textContent = "👉 Entrez au minimum le prénom et le nom.";
+    return;
+  }
+
+  // Bloquer / débloquer le champ site (SANS CRASH)
+  const siteInput = document.getElementById('site');
+  if(siteInput){
+    if(type === 'spontanee'){
+      siteInput.value = '';
+      siteInput.disabled = true;
+    } else {
+      siteInput.disabled = false;
+    }
+  }
+
+  // Introduction
+  let intro = '';
+  if(type === 'ciblee' && site){
+    intro = `Suite à l’annonce publiée sur ${site}, je vous soumets ma candidature pour le poste de ${poste || '[poste]'}. Ce poste correspond à mon profil et à mon intérêt pour les activités de votre entreprise.`;
+  } else {
+    intro = `Je me permets de vous adresser ma candidature spontanée, avec l’objectif de mettre mes compétences et mon engagement professionnel au service de votre entreprise.`;
+  }
+
+  // Qualités
+  const posteTexte = poste || 'ce poste';
+  const exemplesQualites = {
+    ponctuel:   `Je respecte les horaires et je suis fiable dans ma présence au travail.`,
+    motive:     `Je montre de l’intérêt pour le travail confié et je m’implique dans les tâches demandées.`,
+    serieux:    `Je travaille de manière appliquée et je respecte les consignes données.`,
+    autonome:   `Je peux accomplir certaines tâches de façon autonome lorsque cela est nécessaire.`,
+    organise:   `Je m’organise pour effectuer mon travail de manière structurée et efficace.`,
+    fiable:     `On peut compter sur moi pour effectuer les tâches confiées et tenir mes engagements.`,
+    respectueux:`Je respecte les collègues, la hiérarchie et les règles de l’entreprise.`,
+    polyvalent: `Je peux m’adapter à différentes tâches selon les besoins liés à ${posteTexte}.`,
+    soigneux:   `Je fais attention à la qualité de mon travail et au respect des procédures.`,
+    rapide:     `Je travaille de manière efficace tout en restant attentif à la qualité du travail réalisé.`
+  };
+
+  let qual = '';
+  if(qualitesChoisies.length){
+    const phrases = qualitesChoisies.map(k => exemplesQualites[k]).filter(Boolean);
+    const connecteurs = ['De plus, ', 'Enfin, '];
+
+    qual = phrases.reduce((acc, phrase, index) => {
+      if(index === 0) return phrase;
+      const conn = connecteurs[Math.min(index - 1, connecteurs.length - 1)];
+      return acc + ' ' + conn + lowerFirst(phrase);
+    }, '');
+
+    qual += ' Ces qualités me permettent de m’intégrer rapidement et de répondre efficacement aux attentes du poste.';
+  }
+
+  const objet = (type === 'spontanee')
+    ? `Candidature spontanée - ${poste || '[poste]'}`
+    : `Candidature - ${poste || '[poste]'}`;
+
+  L.innerText = `${p} ${n.toUpperCase()}
+${adr || '[Adresse]'}
+${(npa && v) ? npa + ' ' + v : '[NPA Ville]'}
+Tél. : ${tel || '[Téléphone]'}
+E-mail : ${mail || '[E-mail]'}
+
+
+${(ent || '[Entreprise]').padStart(60)}
+${(adrE || '[Adresse entreprise]').padStart(60)}
+${(npaE || '[NPA Ville entreprise]').padStart(60)}
+
+
+Objet : ${objet}
+
+
+Bonjour Madame, Monsieur,
+
+
+${intro}
+
+
+${qual}
+
+Par ailleurs, je souhaite m’inscrire dans une collaboration sérieuse et durable, en respectant les règles de travail et en contribuant activement au bon fonctionnement de votre équipe.
+
+Disponible rapidement, je reste à votre disposition pour un entretien.
+
+
+Cordialement,
+
+
+
+
+
+${p} ${n.toUpperCase()}`;
 }
 
-function effacerTout(){
-  document.querySelectorAll("input,select").forEach(e=>e.value="");
-  document.getElementById("zoneExemplesQualites").innerHTML="";
-  document.getElementById("zoneExemplesCompetences").innerHTML="";
-  document.getElementById("lettre").textContent="👉 Remplissez les champs pour générer votre lettre.";
-  majGenre();
+function resetLetterOnly(){
+  const L = document.getElementById('letter');
+  if(L) L.textContent = '';
 }
 
-window.onload=majGenre;
+function resetAll(){
+  // reset tout sauf l’expéditeur
+  const ids = ['entreprise','adresseEnt','npaEnt','typeCand','site','poste'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+
+  qualitesChoisies = [];
+  document.querySelectorAll('.qbtn').forEach(b => b.classList.remove('active'));
+
+  updateLetter();
+}
+
+function saveDestinataire(){
+  const data = {
+    entreprise: document.getElementById('entreprise')?.value || '',
+    adresse: document.getElementById('adresseEnt')?.value || '',
+    npa: document.getElementById('npaEnt')?.value || ''
+  };
+  localStorage.setItem('destinataire', JSON.stringify(data));
+}
+
+function loadDestinataire(){
+  const d = localStorage.getItem('destinataire');
+  if(!d) return;
+  const data = JSON.parse(d);
+  if(document.getElementById('entreprise')) document.getElementById('entreprise').value = data.entreprise || '';
+  if(document.getElementById('adresseEnt')) document.getElementById('adresseEnt').value = data.adresse || '';
+  if(document.getElementById('npaEnt')) document.getElementById('npaEnt').value = data.npa || '';
+}
+
+function boldSelection(){ document.execCommand('bold'); }
+function indentSelection(){ document.execCommand('indent'); }
+
+function exportPDF(){
+  const element = document.getElementById('letter');
+  if(!element) return;
+  const { jsPDF } = window.jspdf;
+  const clone = element.cloneNode(true);
+  clone.style.width = '210mm';
+  clone.style.padding = '20mm';
+  clone.style.background = 'white';
+  clone.style.fontFamily = 'Times New Roman, serif';
+  document.body.appendChild(clone);
+
+  html2canvas(clone,{scale:2}).then(canvas=>{
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p','mm','a4');
+    const imgWidth = 210;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    pdf.addImage(imgData,'PNG',0,0,imgWidth,imgHeight);
+    pdf.save('lettre_candidature.pdf');
+    document.body.removeChild(clone);
+  });
+}
+
+window.onload = function(){
+  loadDestinataire();
+  updateLetter();
+};
 </script>
 </body>
 </html>
