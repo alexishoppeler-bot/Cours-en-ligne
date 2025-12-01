@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les bonnes attitudes au travail</title>
+
+  <style>
+    :root{
+      --blue:#3f71ff;
+      --dark:#003366;
+      --bg:#eef3f9;
+      --card:#ffffff;
+    }
+
+    body{
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background:linear-gradient(180deg,#eef3f9,#dfe7f5);
+      margin:0;
+      padding:30px 15px;
+      color:#1f2937;
+    }
+
+    .app{
+      max-width:900px;
+      margin:auto;
+      background:var(--card);
+      padding:36px 40px;
+      border-radius:22px;
+      box-shadow:0 10px 35px rgba(0,0,0,0.12);
+    }
+
+    h1{
+      text-align:center;
+      color:var(--dark);
+      margin-top:0;
+      font-size:32px;
+    }
+
+    .consignes{
+      margin-top:25px;
+      background:#f6f8ff;
+      border-radius:18px;
+      padding:26px 28px 24px;
+      box-shadow:inset 0 0 0 2px #e0e7ff;
+    }
+
+    .consignes h2{
+      margin:0 0 12px;
+      font-size:20px;
+      color:#1d4ed8;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .consignes h2::before{
+      content:"📘";
+      font-size:22px;
+    }
+
+    .consignes ol{
+      padding-left:22px;
+      margin:0;
+    }
+
+    .consignes li{
+      margin-bottom:12px;
+      line-height:1.6;
+      padding-left:6px;
+    }
+
+    .astuce{
+      margin-top:18px;
+      padding:14px 16px;
+      background:#ffffff;
+      border-radius:12px;
+      font-style:italic;
+      color:#374151;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .question-block{
+      margin-bottom:18px;
+    }
+
+    .question-block textarea{
+      width:100%;
+      min-height:90px;
+      margin-top:8px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:2px solid #e0e7ff;
+      font-size:15px;
+      font-family:inherit;
+      resize:vertical;
+    }
+
+    .question-block textarea:focus{
+      outline:none;
+      border-color:#3f71ff;
+      background:#f9fbff;
+    }
+
+    .help{
+      display:none;
+      margin-top:8px;
+      padding:12px 14px;
+      background:#eef2ff;
+      border-radius:12px;
+      border-left:5px solid #3f71ff;
+      font-size:14px;
+      color:#1f2937;
+    }
+
+    .help-btn{
+      margin-top:6px;
+      background:#e0e7ff;
+      border:none;
+      padding:6px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:14px;
+    }
+
+    .code-box{
+      margin:20px 0;
+      padding:16px;
+      background:#fff7ed;
+      border-radius:14px;
+      border:2px dashed #f59e0b;
+    }
+
+    .code-box input{
+      padding:8px 12px;
+      border-radius:10px;
+      border:2px solid #fcd34d;
+      font-size:15px;
+      width:180px;
+      max-width:100%;
+    }
+
+    .code-box button{
+      margin-top:8px;
+      margin-right:8px;
+      padding:8px 14px;
+      border-radius:10px;
+      border:none;
+      background:#f59e0b;
+      color:white;
+      font-size:15px;
+      cursor:pointer;
+    }
+
+    .code-box button.danger{
+      background:#dc2626;
+    }
+  </style>
+
+  <!-- Librairies PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <h1>Les bonnes attitudes au travail</h1>
+
+    <!-- Informations participant -->
+    <div class="code-box">
+      <strong>👤 Informations du participant</strong><br>
+      <label for="prenom">Prénom :</label>
+      <input type="text" id="prenom" placeholder="Votre prénom">
+    </div>
+
+    <!-- Consignes générales -->
+    <div class="consignes">
+      <h2>✅ CONSIGNES – RÉPONSES OUVERTES</h2>
+      <ol>
+        <li>1️⃣ Lisez le texte attentivement.</li>
+        <li>2️⃣ Répondez aux questions avec vos propres mots.</li>
+        <li>3️⃣ Écrivez des phrases simples et claires.</li>
+        <li>4️⃣ Il n’y a pas une seule bonne réponse possible.</li>
+        <li>5️⃣ Relisez votre réponse avant de passer à la suivante.</li>
+        <li>👉 Envoyez le PDF par e-mail à : alexis.hoppeler@proactif.ch</li>
+      </ol>
+      <p class="astuce">💡 L’important est de montrer que vous avez compris le texte.</p>
+    </div>
+
+    <!-- Texte à lire -->
+    <div class="consignes texte">
+      <h2>📖 TEXTE À LIRE</h2>
+      <p>Au travail, le comportement professionnel joue un rôle central pour réussir et s’intégrer durablement. Être ponctuel signifie arriver à l’heure chaque jour, respecter les horaires et prévenir en cas de retard ou d’absence. La ponctualité montre le sérieux et le respect envers l’employeur, les collègues et les clients.</p>
+      <p>Le respect se traduit dans la manière de parler, d’écouter et d’agir. Il est important d’utiliser un langage correct, de saluer les autres, d’écouter les consignes et de poser des questions en cas de doute. Respecter les règles de l’entreprise permet d’éviter les conflits et de travailler dans une ambiance calme et agréable.</p>
+      <p>La motivation est également essentielle. Une personne motivée fait son travail jusqu’au bout, essaye de bien faire et accepte d’apprendre. Même quand les tâches sont difficiles ou répétitives, rester impliqué montre une attitude positive. Cela aide à progresser et à gagner en autonomie.</p>
+      <p>Le travail en équipe est souvent indispensable. Collaborer signifie aider les collègues, partager les informations et accepter les différences. Chaque personne a ses compétences et ses limites. En travaillant ensemble, les tâches sont mieux réparties et le résultat est plus efficace.</p>
+      <p>Enfin, la fiabilité est très appréciée dans le monde professionnel. Être fiable, c’est faire ce que l’on a promis, respecter les délais et rendre un travail propre. Cette attitude crée un climat de confiance et peut ouvrir des opportunités, comme plus de responsabilités ou une évolution professionnelle. Adopter ces comportements au quotidien permet de construire une image professionnelle solide et de sécuriser son avenir dans le monde du travail.</p>
+    </div>
+
+    <!-- Questions ouvertes + aides -->
+    <div class="consignes questions">
+      <h2>✅ QUESTIONS – RÉPONSES OUVERTES</h2>
+
+      <div class="question-block">
+        <p>1️⃣ Pourquoi la ponctualité est-elle importante au travail ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(1)">💡 Aide</button>
+        <div class="help" id="help1">Parce qu’on respecte l’entreprise, les collègues et les horaires.</div>
+      </div>
+
+      <div class="question-block">
+        <p>2️⃣ Que doit-on faire si on est en retard ou absent ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(2)">💡 Aide</button>
+        <div class="help" id="help2">Il faut prévenir l’employeur ou un responsable.</div>
+      </div>
+
+      <div class="question-block">
+        <p>3️⃣ Comment montre-t-on le respect au travail ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(3)">💡 Aide</button>
+        <div class="help" id="help3">En parlant correctement, en saluant et en respectant les règles.</div>
+      </div>
+
+      <div class="question-block">
+        <p>4️⃣ Pourquoi est-il important d’écouter les consignes ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(4)">💡 Aide</button>
+        <div class="help" id="help4">Pour bien faire son travail et éviter les erreurs.</div>
+      </div>
+
+      <div class="question-block">
+        <p>5️⃣ Qu’est-ce que la motivation au travail ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(5)">💡 Aide</button>
+        <div class="help" id="help5">C’est avoir envie de travailler et de bien faire.</div>
+      </div>
+
+      <div class="question-block">
+        <p>6️⃣ Que fait une personne motivée quand le travail est difficile ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(6)">💡 Aide</button>
+        <div class="help" id="help6">Elle continue le travail et essaie de bien faire.</div>
+      </div>
+
+      <div class="question-block">
+        <p>7️⃣ Qu’est-ce que travailler en équipe veut dire ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(7)">💡 Aide</button>
+        <div class="help" id="help7">C’est travailler avec les autres et s’aider.</div>
+      </div>
+
+      <div class="question-block">
+        <p>8️⃣ Pourquoi le travail en équipe aide à mieux réussir ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(8)">💡 Aide</button>
+        <div class="help" id="help8">Parce que le travail est mieux fait et plus efficace.</div>
+      </div>
+
+      <div class="question-block">
+        <p>9️⃣ Qu’est-ce que la fiabilité au travail ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(9)">💡 Aide</button>
+        <div class="help" id="help9">C’est faire ce qu’on a promis et respecter les délais.</div>
+      </div>
+
+      <div class="question-block">
+        <p>🔟 Que peut apporter un bon comportement professionnel pour l’avenir ?</p>
+        <textarea placeholder="Écrivez votre réponse ici..."></textarea>
+        <button class="help-btn" onclick="toggleHelp(10)">💡 Aide</button>
+        <div class="help" id="help10">Cela aide à garder un emploi et à avoir des opportunités.</div>
+      </div>
+
+      <!-- Zone de suivi des aides + reset -->
+      <div class="code-box">
+        <p>Nombre d’aides utilisées : <strong><span id="helpCount">0</span></strong></p>
+        <button class="danger" onclick="toutEffacer()">🔄 Tout effacer</button>
+      </div>
+
+      <!-- Zone téléchargement PDF -->
+      <div class="code-box">
+        <strong>📄 Télécharger en PDF</strong><br>
+        <label for="pdfName">Nom du fichier :</label>
+        <input type="text" id="pdfName" placeholder="Nom_Prenom_attitudes">
+        <br>
+        <button onclick="telechargerPDF()">⬇️ Télécharger PDF</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let helpUsed = {};
+    let helpCount = 0;
+
+    function toggleHelp(n){
+      const el = document.getElementById('help'+n);
+      const isOpening = el.style.display !== 'block';
+      el.style.display = isOpening ? 'block' : 'none';
+
+      if(isOpening && !helpUsed[n]){
+        helpUsed[n] = true;
+        helpCount++;
+        document.getElementById('helpCount').textContent = helpCount;
+      }
+    }
+
+    function toutEffacer(){
+      const ok = confirm('⚠️ Voulez-vous vraiment tout effacer ?');
+      if(!ok) return;
+
+      // Effacer champs texte + inputs
+      document.querySelectorAll('textarea, input').forEach(el => el.value = '');
+
+      // Réinitialiser aides
+      helpCount = 0;
+      helpUsed = {};
+      document.getElementById('helpCount').textContent = 0;
+      document.querySelectorAll('.help').forEach(h => h.style.display = 'none');
+
+      // Effacer sauvegarde locale
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('attitudes_'))
+        .forEach(k => localStorage.removeItem(k));
+    }
+
+    function telechargerPDF(){
+      const { jsPDF } = window.jspdf;
+      const zone = document.querySelector('.app');
+
+      const prenom = document.getElementById('prenom').value.trim();
+      let nom = document.getElementById('pdfName').value.trim();
+
+      // Nom du fichier : priorité au champ nom, sinon prénom
+      if(nom === ''){
+        nom = prenom !== '' ? 'Attitudes_travail_' + prenom : 'questions_attitudes_travail';
+      }
+
+      // Ajuster la hauteur des textarea pour inclure toutes les réponses
+      document.querySelectorAll('textarea').forEach(t => {
+        t.style.height = 'auto';
+        t.style.height = t.scrollHeight + 'px';
+      });
+
+      html2canvas(zone, { scale: 2, useCORS:true }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p','mm','a4');
+
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const imgWidth = pageWidth;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+          position -= pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save(nom + '.pdf');
+      });
+    }
+
+    // ENREGISTREMENT AUTOMATIQUE (localStorage)
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputs = document.querySelectorAll('textarea, #prenom, #pdfName');
+
+      // Charger les données sauvegardées
+      inputs.forEach((el, index) => {
+        const saved = localStorage.getItem('attitudes_' + index);
+        if(saved !== null) el.value = saved;
+      });
+
+      // Sauvegarder à chaque modification
+      inputs.forEach((el, index) => {
+        el.addEventListener('input', () => {
+          localStorage.setItem('attitudes_' + index, el.value);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
