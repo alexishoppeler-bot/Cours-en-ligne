@@ -160,7 +160,7 @@ footer{
         </ul>
     </div>
 
-    <!-- FORMULAIRES -->
+    <!-- FORMULAIRES / RECHERCHE D'EMPLOI -->
     <div class="card">
         <h2>📄 Recherche d'emploi</h2>
         <ul>
@@ -203,18 +203,16 @@ footer{
                 <input type="checkbox" onchange="toggleDone(this)">
                 <a href="scenarios-professionnels.html" target="_blank">Scénarios professionnels</a>
             </li>
-           <li class="exercise" data-id="fr-6">
-    <input type="checkbox" onchange="toggleDone(this)">
-    <a href="examen-ecrit.html" target="_blank">Examen écrit</a>
-</li>
-
-<li class="exercise" data-id="fr-7">
-    <input type="checkbox" onchange="toggleDone(this)">
-    <a href="ecrire-en-français-situations-professionnelle.html" target="_blank">
-        Écrire en français
-    </a>
-</li>
-
+            <li class="exercise" data-id="fr-6">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="examen-ecrit.html" target="_blank">Examen écrit</a>
+            </li>
+            <li class="exercise" data-id="fr-7">
+                <input type="checkbox" onchange="toggleDone(this)">
+                <a href="ecrire-en-français-situations-professionnelle.html" target="_blank">Écrire en français</a>
+            </li>
+        </ul>
+    </div>
 
     <!-- EMPLOI -->
     <div class="card">
@@ -224,24 +222,23 @@ footer{
                 <input type="checkbox" onchange="toggleDone(this)">
                 <a href="questions-entretien.html" target="_blank">Questions d’entretien</a>
             </li>
-            <li class="exercise" data-id="emp-1">
+            <li class="exercise" data-id="emp-2">
                 <input type="checkbox" onchange="toggleDone(this)">
                 <a href="Qualites-personnelles.html" target="_blank">Qualités personnelles</a>
             </li>
-            </li>
-            <li class="exercise" data-id="emp-1">
+            <li class="exercise" data-id="emp-3">
                 <input type="checkbox" onchange="toggleDone(this)">
                 <a href="Competences-pro.html" target="_blank">Compétences professionnels</a>
             </li>
-            <li class="exercise" data-id="emp-2">
+            <li class="exercise" data-id="emp-4">
                 <input type="checkbox" onchange="toggleDone(this)">
                 <a href="parler-de-mon-dernier-travail.html" target="_blank">Parler de son dernier travail</a>
             </li>
-            <li class="exercise" data-id="emp-3">
+            <li class="exercise" data-id="emp-5">
                 <input type="checkbox" onchange="toggleDone(this)">
                 <a href="Simulation-de-situations-professionnelles.html" target="_blank">Situations professionnelles</a>
             </li>
-            <li class="exercise" data-id="emp-4">
+            <li class="exercise" data-id="emp-6">
                 <input type="checkbox" onchange="toggleDone(this)">
                 <a href="Les bonnes attitudes au travail.html" target="_blank">Les bonnes attitudes au travail</a>
             </li>
@@ -293,13 +290,15 @@ function toggleDone(cb){
 }
 
 /* Restauration au chargement */
-document.querySelectorAll(".exercise").forEach(ex=>{
-    const id = ex.dataset.id;
-    const cb = ex.querySelector("input[type='checkbox']");
-    if(localStorage.getItem("done_"+id)){
-        cb.checked = true;
-        ex.classList.add("done");
-    }
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".exercise").forEach(ex=>{
+        const id = ex.dataset.id;
+        const cb = ex.querySelector("input[type='checkbox']");
+        if(localStorage.getItem("done_"+id)){
+            cb.checked = true;
+            ex.classList.add("done");
+        }
+    });
 });
 </script>
 
