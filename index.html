@@ -39,23 +39,15 @@ header p{margin-top:8px;font-size:18px;opacity:.95}
   padding:35px 20px 60px;
 }
 
-/* ===== GRID FIXE ===== */
+/* ===== GRID ===== */
 .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:25px;
 }
-
-/* RESPONSIVE */
-@media(max-width:1200px){
-  .grid{grid-template-columns:repeat(3,1fr);}
-}
-@media(max-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr);}
-}
-@media(max-width:600px){
-  .grid{grid-template-columns:1fr;}
-}
+@media(max-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
 
 /* ===== CARD ===== */
 .card{
@@ -74,7 +66,7 @@ header p{margin-top:8px;font-size:18px;opacity:.95}
   gap:10px;
 }
 
-/* ===== LISTE ===== */
+/* ===== LISTE EXERCICES ===== */
 .card ul{list-style:none;padding:0;margin:0}
 
 .exercise{
@@ -98,16 +90,15 @@ header p{margin-top:8px;font-size:18px;opacity:.95}
   color:#003366;
   font-weight:bold;
 }
-.exercise a:hover{
-  background:#e6ecff;
-}
+.exercise a:hover{background:#e6ecff}
+
 .exercise.done{background:#e6ffe9}
 .exercise.done a{background:transparent;color:#116b2d}
 
 /* ===== FOOTER ===== */
 footer{
   text-align:center;
-  padding:20px;
+  padding:25px;
   color:#555;
 }
 </style>
@@ -117,7 +108,7 @@ footer{
 
 <header>
   <h1>📘 Cours en ligne</h1>
-  <p>Coche quand l’exercice est terminé</p>
+  <p>Coche quand l’exercice est terminé – progression sauvegardée</p>
 </header>
 
 <div class="container">
@@ -129,8 +120,10 @@ footer{
 <ul>
 <li class="exercise" data-id="d1"><input type="checkbox" onchange="toggleDone(this)">
 <a href="organiser-documents-dossiers.html" target="_blank">Organiser les documents</a></li>
+
 <li class="exercise" data-id="d2"><input type="checkbox" onchange="toggleDone(this)">
 <a href="miniwindows-mise-en-forme.html" target="_blank">MiniWord – Mise en forme</a></li>
+
 <li class="exercise" data-id="d3"><input type="checkbox" onchange="toggleDone(this)">
 <a href="editeur-a4.html" target="_blank">MiniWord → PDF</a></li>
 </ul>
@@ -138,12 +131,14 @@ footer{
 
 <!-- RECHERCHE EMPLOI -->
 <div class="card">
-<h2>📄 Recherche d'emploi</h2>
+<h2>📄 Recherche d’emploi</h2>
 <ul>
 <li class="exercise" data-id="r1"><input type="checkbox" onchange="toggleDone(this)">
 <a href="formulaire-profil.html" target="_blank">Profil professionnel</a></li>
+
 <li class="exercise" data-id="r2"><input type="checkbox" onchange="toggleDone(this)">
 <a href="emails-professionnels.html" target="_blank">Emails professionnels</a></li>
+
 <li class="exercise" data-id="r3"><input type="checkbox" onchange="toggleDone(this)">
 <a href="lettre-motivation.html" target="_blank">Lettre de motivation</a></li>
 </ul>
@@ -155,18 +150,24 @@ footer{
 <ul>
 <li class="exercise" data-id="f1"><input type="checkbox" onchange="toggleDone(this)">
 <a href="clavier-reecriture.html" target="_blank">Réécriture au clavier</a></li>
+
 <li class="exercise" data-id="f2"><input type="checkbox" onchange="toggleDone(this)">
 <a href="comprehension-a1.html" target="_blank">Compréhension – Niveau 1</a></li>
+
 <li class="exercise" data-id="f3"><input type="checkbox" onchange="toggleDone(this)">
 <a href="comprehension-a2-b1.html" target="_blank">Compréhension – Niveau 2</a></li>
+
 <li class="exercise" data-id="f4"><input type="checkbox" onchange="toggleDone(this)">
 <a href="communication-c1.html" target="_blank">Compréhension – Niveau 3</a></li>
+
 <li class="exercise" data-id="f5"><input type="checkbox" onchange="toggleDone(this)">
 <a href="scenarios-professionnels.html" target="_blank">Scénarios professionnels</a></li>
+
 <li class="exercise" data-id="f6"><input type="checkbox" onchange="toggleDone(this)">
 <a href="examen-ecrit.html" target="_blank">Examen écrit</a></li>
+
 <li class="exercise" data-id="f7"><input type="checkbox" onchange="toggleDone(this)">
-<a href="ecrire-en-français-situations-professionnelle.html" target="_blank">Écrire en français</a></li>
+<a href="ecrire-francais-situations-pro.html" target="_blank">Écrire en français</a></li>
 </ul>
 </div>
 
@@ -176,23 +177,43 @@ footer{
 <ul>
 <li class="exercise" data-id="e1"><input type="checkbox" onchange="toggleDone(this)">
 <a href="questions-entretien.html" target="_blank">Questions d’entretien</a></li>
+
 <li class="exercise" data-id="e2"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Qualites-personnelles.html" target="_blank">Qualités personnelles</a></li>
+<a href="qualites-personnelles.html" target="_blank">Qualités personnelles</a></li>
+
 <li class="exercise" data-id="e3"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Competences-pro.html" target="_blank">Compétences professionnelles</a></li>
+<a href="competences-pro.html" target="_blank">Compétences professionnelles</a></li>
+
 <li class="exercise" data-id="e4"><input type="checkbox" onchange="toggleDone(this)">
 <a href="parler-de-mon-dernier-travail.html" target="_blank">Parler de son dernier travail</a></li>
+
 <li class="exercise" data-id="e5"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Simulation-de-situations-professionnelles.html" target="_blank">Situations professionnelles</a></li>
+<a href="simulation-situations-professionnelles.html" target="_blank">Situations professionnelles</a></li>
+
 <li class="exercise" data-id="e6"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Les bonnes attitudes au travail.html" target="_blank">Bonnes attitudes au travail</a></li>
+<a href="bonnes-attitudes-au-travail.html" target="_blank">Bonnes attitudes au travail</a></li>
+</ul>
+</div>
+
+<!-- JEUX -->
+<div class="card">
+<h2>🕹️ Jeux pédagogiques</h2>
+<ul>
+<li class="exercise" data-id="j1"><input type="checkbox" onchange="toggleDone(this)">
+<a href="jeu-appariement.html" target="_blank">Jeu d’appariement</a></li>
+
+<li class="exercise" data-id="j2"><input type="checkbox" onchange="toggleDone(this)">
+<a href="jeu-escape.html" target="_blank">Escape game</a></li>
+
+<li class="exercise" data-id="j3"><input type="checkbox" onchange="toggleDone(this)">
+<a href="jeu-vocabulaire.html" target="_blank">Jeu vocabulaire</a></li>
 </ul>
 </div>
 
 </div>
 </div>
 
-<footer>✔ Progression sauvegardée automatiquement</footer>
+<footer>✔ Progression sauvegardée automatiquement (localStorage)</footer>
 
 <script>
 function toggleDone(cb){
