@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Examen écrit </title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+body{
+  font-family:Arial, sans-serif;
+  background:#eef3f9;
+  margin:0; padding:20px;
+}
+.app{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:30px;
+  border-radius:18px;
+  box-shadow:0 6px 25px rgba(0,0,0,.15);
+}
+h1,h2{
+  color:#004c97;
+}
+h1{text-align:center;margin-top:0}
+.section{margin-top:30px}
+.box{
+  background:#f4f7ff;
+  padding:15px;
+  border-radius:12px;
+  margin:15px 0;
+}
+.question{margin:12px 0}
+textarea, input[type=text]{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-family:Arial,sans-serif;
+}
+textarea{min-height:80px}
+label{display:block;margin:6px 0}
+.buttons{
+  display:flex;
+  gap:15px;
+  justify-content:center;
+  margin-top:30px
+}
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:15px;
+}
+.pdf{background:#2ecc71;color:white}
+.reset{background:#ff7675;color:white}
+.info{text-align:center;color:#555;font-size:14px;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="app" id="exam">
+
+<h1>📝 Examen écrit</h1>
+<p style="text-align:center">Durée conseillée : 60 minutes</p>
+
+<div class="section">
+<h2>PARTIE 1 – Compréhension écrite</h2>
+<div class="box">
+<strong>Texte 1 – Message professionnel</strong><br><br>
+Objet : Changement d’équipe – dès lundi<br><br>
+À partir de lundi prochain, l’organisation des équipes change. Vous travaillerez désormais dans l’équipe du matin, de 7h30 à 16h00, avec une pause de 30 minutes à midi. Merci de confirmer la réception de ce message.
+</div>
+
+<div class="question">1. Qu’est-ce qui change dans ce travail ?<textarea data-id="q1"></textarea></div>
+<div class="question">2. À quelle heure commence le travail ?<textarea data-id="q2"></textarea></div>
+<div class="question">3. Combien de temps dure la pause ?<textarea data-id="q3"></textarea></div>
+<div class="question">4. Que doit faire la personne après avoir lu le message ?<textarea data-id="q4"></textarea></div>
+
+<div class="box">
+<strong>Texte 2 – Annonce</strong><br><br>
+Entreprise cherche une personne sérieuse pour le nettoyage de bureaux. Horaires du lundi au vendredi, tôt le matin. L’expérience est un avantage, mais pas obligatoire. La ponctualité et la fiabilité sont importantes.
+</div>
+
+<div class="question">5. Quel est le domaine du travail ?<textarea data-id="q5"></textarea></div>
+<div class="question">6. L’expérience est-elle obligatoire ?<textarea data-id="q6"></textarea></div>
+<div class="question">7. Quelles qualités sont demandées ?<textarea data-id="q7"></textarea></div>
+</div>
+
+<div class="section">
+<h2>PARTIE 2 – Vocabulaire</h2>
+<div class="question">8. Ponctuel veut dire :<br>
+<label><input type="radio" name="q8" value="avance"> Arriver en avance</label>
+<label><input type="radio" name="q8" value="heure"> Arriver à l’heure</label>
+<label><input type="radio" name="q8" value="vite"> Travailler vite</label>
+</div>
+
+<div class="question">9. Confirmer un message, c’est :<br>
+<label><input type="radio" name="q9" value="repondre"> Répondre pour dire que j’ai reçu</label>
+<label><input type="radio" name="q9" value="effacer"> Effacer le message</label>
+<label><input type="radio" name="q9" value="appeler"> Appeler un collègue</label>
+</div>
+
+<div class="question">10. Fiable signifie :<br>
+<label><input type="radio" name="q10" value="gentil"> Quelqu’un de gentil</label>
+<label><input type="radio" name="q10" value="compter"> Quelqu’un sur qui on peut compter</label>
+<label><input type="radio" name="q10" value="parle"> Quelqu’un qui parle beaucoup</label>
+</div>
+</div>
+
+<div class="section">
+<h2>PARTIE 3 – Message professionnel</h2>
+<p>Tu es en retard demain. Écris un message professionnel à ton responsable.</p>
+<textarea data-id="q11" placeholder="5–6 lignes"></textarea>
+</div>
+
+<div class="section">
+<h2>PARTIE 4 – Expression écrite</h2>
+<p>Pourquoi la ponctualité est-elle importante au travail ?</p>
+<textarea data-id="q12" placeholder="8–10 lignes"></textarea>
+</div>
+
+<div class="buttons">
+<button class="pdf" onclick="downloadPDF()">📄 Télécharger PDF</button>
+<button class="reset" onclick="resetAll()">🔄 Réinitialiser</button>
+</div>
+
+<p class="info">Les réponses sont sauvegardées automatiquement.</p>
+</div>
+
+<script>
+// autosave
+const fields = document.querySelectorAll('textarea, input[type=radio]');
+fields.forEach(el=>{
+  const id = el.dataset.id || el.name + el.value;
+  if(localStorage.getItem(id)){
+    if(el.type==='radio') el.checked = localStorage.getItem(id)==='true';
+    else el.value = localStorage.getItem(id);
+  }
+  el.addEventListener('input',()=>{
+    localStorage.setItem(id, el.type==='radio'?el.checked:el.value);
+  });
+  el.addEventListener('change',()=>{
+    if(el.type==='radio'){
+      document.querySelectorAll('input[name='+el.name+']').forEach(r=>localStorage.setItem(r.name+r.value,r.checked));
+    }
+  });
+});
+
+function resetAll(){
+  if(!confirm('Effacer toutes les réponses ?')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+function downloadPDF(){
+  const name = prompt('Nom du fichier PDF :','Examen_FIDE_B1');
+  if(!name) return;
+  html2pdf().from(document.getElementById('exam')).set({
+    margin:10,
+    filename:name+'.pdf',
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+  }).save();
+}
+</script>
+</body>
+</html>
