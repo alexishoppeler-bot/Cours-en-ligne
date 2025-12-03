@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Entretien d’embauche – Audio</title>
+<title>Entretien d’embauche – Compréhension orale</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -25,13 +25,19 @@ body{
 h1{
   text-align:center;
   color:#003366;
+  margin-top:0;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin:25px 0;
 }
 
 button{
-  display:block;
-  margin:25px auto;
-  padding:15px 30px;
-  font-size:20px;
+  padding:15px 25px;
+  font-size:18px;
   background:#3f71ff;
   color:white;
   border:none;
@@ -55,64 +61,66 @@ p{
 
 <div class="app">
 
-<h1>🎧 Écouter le texte</h1>
-
-<!-- BOUTON -->
-<button id="audioBtn">▶️ Lire l’audio</button>
+<h1>🎧 Entretien d’embauche</h1>
 
 <!-- AUDIO -->
 <audio id="audio">
   <source src="audio-fabrice.mp3" type="audio/mpeg">
 </audio>
 
-  <p>
-    Quand je suis convoqué à un entretien d’embauche, je commence par bien me préparer.
-    Je relis l’annonce, je regarde le site de l’entreprise et j’essaie de comprendre ce
-    qu’elle fait et ce qu’elle attend du poste. Je prépare aussi des réponses simples
-    pour parler de mon parcours, de mon expérience et de mes compétences. La veille,
-    je choisis des habits propres et adaptés au travail proposé et je vérifie l’heure
-    et le lieu du rendez-vous.
-  </p>
+<!-- BOUTONS -->
+<div class="controls">
+  <button id="playBtn">▶️ Lire</button>
+  <button id="restartBtn">🔁 Recommencer</button>
+</div>
 
-  <p>
-    Le jour de l’entretien, j’arrive à l’heure, voire un peu en avance. À mon arrivée,
-    je salue poliment la personne qui m’accueille. Quand l’entretien commence,
-    je me présente calmement : je dis mon nom, mon expérience et pourquoi je postule
-    à ce poste. J’écoute attentivement les questions et je réponds de manière honnête,
-    sans exagérer. Si je ne comprends pas une question, je demande gentiment de répéter.
-  </p>
+<p>
+Quand je suis convoqué à un entretien d’embauche, je commence par bien me préparer.
+Je relis l’annonce et je regarde le site de l’entreprise. J’essaie de comprendre
+ce que fait l’entreprise et ce qu’elle attend pour le poste.
+</p>
 
-  <p>
-    Pendant l’entretien, l’employeur peut poser des questions sur mon dernier travail,
-    mes qualités, mes difficultés ou ma motivation. Je donne des exemples concrets
-    et je montre que je suis sérieux, motivé et prêt à apprendre. On peut aussi me parler
-    des horaires, du salaire, du taux d’activité ou de la période d’essai. J’écoute bien
-    et je pose quelques questions simples si nécessaire, pour montrer mon intérêt.
-  </p>
+<p>
+Le jour de l’entretien, j’arrive à l’heure, ou un peu en avance.
+Je salue poliment la personne qui m’accueille.
+Je me présente calmement et j’écoute les questions.
+</p>
 
-  <p>
-    À la fin de l’entretien, je remercie la personne pour le temps accordé.
-    Je quitte l’entretien avec une attitude positive, même si je ne sais pas encore
-    la réponse. Après l’entretien, j’attends le retour de l’employeur. Si je suis accepté,
-    je peux commencer une nouvelle étape professionnelle. Si je ne suis pas pris,
-    je garde confiance et je continue mes recherches en utilisant l’expérience acquise.
-  </p>
+<p>
+Pendant l’entretien, l’employeur peut poser des questions sur mon dernier emploi,
+mes qualités ou ma motivation. Je réponds honnêtement
+et je montre que je suis motivé et prêt à apprendre.
+</p>
+
+<p>
+À la fin de l’entretien, je remercie la personne.
+Si je suis accepté, je commence une nouvelle étape.
+Sinon, je continue mes recherches.
+</p>
 
 </div>
 
 <script>
 const audio = document.getElementById("audio");
-const btn = document.getElementById("audioBtn");
+const playBtn = document.getElementById("playBtn");
+const restartBtn = document.getElementById("restartBtn");
 
-btn.addEventListener("click", function(){
+playBtn.onclick = function(){
   if(audio.paused){
     audio.play();
-    btn.textContent = "⏸️ Pause";
+    playBtn.textContent = "⏸️ Pause";
   }else{
     audio.pause();
-    btn.textContent = "▶️ Lire l’audio";
+    playBtn.textContent = "▶️ Lire";
   }
-});
+};
+
+restartBtn.onclick = function(){
+  audio.pause();
+  audio.currentTime = 0;
+  audio.play();
+  playBtn.textContent = "⏸️ Pause";
+};
 </script>
 
 </body>
