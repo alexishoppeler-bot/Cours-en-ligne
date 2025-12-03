@@ -7,6 +7,7 @@
 
 <style>
 body{
+  margin:0;
   font-family:Arial, sans-serif;
   background:#eef3f9;
   padding:30px 15px;
@@ -15,30 +16,37 @@ body{
 .app{
   max-width:900px;
   margin:auto;
-  background:white;
+  background:#ffffff;
   padding:30px;
   border-radius:16px;
   box-shadow:0 6px 25px rgba(0,0,0,.15);
 }
 
-h1{text-align:center;color:#003366}
+h1{
+  text-align:center;
+  color:#003366;
+}
 
 button{
   display:block;
-  margin:20px auto;
+  margin:25px auto;
   padding:15px 30px;
   font-size:20px;
-  border:none;
-  border-radius:12px;
   background:#3f71ff;
   color:white;
+  border:none;
+  border-radius:12px;
   cursor:pointer;
 }
-button:hover{background:#2f5ae0}
+
+button:hover{
+  background:#2f5ae0;
+}
 
 p{
   font-size:18px;
   line-height:1.7;
+  margin-bottom:18px;
 }
 </style>
 </head>
@@ -49,33 +57,45 @@ p{
 
 <h1>🎧 Écouter le texte</h1>
 
-<!-- AUDIO (invisible) -->
+<!-- BOUTON -->
+<button id="audioBtn">▶️ Lire l’audio</button>
+
+<!-- AUDIO -->
 <audio id="audio">
   <source src="entretien-embauche.mp3" type="audio/mpeg">
 </audio>
 
-<!-- BOUTON -->
-<button onclick="toggleAudio()">▶️ Lire l’audio</button>
-
 <p>
-Quand je suis convoqué à un entretien d’embauche, je commence par bien me préparer...
+Quand je suis convoqué à un entretien d’embauche, je commence par bien me préparer.
+Je relis l’annonce, je regarde le site de l’entreprise et j’essaie de comprendre
+ce qu’elle fait et ce qu’elle attend du poste. Je prépare aussi des réponses simples
+pour parler de mon parcours, de mon expérience et de mes compétences.
 </p>
 
 <p>
-Le jour de l’entretien, j’arrive à l’heure, voire un peu en avance...
+Le jour de l’entretien, j’arrive à l’heure, voire un peu en avance. À mon arrivée,
+je salue poliment la personne qui m’accueille. Je me présente calmement
+et j’écoute attentivement les questions.
 </p>
 
 <p>
-À la fin de l’entretien, je remercie la personne pour le temps accordé...
+Pendant l’entretien, l’employeur peut poser des questions sur mon dernier travail,
+mes qualités ou ma motivation. Je réponds honnêtement et je montre que je suis motivé
+et prêt à apprendre.
+</p>
+
+<p>
+À la fin de l’entretien, je remercie la personne pour le temps accordé.
+Je garde une attitude positive et je continue mes recherches si nécessaire.
 </p>
 
 </div>
 
 <script>
 const audio = document.getElementById("audio");
-const btn = document.querySelector("button");
+const btn = document.getElementById("audioBtn");
 
-function toggleAudio(){
+btn.addEventListener("click", function(){
   if(audio.paused){
     audio.play();
     btn.textContent = "⏸️ Pause";
@@ -83,7 +103,7 @@ function toggleAudio(){
     audio.pause();
     btn.textContent = "▶️ Lire l’audio";
   }
-}
+});
 </script>
 
 </body>
