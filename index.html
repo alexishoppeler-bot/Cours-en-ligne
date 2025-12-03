@@ -11,10 +11,8 @@
   --dark:#003366;
   --bg:#eef3f9;
   --card:#ffffff;
-  --green:#2ecc71;
+  --ok:#2ecc71;
 }
-
-*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -22,84 +20,75 @@ body{
   background:linear-gradient(180deg,#eef3f9,#dfe7f5);
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 header{
   background:linear-gradient(120deg,#3f71ff,#004c97);
   padding:30px 20px;
   color:#fff;
   text-align:center;
 }
-header h1{margin:0;font-size:32px}
+header h1{margin:0;font-size:34px}
 header p{margin-top:8px;font-size:18px;opacity:.95}
 
-/* ===== CONTAINER ===== */
+/* CONTAINER */
 .container{
-  max-width:1400px;
+  max-width:1100px;
   margin:auto;
-  padding:35px 20px 60px;
+  padding:30px 20px 60px;
 }
 
-/* ===== GRID ===== */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:25px;
+/* SEARCH */
+.search{
+  width:100%;
+  padding:14px 18px;
+  border-radius:14px;
+  border:2px solid #cdd9ff;
+  font-size:18px;
+  margin-bottom:25px;
 }
-@media(max-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.grid{grid-template-columns:1fr}}
 
-/* ===== CARD ===== */
-.card{
-  background:var(--card);
-  border-radius:20px;
-  padding:22px;
-  box-shadow:0 8px 30px rgba(0,0,0,.12);
-  border-top:6px solid var(--blue);
-}
-.card h2{
-  margin:0 0 15px;
-  color:var(--dark);
-  font-size:22px;
+/* LIST */
+ul{list-style:none;padding:0;margin:0}
+
+li{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
+  margin-bottom:12px;
+  background:#fff;
+  border-radius:16px;
+  padding:14px 16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.12);
 }
 
-/* ===== LISTE EXERCICES ===== */
-.card ul{list-style:none;padding:0;margin:0}
-
-.exercise{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin:8px 0;
-  padding:6px;
-  border-radius:10px;
+li.done{
+  background:#e9fff2;
 }
-.exercise input{
-  transform:scale(1.3);
+
+li input{
+  transform:scale(1.4);
   cursor:pointer;
 }
-.exercise a{
+
+a{
   flex:1;
   text-decoration:none;
-  padding:10px 12px;
-  border-radius:10px;
-  background:#f3f6ff;
   color:#003366;
+  font-size:18px;
   font-weight:bold;
 }
-.exercise a:hover{background:#e6ecff}
 
-.exercise.done{background:#e6ffe9}
-.exercise.done a{background:transparent;color:#116b2d}
+.num{
+  color:#3f71ff;
+  margin-right:8px;
+}
 
-/* ===== FOOTER ===== */
+/* FOOT */
 footer{
   text-align:center;
-  padding:25px;
   color:#555;
+  padding:20px;
+  font-size:15px;
 }
 </style>
 </head>
@@ -108,128 +97,73 @@ footer{
 
 <header>
   <h1>📘 Cours en ligne</h1>
-  <p>Coche quand l’exercice est terminé – progression sauvegardée</p>
+  <p>Recherche → clique → ✅ terminé (tout est sauvegardé)</p>
 </header>
 
 <div class="container">
-<div class="grid">
 
-<!-- DOCUMENTS -->
-<div class="card">
-<h2>📁 Documents & numérique</h2>
-<ul>
-<li class="exercise" data-id="d1"><input type="checkbox" onchange="toggleDone(this)">
-<a href="organiser-documents-dossiers.html" target="_blank">Organiser les documents</a></li>
+<input type="text" id="search" class="search" placeholder="🔍 Rechercher un exercice…">
 
-<li class="exercise" data-id="d2"><input type="checkbox" onchange="toggleDone(this)">
-<a href="miniwindows-mise-en-forme.html" target="_blank">MiniWord – Mise en forme</a></li>
+<ul id="list">
 
-<li class="exercise" data-id="d3"><input type="checkbox" onchange="toggleDone(this)">
-<a href="editeur-a4.html" target="_blank">MiniWord → PDF</a></li>
+<li><input type="checkbox"><a href="01-clavier-reecriture.html" target="_blank"><span class="num">01</span>Clavier – réécriture</a></li>
+<li><input type="checkbox"><a href="02-communication-c1.html" target="_blank"><span class="num">02</span>Communication professionnelle</a></li>
+<li><input type="checkbox"><a href="03-Competences-pro.html" target="_blank"><span class="num">03</span>Compétences professionnelles</a></li>
+<li><input type="checkbox"><a href="04-comprehension-a1.html" target="_blank"><span class="num">04</span>Compréhension écrite – niveau 1</a></li>
+<li><input type="checkbox"><a href="05-comprehension-a2-b1.html" target="_blank"><span class="num">05</span>Compréhension écrite – niveau 2</a></li>
+<li><input type="checkbox"><a href="06-editeur-a4.html" target="_blank"><span class="num">06</span>MiniWord – éditeur A4</a></li>
+<li><input type="checkbox"><a href="07-emails-professionnels.html" target="_blank"><span class="num">07</span>Emails professionnels</a></li>
+<li><input type="checkbox"><a href="08-examen-ecrit.html" target="_blank"><span class="num">08</span>Examen écrit</a></li>
+<li><input type="checkbox"><a href="09-formulaire-profil.html" target="_blank"><span class="num">09</span>Profil professionnel</a></li>
+<li><input type="checkbox"><a href="10-heure.html" target="_blank"><span class="num">10</span>Lire et comprendre l’heure</a></li>
+<li><input type="checkbox"><a href="11-jeu-clics.html" target="_blank"><span class="num">11</span>Jeu des clics</a></li>
+<li><input type="checkbox"><a href="12-jeu-directions.html" target="_blank"><span class="num">12</span>Jeu des directions</a></li>
+<li><input type="checkbox"><a href="13-les-bonnes-attitudes-au-travail.html" target="_blank"><span class="num">13</span>Les bonnes attitudes au travail</a></li>
+<li><input type="checkbox"><a href="14-lettre-motivation.html" target="_blank"><span class="num">14</span>Lettre de motivation</a></li>
+<li><input type="checkbox"><a href="15-miniwindows-mise-en-forme.html" target="_blank"><span class="num">15</span>MiniWindows – mise en forme</a></li>
+<li><input type="checkbox"><a href="16-mot-image-metiers.html" target="_blank"><span class="num">16</span>Mots & métiers</a></li>
+<li><input type="checkbox"><a href="17-organiser-documents-dossiers.html" target="_blank"><span class="num">17</span>Organiser les documents</a></li>
+<li><input type="checkbox"><a href="18-parler-de-mon-dernier-travail.html" target="_blank"><span class="num">18</span>Parler de mon dernier travail</a></li>
+<li><input type="checkbox"><a href="19-questions-entretien.html" target="_blank"><span class="num">19</span>Questions d’entretien</a></li>
+<li><input type="checkbox"><a href="20-Qualites-personnelles.html" target="_blank"><span class="num">20</span>Qualités personnelles</a></li>
+<li><input type="checkbox"><a href="21-scenarios-professionnels.html" target="_blank"><span class="num">21</span>Scénarios professionnels</a></li>
+<li><input type="checkbox"><a href="22-simulation-de-situations-professionnelles.html" target="_blank"><span class="num">22</span>Simulation de situations professionnelles</a></li>
+
 </ul>
-</div>
-
-<!-- RECHERCHE EMPLOI -->
-<div class="card">
-<h2>📄 Recherche d’emploi</h2>
-<ul>
-<li class="exercise" data-id="r1"><input type="checkbox" onchange="toggleDone(this)">
-<a href="formulaire-profil.html" target="_blank">Profil professionnel</a></li>
-
-<li class="exercise" data-id="r2"><input type="checkbox" onchange="toggleDone(this)">
-<a href="emails-professionnels.html" target="_blank">Emails professionnels</a></li>
-
-<li class="exercise" data-id="r3"><input type="checkbox" onchange="toggleDone(this)">
-<a href="lettre-motivation.html" target="_blank">Lettre de motivation</a></li>
-</ul>
-</div>
-
-<!-- FRANÇAIS -->
-<div class="card">
-<h2>🗣️ Français</h2>
-<ul>
-<li class="exercise" data-id="f1"><input type="checkbox" onchange="toggleDone(this)">
-<a href="clavier-reecriture.html" target="_blank">Réécriture au clavier</a></li>
-
-<li class="exercise" data-id="f2"><input type="checkbox" onchange="toggleDone(this)">
-<a href="comprehension-a1.html" target="_blank">Compréhension – Niveau 1</a></li>
-
-<li class="exercise" data-id="f3"><input type="checkbox" onchange="toggleDone(this)">
-<a href="comprehension-a2-b1.html" target="_blank">Compréhension – Niveau 2</a></li>
-
-<li class="exercise" data-id="f4"><input type="checkbox" onchange="toggleDone(this)">
-<a href="communication-c1.html" target="_blank">Compréhension – Niveau 3</a></li>
-
-<li class="exercise" data-id="f5"><input type="checkbox" onchange="toggleDone(this)">
-<a href="scenarios-professionnels.html" target="_blank">Scénarios professionnels</a></li>
-
-<li class="exercise" data-id="f6"><input type="checkbox" onchange="toggleDone(this)">
-<a href="examen-ecrit.html" target="_blank">Examen écrit</a></li>
-
-<li class="exercise" data-id="f7"><input type="checkbox" onchange="toggleDone(this)">
-<a href="ecrire-en-français-situations-professionnelle.html" target="_blank">Écrire en français</a></li>
-</ul>
-</div>
-
-<!-- EMPLOI -->
-<div class="card">
-<h2>💼 Emploi & travail</h2>
-<ul>
-<li class="exercise" data-id="e1"><input type="checkbox" onchange="toggleDone(this)">
-<a href="questions-entretien.html" target="_blank">Questions d’entretien</a></li>
-
-<li class="exercise" data-id="e2"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Qualites-personnelles.html" target="_blank">Qualités personnelles</a></li>
-
-<li class="exercise" data-id="e3"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Competences-pro.html" target="_blank">Compétences professionnelles</a></li>
-
-<li class="exercise" data-id="e4"><input type="checkbox" onchange="toggleDone(this)">
-<a href="parler-de-mon-dernier-travail.html" target="_blank">Parler de son dernier travail</a></li>
-
-<li class="exercise" data-id="e5"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Simulation-de-situations-professionnelles.html" target="_blank">Situations professionnelles</a></li>
-
-<li class="exercise" data-id="e6"><input type="checkbox" onchange="toggleDone(this)">
-<a href="Les bonnes attitudes au travail.html" target="_blank">Bonnes attitudes au travail</a></li>
-</ul>
-</div>
-
-<!-- JEUX -->
-<div class="card">
-<h2>🕹️ Jeux pédagogiques</h2>
-<ul>
-<li class="exercise" data-id="j1"><input type="checkbox" onchange="toggleDone(this)">
-<a href="mot-image-metiers.html" target="_blank">Jeu d’appariement</a></li>
-
-<li class="exercise" data-id="j2"><input type="checkbox" onchange="toggleDone(this)">
-<a href="jeu-directions.html" target="_blank">Escape game</a></li>
-
-<li class="exercise" data-id="j3"><input type="checkbox" onchange="toggleDone(this)">
-<a href="jeu-clics.html" target="_blank">Jeu vocabulaire</a></li>
-</ul>
-</div>
 
 </div>
-</div>
 
-<footer>✔ Progression sauvegardée automatiquement (localStorage)</footer>
+<footer>
+✅ Progression sauvegardée automatiquement dans ce navigateur
+</footer>
 
 <script>
-function toggleDone(cb){
-  const li = cb.closest(".exercise");
-  const id = li.dataset.id;
-  cb.checked ? localStorage.setItem("done_"+id,1)
-             : localStorage.removeItem("done_"+id);
-  li.classList.toggle("done",cb.checked);
-}
+// 🔍 Recherche instantanée
+document.getElementById("search").addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  document.querySelectorAll("#list li").forEach(li=>{
+    li.style.display = li.innerText.toLowerCase().includes(value) ? "" : "none";
+  });
+});
 
-document.querySelectorAll(".exercise").forEach(li=>{
-  const id = li.dataset.id;
-  if(localStorage.getItem("done_"+id)){
+// ✅ Sauvegarde cochage
+document.querySelectorAll("#list li").forEach((li, i)=>{
+  const cb = li.querySelector("input");
+  const key = "ex_done_" + i;
+  if(localStorage.getItem(key)==="1"){
+    cb.checked = true;
     li.classList.add("done");
-    li.querySelector("input").checked = true;
   }
+
+  cb.addEventListener("change", ()=>{
+    if(cb.checked){
+      localStorage.setItem(key,"1");
+      li.classList.add("done");
+    }else{
+      localStorage.removeItem(key);
+      li.classList.remove("done");
+    }
+  });
 });
 </script>
 
