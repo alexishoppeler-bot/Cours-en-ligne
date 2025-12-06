@@ -4,41 +4,81 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plateforme d’Autonomie</title>
+
+  <!-- Police Open Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --blue:#2980ff;
       --dark:#0b2a4a;
-      --bg:#e8f4f1; /* bleu-vert clair */
+      --bg:#e8f4f1;
       --card:#ffffff;
       --shadow:0 4px 18px rgba(0,0,0,.12);
+      --accent:#1a8c6d;
+    }
+
+    *{
+      box-sizing:border-box;
     }
 
     body{
       margin:0;
-      font-family: 'Open Sans', Arial, sans-serif;
+      font-family:'Open Sans', Arial, sans-serif;
       background:linear-gradient(135deg, #dff3ff, #c9f7e7); /* bleu → vert */
-      padding:20px;
-      color:#1f1f1f;
       padding:20px;
       color:#1f1f1f;
     }
 
     header{
+      position:relative;
       text-align:center;
-      padding:45px 10px;
+      padding:45px 10px 35px 10px;
       margin-bottom:35px;
       background:rgba(255,255,255,0.35);
       backdrop-filter:blur(10px);
       border-radius:22px;
       box-shadow:0 4px 18px rgba(0,0,0,.10);
-      animation: fadeIn 1s ease;
+      animation:fadeIn 1s ease;
+      max-width:1100px;
+      margin-left:auto;
+      margin-right:auto;
     }
 
     header h1{
-      margin:0;
+      margin:0 0 10px 0;
       font-size:34px;
       font-weight:700;
-      color:#1b4f72; /* bleu foncé pro */
+      color:#1b4f72;
+    }
+
+    header p{
+      margin:0;
+      font-size:17px;
+      opacity:.9;
+    }
+
+    /* Bouton mode sombre */
+    #darkToggle{
+      position:absolute;
+      top:18px;
+      right:20px;
+      padding:10px 16px;
+      border-radius:12px;
+      border:none;
+      background:var(--accent);
+      color:white;
+      cursor:pointer;
+      font-size:15px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      box-shadow:0 3px 10px rgba(0,0,0,.18);
+      transition:.25s;
+    }
+    #darkToggle:hover{
+      transform:translateY(-1px);
+      box-shadow:0 4px 14px rgba(0,0,0,.25);
     }
 
     .menu{
@@ -51,7 +91,6 @@
     }
 
     .card{
-      background:linear-gradient(145deg, rgba(255,255,255,0.85), rgba(220,245,240,0.6));
       background:rgba(255,255,255,0.65);
       padding:40px 28px;
       border-radius:28px;
@@ -64,27 +103,29 @@
       backdrop-filter:blur(12px);
     }
 
+    .card h2{
+      margin:0;
+      font-size:26px;
+      font-weight:700;
+      color:#1a8c6d;
+      letter-spacing:0.6px;
+    }
+
     .card:hover{
       transform:translateY(-6px);
       box-shadow:0 6px 22px rgba(0,0,0,.18);
     }
 
-    .card h2{
-      margin:0;
-      font-size:26px;
-      font-weight:700;
-      color:#1a8c6d; /* vert pro */
-      letter-spacing:0.6px;
-    }
-
     @keyframes fadeIn{
-      from{opacity:0;} to{opacity:1;}
+      from{opacity:0;} 
+      to{opacity:1;}
     }
 
     @keyframes slideUp{
-      from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} 
+      from{opacity:0; transform:translateY(20px);} 
+      to{opacity:1; transform:translateY(0);} 
     }
-  
+
     /* DARK MODE */
     body.dark{
       background:linear-gradient(135deg,#081b26,#112d38);
@@ -94,90 +135,207 @@
       background:rgba(0,0,0,0.35);
       color:white;
     }
+    body.dark header h1{
+      color:#e8f4ff;
+    }
     body.dark .card{
       background:rgba(0,0,0,0.45);
       border:1px solid rgba(255,255,255,0.15);
       box-shadow:0 8px 28px rgba(0,0,0,.5);
     }
-    body.dark .card h2{ color:#7fffd4; }
+    body.dark .card h2{
+      color:#7fffd4;
+    }
+
+    /* Icônes des cartes */
+    .card::before{
+      display:block;
+      font-size:42px;
+      margin-bottom:14px;
+      opacity:0.92;
+      transition:.3s;
+    }
+
+    .card.bureautique::before{content:"🖥️";}
+    .card.quiz::before{content:"❓";}
+    .card.retaper::before{content:"⌨️";}
+    .card.reponses::before{content:"📝";}
+    .card.emploi::before{content:"💼";}
+    .card.apparier::before{content:"🔗";}
     .card.audio::before{content:"🔊";}
-</style>
+    .card.jeux::before{content:"🎮";}
+
+    .card:hover::before{
+      transform:scale(1.12);
+    }
+
+    /* Bloc Identité */
+    #identite{
+      max-width:500px;
+      margin:0 auto 35px auto;
+      padding:25px 20px 22px 20px;
+      background:rgba(255,255,255,0.55);
+      backdrop-filter:blur(10px);
+      border-radius:22px;
+      box-shadow:0 6px 20px rgba(0,0,0,.12);
+      text-align:center;
+    }
+
+    #identite h3{
+      margin-top:0;
+      color:#1b4f72;
+      font-size:22px;
+      font-weight:700;
+    }
+
+    #identite input{
+      width:90%;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #c7dede;
+      font-size:16px;
+      margin-bottom:12px;
+      outline:none;
+      transition:.2s;
+    }
+
+    #identite input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 2px rgba(26,140,109,0.15);
+    }
+
+    #identite button{
+      background:var(--accent);
+      color:white;
+      padding:12px 25px;
+      border:none;
+      border-radius:14px;
+      font-size:16px;
+      cursor:pointer;
+      transition:.3s;
+      box-shadow:0 4px 14px rgba(0,0,0,.18);
+    }
+
+    #identite button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 6px 18px rgba(0,0,0,.26);
+    }
+
+    /* Footer léger */
+    footer{
+      max-width:1100px;
+      margin:30px auto 0 auto;
+      text-align:center;
+      font-size:13px;
+      opacity:.75;
+    }
+
+    @media (max-width:600px){
+      header h1{font-size:26px;}
+      .card{padding:28px 18px;}
+    }
+  </style>
 </head>
 <body>
   <header>
     <h1>Plateforme d’Autonomie</h1>
-    <p>Veuillez sélectionner une catégorie pour commencer</p>
-    <button id="darkToggle" onclick="toggleDark()" style="position:absolute;top:20px;right:20px;padding:10px 16px;border-radius:12px;border:none;background:#1a8c6d;color:white;cursor:pointer;">🌙</button>
-</header>
+    <p>Veuillez sélectionner une catégorie pour commencer votre entraînement.</p>
+    <button id="darkToggle" onclick="toggleDark()">
+      <span id="darkIcon">🌙</span> 
+      <span id="darkLabel">Mode sombre</span>
+    </button>
+  </header>
 
-<!-- FORMULAIRE NOM & PRÉNOM -->
-<div id="identite" style="max-width:500px;margin:0 auto 35px auto;padding:25px 20px;background:rgba(255,255,255,0.55);backdrop-filter:blur(10px);border-radius:22px;box-shadow:0 6px 20px rgba(0,0,0,.12);text-align:center;">
-  <h3 style="margin-top:0;color:#1b4f72;font-size:22px;font-weight:700;">Votre nom pour les futurs PDF</h3>
-
-  <input id="prenom" type="text" placeholder="Prénom" style="width:90%;padding:12px 14px;border-radius:12px;border:1px solid #c7dede;font-size:16px;margin-bottom:12px;">
-  <input id="nom" type="text" placeholder="Nom" style="width:90%;padding:12px 14px;border-radius:12px;border:1px solid #c7dede;font-size:16px;margin-bottom:15px;">
-
-  <button onclick="saveIdentite()" style="background:#1a8c6d;color:white;padding:12px 25px;border:none;border-radius:14px;font-size:16px;cursor:pointer;transition:.3s;">Enregistrer</button>
-</div>
-
-  <div class="menu">
-    <div class="card bureautique" onclick="location.href='bureautique_souspage.html'"> <h2>Bureautique</h2> </div>
-    <div class="card quiz" onclick="location.href='quiz_souspage.html'"> <h2>Quiz</h2> </div>
-    <div class="card retaper" onclick="location.href='retaper_souspage.html'"> <h2>Re‑taper</h2> </div>
-    <div class="card reponses" onclick="location.href='reponses_ouvertes_souspage.html'"> <h2>Réponses ouvertes</h2> </div>
-    <div class="card emploi" onclick="location.href='recherche_emploi_souspage.html'"> <h2>Recherche d’emploi</h2> </div>
-    <div class="card apparier" onclick="location.href='apparier_souspage.html'"> <h2>Apparier</h2> </div>
-      <div class="card audio" onclick="location.href='audio_souspage.html'"> <h2>Audio</h2> </div>
-    <div class="card jeux" onclick="location.href='jeux_souspage.html'"> <h2>Jeux</h2> </div>
+  <!-- FORMULAIRE NOM & PRÉNOM -->
+  <div id="identite">
+    <h3>Votre nom pour les futurs PDF</h3>
+    <input id="prenom" type="text" placeholder="Prénom">
+    <input id="nom" type="text" placeholder="Nom">
+    <button onclick="saveIdentite()">Enregistrer</button>
   </div>
 
-<style>
-  .card::before{display:block;font-size:42px;margin-bottom:14px;opacity:0.92;transition:.3s;}
+  <!-- MENU PRINCIPAL -->
+  <div class="menu">
+    <div class="card bureautique" onclick="location.href='bureautique_souspage.html'">
+      <h2>Bureautique</h2>
+    </div>
+    <div class="card quiz" onclick="location.href='quiz_souspage.html'">
+      <h2>Quiz</h2>
+    </div>
+    <div class="card retaper" onclick="location.href='retaper_souspage.html'">
+      <h2>Re-taper</h2>
+    </div>
+    <div class="card reponses" onclick="location.href='reponses_ouvertes_souspage.html'">
+      <h2>Réponses ouvertes</h2>
+    </div>
+    <div class="card emploi" onclick="location.href='recherche_emploi_souspage.html'">
+      <h2>Recherche d’emploi</h2>
+    </div>
+    <div class="card apparier" onclick="location.href='apparier_souspage.html'">
+      <h2>Apparier</h2>
+    </div>
+    <div class="card audio" onclick="location.href='audio_souspage.html'">
+      <h2>Audio</h2>
+    </div>
+    <div class="card jeux" onclick="location.href='jeux_souspage.html'">
+      <h2>Jeux</h2>
+    </div>
+  </div>
 
-  .card.bureautique::before{content:"🖥️";}
-  .card.quiz::before{content:"❓";}
-  .card.retaper::before{content:"⌨️";}
-  .card.reponses::before{content:"📝";}
-  .card.emploi::before{content:"💼";}
-  .card.apparier::before{content:"🔗";}
-  
-  .card.jeux::before{content:"🎮";opacity:0.92;}{content:"⚙️";}
-  .card:hover::before{
-    transform:scale(1.12);
-    transition:.3s;
-  }
-</style>
+  <footer>
+    Plateforme d’Autonomie – Proactif · Les exercices s’ouvrent dans cette même fenêtre ou dans un nouvel onglet selon votre navigateur.
+  </footer>
 
-<script>
-  function toggleDark(){
-    document.body.classList.toggle('dark');
-    localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1' : '0');
-  }
-  if(localStorage.getItem('darkMode') === '1'){ document.body.classList.add('dark'); }
+  <script>
+    // Mode sombre
+    function applyDarkState(){
+      const isDark = localStorage.getItem('darkMode') === '1';
+      const body = document.body;
+      const icon = document.getElementById('darkIcon');
+      const label = document.getElementById('darkLabel');
 
+      if(isDark){
+        body.classList.add('dark');
+        if(icon) icon.textContent = '☀️';
+        if(label) label.textContent = 'Mode clair';
+      }else{
+        body.classList.remove('dark');
+        if(icon) icon.textContent = '🌙';
+        if(label) label.textContent = 'Mode sombre';
+      }
+    }
 
-  // Identité PDF
-  window.onload = () => {
-    if(localStorage.getItem('darkMode') === '1'){ document.body.classList.add('dark'); }
-    document.getElementById('prenom').value = localStorage.getItem('pa_prenom') || '';
-    document.getElementById('nom').value = localStorage.getItem('pa_nom') || '';
-  }
+    function toggleDark(){
+      const current = localStorage.getItem('darkMode') === '1';
+      localStorage.setItem('darkMode', current ? '0' : '1');
+      applyDarkState();
+    }
 
-  function saveIdentite(){
-    const p = document.getElementById('prenom').value.trim();
-    const n = document.getElementById('nom').value.trim();
-    localStorage.setItem('pa_prenom', p);
-    localStorage.setItem('pa_nom', n);
-    alert('Vos informations ont été enregistrées ✔️');
-  }
+    // Identité PDF
+    function saveIdentite(){
+      const p = document.getElementById('prenom').value.trim();
+      const n = document.getElementById('nom').value.trim();
+      localStorage.setItem('pa_prenom', p);
+      localStorage.setItem('pa_nom', n);
+      alert('Vos informations ont été enregistrées ✔️');
+    }
 
-  // Fonction globale pour récupérer le nom complet pour les PDF
-  function getNomComplet(){
-    const p = localStorage.getItem('pa_prenom') || '';
-    const n = localStorage.getItem('pa_nom') || '';
-    return (p + ' ' + n).trim();
-  }
+    // Fonction globale pour récupérer le nom complet pour les PDF
+    function getNomComplet(){
+      const p = localStorage.getItem('pa_prenom') || '';
+      const n = localStorage.getItem('pa_nom') || '';
+      return (p + ' ' + n).trim();
+    }
 
-</script>
+    // Initialisation au chargement
+    window.onload = () => {
+      // Mode sombre
+      applyDarkState();
+
+      // Charger nom / prénom
+      document.getElementById('prenom').value = localStorage.getItem('pa_prenom') || '';
+      document.getElementById('nom').value = localStorage.getItem('pa_nom') || '';
+    }
+  </script>
 </body>
 </html>
