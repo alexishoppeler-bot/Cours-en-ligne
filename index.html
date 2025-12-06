@@ -100,7 +100,8 @@
       box-shadow:0 8px 28px rgba(0,0,0,.5);
     }
     body.dark .card h2{ color:#7fffd4; }
-    </style>
+    .card.audio::before{content:"🔊";}
+</style>
 </head>
 <body>
   <header>
@@ -126,7 +127,8 @@
     <div class="card reponses" onclick="location.href='reponses_ouvertes_souspage.html'"> <h2>Réponses ouvertes</h2> </div>
     <div class="card emploi" onclick="location.href='recherche_emploi_souspage.html'"> <h2>Recherche d’emploi</h2> </div>
     <div class="card apparier" onclick="location.href='apparier_souspage.html'"> <h2>Apparier</h2> </div>
-      <div class="card logiciels" onclick="location.href='logiciels_souspage.html'"> <h2>Logiciels</h2> </div>
+      <div class="card audio" onclick="location.href='audio_souspage.html'"> <h2>Audio</h2> </div>
+    <div class="card jeux" onclick="location.href='jeux_souspage.html'"> <h2>Jeux</h2> </div>
   </div>
 
 <style>
@@ -138,7 +140,8 @@
   .card.reponses::before{content:"📝";}
   .card.emploi::before{content:"💼";}
   .card.apparier::before{content:"🔗";}
-  .card.logiciels::before{content:"⚙️";}}
+  
+  .card.jeux::before{content:"🎮";opacity:0.92;}{content:"⚙️";}
   .card:hover::before{
     transform:scale(1.12);
     transition:.3s;
