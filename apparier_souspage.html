@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apparier – Exercices</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+
+<style>
+:root{ --accent:#1a8c6d; }
+body{
+  margin:0;font-family:'Open Sans';background:linear-gradient(135deg,#dff3ff,#c9f7e7);
+  padding:20px;
+}
+header{
+  position:relative;text-align:center;padding:35px 10px;margin-bottom:30px;
+  background:rgba(255,255,255,0.35);backdrop-filter:blur(10px);
+  border-radius:22px;max-width:1000px;margin:auto;
+}
+#backBtn,#darkToggle{
+  position:absolute;top:18px;padding:10px 14px;border:none;background:var(--accent);
+  color:white;border-radius:12px;cursor:pointer;
+}
+#backBtn{left:20px;} #darkToggle{right:20px;}
+
+.menu{
+  max-width:950px;margin:auto;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:25px;
+}
+.card{
+  background:rgba(255,255,255,0.65);padding:35px 25px;border-radius:26px;
+  box-shadow:0 6px 22px rgba(0,0,0,.15);text-align:center;cursor:pointer;
+  transition:.3s;backdrop-filter:blur(12px);
+}
+.card:hover{transform:translateY(-6px);}
+.card::before{content:"🔗";font-size:42px;margin-bottom:12px;display:block;}
+.card h2{margin:0;color:#1a8c6d;font-size:22px;font-weight:700;}
+
+body.dark{background:#0b1b27;color:white;}
+body.dark .card{background:rgba(0,0,0,0.35);}
+body.dark .card h2{color:#7fffd4;}
+</style>
+</head>
+
+<body>
+
+<header>
+<button id="backBtn" onclick="location.href='index.html'">⬅ Retour</button>
+<h1>Apparier</h1>
+<button id="darkToggle" onclick="toggleDark()">🌙</button>
+</header>
+
+<div class="menu">
+
+<div class="card" onclick="window.open('exercices/apparier_01.html','_blank')">
+  <h2>Apparier 1 – Mots du travail</h2>
+</div>
+
+<div class="card" onclick="window.open('exercices/apparier_02.html','_blank')">
+  <h2>Apparier 2 – Objets</h2>
+</div>
+
+<div class="card" onclick="window.open('exercices/apparier_03.html','_blank')">
+  <h2>Apparier 3 – Verbes utiles</h2>
+</div>
+
+<div class="card" onclick="window.open('exercices/apparier_04.html','_blank')">
+  <h2>Apparier 4 – Expressions</h2>
+</div>
+
+<div class="card" onclick="window.open('exercices/apparier_05.html','_blank')">
+  <h2>Apparier 5 – Phrases A2</h2>
+</div>
+
+</div>
+
+<script>
+function applyDark(){
+  const d=localStorage.getItem('darkMode')==='1';
+  document.body.classList.toggle('dark',d);
+  document.getElementById('darkToggle').textContent=d?'☀️':'🌙';
+}
+function toggleDark(){
+  const d=localStorage.getItem('darkMode')==='1';
+  localStorage.setItem('darkMode',d?'0':'1');applyDark();
+}
+window.onload=applyDark;
+</script>
+
+</body>
+</html>
