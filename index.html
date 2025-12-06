@@ -25,7 +25,7 @@
     body{
       margin:0;
       font-family:'Open Sans', Arial, sans-serif;
-      background:linear-gradient(135deg, #dff3ff, #c9f7e7); /* bleu → vert */
+      background:linear-gradient(135deg, #dff3ff, #c9f7e7);
       padding:20px;
       color:#1f1f1f;
     }
@@ -169,59 +169,6 @@
       transform:scale(1.12);
     }
 
-    /* Bloc Identité */
-    #identite{
-      max-width:500px;
-      margin:0 auto 35px auto;
-      padding:25px 20px 22px 20px;
-      background:rgba(255,255,255,0.55);
-      backdrop-filter:blur(10px);
-      border-radius:22px;
-      box-shadow:0 6px 20px rgba(0,0,0,.12);
-      text-align:center;
-    }
-
-    #identite h3{
-      margin-top:0;
-      color:#1b4f72;
-      font-size:22px;
-      font-weight:700;
-    }
-
-    #identite input{
-      width:90%;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid #c7dede;
-      font-size:16px;
-      margin-bottom:12px;
-      outline:none;
-      transition:.2s;
-    }
-
-    #identite input:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 2px rgba(26,140,109,0.15);
-    }
-
-    #identite button{
-      background:var(--accent);
-      color:white;
-      padding:12px 25px;
-      border:none;
-      border-radius:14px;
-      font-size:16px;
-      cursor:pointer;
-      transition:.3s;
-      box-shadow:0 4px 14px rgba(0,0,0,.18);
-    }
-
-    #identite button:hover{
-      transform:translateY(-1px);
-      box-shadow:0 6px 18px rgba(0,0,0,.26);
-    }
-
-    /* Footer léger */
     footer{
       max-width:1100px;
       margin:30px auto 0 auto;
@@ -245,14 +192,6 @@
       <span id="darkLabel">Mode sombre</span>
     </button>
   </header>
-
-  <!-- FORMULAIRE NOM & PRÉNOM -->
-  <div id="identite">
-    <h3>Votre nom pour les futurs PDF</h3>
-    <input id="prenom" type="text" placeholder="Prénom">
-    <input id="nom" type="text" placeholder="Nom">
-    <button onclick="saveIdentite()">Enregistrer</button>
-  </div>
 
   <!-- MENU PRINCIPAL -->
   <div class="menu">
@@ -296,12 +235,12 @@
 
       if(isDark){
         body.classList.add('dark');
-        if(icon) icon.textContent = '☀️';
-        if(label) label.textContent = 'Mode clair';
+        icon.textContent = '☀️';
+        label.textContent = 'Mode clair';
       }else{
         body.classList.remove('dark');
-        if(icon) icon.textContent = '🌙';
-        if(label) label.textContent = 'Mode sombre';
+        icon.textContent = '🌙';
+        label.textContent = 'Mode sombre';
       }
     }
 
@@ -311,30 +250,9 @@
       applyDarkState();
     }
 
-    // Identité PDF
-    function saveIdentite(){
-      const p = document.getElementById('prenom').value.trim();
-      const n = document.getElementById('nom').value.trim();
-      localStorage.setItem('pa_prenom', p);
-      localStorage.setItem('pa_nom', n);
-      alert('Vos informations ont été enregistrées ✔️');
-    }
-
-    // Fonction globale pour récupérer le nom complet pour les PDF
-    function getNomComplet(){
-      const p = localStorage.getItem('pa_prenom') || '';
-      const n = localStorage.getItem('pa_nom') || '';
-      return (p + ' ' + n).trim();
-    }
-
-    // Initialisation au chargement
+    // Initialisation
     window.onload = () => {
-      // Mode sombre
       applyDarkState();
-
-      // Charger nom / prénom
-      document.getElementById('prenom').value = localStorage.getItem('pa_prenom') || '';
-      document.getElementById('nom').value = localStorage.getItem('pa_nom') || '';
     }
   </script>
 </body>
