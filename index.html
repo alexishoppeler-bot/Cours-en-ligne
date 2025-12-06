@@ -6,131 +6,72 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{
-  --blue:#3f71ff;
-  --dark:#003366;
-  --bg:#eef3f9;
-  --card:#ffffff;
-  --ok:#2ecc71;
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+  gap:22px;
+  margin-top:40px;
 }
 
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:linear-gradient(180deg,#eef3f9,#dfe7f5);
-}
-
-/* HEADER */
-header{
-  background:linear-gradient(120deg,#3f71ff,#004c97);
-  padding:30px 20px;
-  color:#fff;
-  text-align:center;
-}
-header h1{margin:0;font-size:34px}
-header p{margin-top:8px;font-size:18px;opacity:.95}
-
-/* CONTAINER */
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:30px 20px 60px;
-}
-
-/* SEARCH */
-.search{
-  width:100%;
-  padding:14px 18px;
-  border-radius:14px;
-  border:2px solid #cdd9ff;
-  font-size:18px;
-  margin-bottom:25px;
-}
-
-/* LIST */
-ul{list-style:none;padding:0;margin:0}
-
-li{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:12px;
+.card{
   background:#fff;
-  border-radius:16px;
-  padding:14px 16px;
-  box-shadow:0 6px 18px rgba(0,0,0,.12);
-}
-
-li.done{
-  background:#e9fff2;
-}
-
-li input{
-  transform:scale(1.4);
+  padding:26px;
+  border-radius:18px;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
+  text-align:center;
+  transition:.2s;
   cursor:pointer;
 }
 
-a{
-  flex:1;
-  text-decoration:none;
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 25px rgba(0,0,0,.18);
+}
+
+.card h2{
+  margin:0;
+  font-size:22px;
   color:#003366;
-  font-size:18px;
-  font-weight:bold;
 }
 
-.num{
-  color:#3f71ff;
-  margin-right:8px;
-}
-
-/* FOOT */
-footer{
-  text-align:center;
-  color:#555;
-  padding:20px;
+.card p{
+  margin-top:10px;
+  color:#666;
   font-size:15px;
 }
 </style>
-</head>
 
-<body>
+<div class="cards">
 
-<header>
-  <h1>📘 Cours en ligne</h1>
-  <p>Recherche → clique → ✅ terminé (tout est sauvegardé)</p>
-</header>
+  <div class="card" onclick="location.href='Bureautique/'">
+    <h2>💻 Bureautique</h2>
+    <p>Word, fichiers, clics, MiniWindows</p>
+  </div>
 
-<div class="container">
+  <div class="card" onclick="location.href='Jeux/'">
+    <h2>🎮 Jeux</h2>
+    <p>Jeux interactifs, images, directions</p>
+  </div>
 
-<input type="text" id="search" class="search" placeholder="🔍 Rechercher un exercice…">
+  <div class="card" onclick="location.href='Lire et écrire/'">
+    <h2>📖 Lire & écrire</h2>
+    <p>Textes, compréhension écrite, rédaction</p>
+  </div>
 
-<ul id="list">
+  <div class="card" onclick="location.href='Parler/'">
+    <h2>🗣️ Parler</h2>
+    <p>Scénarios, expression orale, débats</p>
+  </div>
 
-<li><input type="checkbox"><a href="clavier-reecriture.html" target="_blank"><span class="num">01</span>Clavier – réécriture</a></li>
-<li><input type="checkbox"><a href="communication-c1.html" target="_blank"><span class="num">02</span>Communication professionnelle</a></li>
-<li><input type="checkbox"><a href="competences-pro.html" target="_blank"><span class="num">03</span>Compétences professionnelles</a></li>
-<li><input type="checkbox"><a href="comprehension-a1.html" target="_blank"><span class="num">04</span>Compréhension écrite – niveau 1</a></li>
-<li><input type="checkbox"><a href="comprehension-a2-b1.html" target="_blank"><span class="num">05</span>Compréhension écrite – niveau 2</a></li>
-<li><input type="checkbox"><a href="editeur-a4.html" target="_blank"><span class="num">06</span>MiniWord – éditeur A4</a></li>
-<li><input type="checkbox"><a href="emails-professionnels.html" target="_blank"><span class="num">07</span>Emails professionnels</a></li>
-<li><input type="checkbox"><a href="examen-ecrit.html" target="_blank"><span class="num">08</span>Examen écrit</a></li>
-<li><input type="checkbox"><a href="formulaire-profil.html" target="_blank"><span class="num">09</span>Profil professionnel</a></li>
-<li><input type="checkbox"><a href="heure.html" target="_blank"><span class="num">10</span>Lire et comprendre l’heure</a></li>
-<li><input type="checkbox"><a href="jeu-clics.html" target="_blank"><span class="num">11</span>Jeu des clics</a></li>
-<li><input type="checkbox"><a href="jeu-directions.html" target="_blank"><span class="num">12</span>Jeu des directions</a></li>
-<li><input type="checkbox"><a href="les-bonnes-attitudes-au-travail.html" target="_blank"><span class="num">13</span>Les bonnes attitudes au travail</a></li>
-<li><input type="checkbox"><a href="lettre-motivation.html" target="_blank"><span class="num">14</span>Lettre de motivation</a></li>
-<li><input type="checkbox"><a href="miniwindows-mise-en-forme.html" target="_blank"><span class="num">15</span>MiniWindows – mise en forme</a></li>
-<li><input type="checkbox"><a href="mot-image-metiers.html" target="_blank"><span class="num">16</span>Mots & métiers</a></li>
-<li><input type="checkbox"><a href="organiser-documents-dossiers.html" target="_blank"><span class="num">17</span>Organiser les documents</a></li>
-<li><input type="checkbox"><a href="questions-entretien.html" target="_blank"><span class="num">18</span>Questions d’entretien</a></li>
-<li><input type="checkbox"><a href="qualites-personnelles.html" target="_blank"><span class="num">19</span>Qualités personnelles</a></li>
-<li><input type="checkbox"><a href="scenarios-professionnels.html" target="_blank"><span class="num">20</span>Scénarios professionnels</a></li>
-<li><input type="checkbox"><a href="simulation-de-situations-professionnelles.html" target="_blank"><span class="num">21</span>Simulation de situations professionnelles</a></li>
-<li><input type="checkbox"><a href="a-mon-avis.html" target="_blank"><span class="num">22</span>À mon avis... parce que...</a></li>
-<li><input type="checkbox"><a href="audio-fabrice.html" target="_blank"><span class="num">23</span>Audio Fabrice</a></li>
+  <div class="card" onclick="location.href='Écouter et écrire/'">
+    <h2>🎧 Écouter & écrire</h2>
+    <p>Audios, compréhension orale</p>
+  </div>
 
-</ul>
+  <div class="card" onclick="location.href='Recherche d emploi/'">
+    <h2>📄 Recherche d'emploi</h2>
+    <p>CV, LM, attitudes, compétences</p>
+  </div>
 
 </div>
 
