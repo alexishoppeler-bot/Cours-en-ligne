@@ -9,10 +9,6 @@
 
 <style>
 :root{
-  --blue:#2980ff;
-  --dark:#0b2a4a;
-  --bg:#e8f4f1;
-  --card:#ffffff;
   --accent:#1a8c6d;
 }
 
@@ -28,13 +24,12 @@ header{
   text-align:center;
   padding:35px 10px;
   margin-bottom:30px;
-  background:rgba(255,255,255,0.35);
+  background:rgba(255,255,255,0.40);
   backdrop-filter:blur(10px);
   border-radius:22px;
   box-shadow:0 4px 18px rgba(0,0,0,.10);
   max-width:1000px;
-  margin-left:auto;
-  margin-right:auto;
+  margin:auto;
 }
 
 header h1{
@@ -44,13 +39,6 @@ header h1{
   color:#1b4f72;
 }
 
-header p{
-  margin:0;
-  font-size:16px;
-  opacity:.85;
-}
-
-/* Bouton retour */
 #backBtn{
   position:absolute;
   top:18px;
@@ -60,11 +48,9 @@ header p{
   color:white;
   border:none;
   border-radius:12px;
-  font-size:14px;
   cursor:pointer;
 }
 
-/* Bouton sombre */
 #darkToggle{
   position:absolute;
   top:18px;
@@ -77,7 +63,6 @@ header p{
   cursor:pointer;
 }
 
-/* Cartes exercices */
 .menu{
   max-width:950px;
   margin:auto;
@@ -117,7 +102,6 @@ header p{
   color:#1a8c6d;
 }
 
-/* MODE SOMBRE */
 body.dark{
   background:linear-gradient(135deg,#081b26,#112d38);
   color:white;
@@ -151,20 +135,24 @@ body.dark .card h2{
 
 <div class="menu">
 
-  <div class="card" onclick="location.href='editeur-a4.html'">
-    <h2>MiniWord</h2>
+  <div class="card" onclick="window.open('exercices/bureautique_01.html', '_blank')">
+    <h2>Exercice 1 – Ranger des fichiers</h2>
   </div>
 
-  <div class="card" onclick="location.href='emails-professionnels.html'">
-    <h2>Génératur d'emails</h2>
+  <div class="card" onclick="window.open('exercices/bureautique_02.html', '_blank')">
+    <h2>Exercice 2 – Renommer un document</h2>
   </div>
 
-  <div class="card" onclick="location.href='lettre-motivation.html'">
-    <h2>Génératur de lettres de motivation</h2>
+  <div class="card" onclick="window.open('exercices/bureautique_03.html', '_blank')">
+    <h2>Exercice 3 – Envoyer un email</h2>
   </div>
 
-  <div class="card" onclick="location.href='miniwindows-mise-en-forme.html'">
-    <h2>MiniWord - Mise en forme</h2>
+  <div class="card" onclick="window.open('exercices/bureautique_04.html', '_blank')">
+    <h2>Exercice 4 – Télécharger un fichier</h2>
+  </div>
+
+  <div class="card" onclick="window.open('exercices/bureautique_05.html', '_blank')">
+    <h2>Exercice 5 – Faire un dossier</h2>
   </div>
 
 </div>
