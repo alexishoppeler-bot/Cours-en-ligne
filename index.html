@@ -238,11 +238,24 @@ header p{margin-top:10px;font-size:18px}
 
 <script>
 function openCat(id){
-  document.querySelectorAll('.sub').forEach(s=> s.style.display='none');
-  document.getElementById(id).style.display='block';
-  window.scrollTo({top:0, behavior:'smooth'});
+
+  // cacher toutes les sous-sections
+  document.querySelectorAll('.sub').forEach(s => s.style.display = 'none');
+
+  // afficher la bonne
+  document.getElementById(id).style.display = 'block';
+
+  // désactiver toutes les cartes
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+
+  // activer la carte cliquée
+  event.currentTarget.classList.add('active');
+
+  // remonter en haut
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 </script>
+
 
 </body>
 </html>
