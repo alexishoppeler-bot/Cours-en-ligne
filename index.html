@@ -2,112 +2,241 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Cours en ligne – Exercices</title>
+<title>Cours en ligne – Index</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root{
+  --blue:#3f71ff;
+  --dark:#003366;
+  --bg:#eef3f9;
+  --card:#ffffff;
+}
+
+body{
+  margin:0;
+  background:linear-gradient(180deg,#eef3f9,#dfe7f5);
+  font-family:Arial, sans-serif;
+  color:#003366;
+  padding-bottom:80px;
+}
+
+/* ===== HEADER ===== */
+header{
+  text-align:center;
+  padding:40px 20px;
+  background:linear-gradient(120deg,#3f71ff,#004c97);
+  color:white;
+}
+header h1{margin:0;font-size:36px}
+header p{margin-top:10px;font-size:18px}
+
+/* ===== GRID CARDS ===== */
 .cards{
+  max-width:1200px;
+  margin:auto;
+  margin-top:40px;
   display:grid;
   grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
-  gap:22px;
-  margin-top:40px;
+  gap:24px;
 }
 
 .card{
-  background:#fff;
-  padding:26px;
+  background:white;
   border-radius:18px;
-  box-shadow:0 6px 20px rgba(0,0,0,.12);
+  padding:26px;
   text-align:center;
-  transition:.2s;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
   cursor:pointer;
+  transition:.2s;
 }
-
 .card:hover{
   transform:translateY(-4px);
-  box-shadow:0 10px 25px rgba(0,0,0,.18);
+  box-shadow:0 10px 28px rgba(0,0,0,.18);
 }
 
 .card h2{
-  margin:0;
+  margin:12px 0 8px;
   font-size:22px;
   color:#003366;
 }
 
-.card p{
-  margin-top:10px;
-  color:#666;
-  font-size:15px;
+.icon{
+  width:70px;
+  height:70px;
+  background:#3f71ff22;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:32px;
+  margin:auto;
+}
+
+/* ===== SUB-CARDS (exercices) ===== */
+.sub{
+  display:none;
+  max-width:900px;
+  margin:40px auto;
+}
+
+.sub h3{
+  font-size:26px;
+  color:#003366;
+  margin-bottom:20px;
+  text-align:center;
+}
+
+.ex-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+  gap:18px;
+}
+
+.ex{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,.12);
+  transition:.2s;
+}
+.ex:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(0,0,0,.16);
+}
+
+.ex a{
+  text-decoration:none;
+  color:#003366;
+  font-size:18px;
+  font-weight:bold;
 }
 </style>
 
+</head>
+<body>
+
+<header>
+  <h1>📘 Cours en ligne</h1>
+  <p>Choisis une catégorie pour voir les exercices</p>
+</header>
+
+
+<!-- ========================= -->
+<!--     CARTES PRINCIPALES    -->
+<!-- ========================= -->
+
 <div class="cards">
 
-  <div class="card" onclick="location.href='Bureautique/'">
-    <h2>💻 Bureautique</h2>
-    <p>Word, fichiers, clics, MiniWindows</p>
+  <div class="card" onclick="openCat('bureautique')">
+    <div class="icon">💻</div>
+    <h2>Bureautique</h2>
   </div>
 
-  <div class="card" onclick="location.href='Jeux/'">
-    <h2>🎮 Jeux</h2>
-    <p>Jeux interactifs, images, directions</p>
+  <div class="card" onclick="openCat('ecouter')">
+    <div class="icon">🎧</div>
+    <h2>Écouter & écrire</h2>
   </div>
 
-  <div class="card" onclick="location.href='Lire et écrire/'">
-    <h2>📖 Lire & écrire</h2>
-    <p>Textes, compréhension écrite, rédaction</p>
+  <div class="card" onclick="openCat('jeux')">
+    <div class="icon">🎮</div>
+    <h2>Jeux</h2>
   </div>
 
-  <div class="card" onclick="location.href='Parler/'">
-    <h2>🗣️ Parler</h2>
-    <p>Scénarios, expression orale, débats</p>
+  <div class="card" onclick="openCat('lire')">
+    <div class="icon">📖</div>
+    <h2>Lire & écrire</h2>
   </div>
 
-  <div class="card" onclick="location.href='Écouter et écrire/'">
-    <h2>🎧 Écouter & écrire</h2>
-    <p>Audios, compréhension orale</p>
+  <div class="card" onclick="openCat('parler')">
+    <div class="icon">🗣️</div>
+    <h2>Parler</h2>
   </div>
 
-  <div class="card" onclick="location.href='Recherche d emploi/'">
-    <h2>📄 Recherche d'emploi</h2>
-    <p>CV, LM, attitudes, compétences</p>
+  <div class="card" onclick="openCat('emploi')">
+    <div class="icon">📄</div>
+    <h2>Recherche d'emploi</h2>
   </div>
 
 </div>
 
 
-<footer>
-✅ Progression sauvegardée automatiquement dans ce navigateur
-</footer>
+<!-- ========================= -->
+<!--     SOUS-CARTES           -->
+<!-- ========================= -->
+
+<!-- ====== Bureautique ====== -->
+<div id="bureautique" class="sub">
+  <h3>💻 Bureautique</h3>
+  <div class="ex-list">
+    <div class="ex"><a href="Bureautique/editeur-a4.html" target="_blank">MiniWord A4</a></div>
+    <div class="ex"><a href="Bureautique/miniwindows-mise-en-forme.html" target="_blank">MiniWindows</a></div>
+    <div class="ex"><a href="Bureautique/jeu-clics.html" target="_blank">Jeu des clics</a></div>
+    <div class="ex"><a href="Bureautique/organiser-documents-dossiers.html" target="_blank">Organiser les documents</a></div>
+    <div class="ex"><a href="Bureautique/heure.html" target="_blank">Lire l’heure</a></div>
+  </div>
+</div>
+
+<!-- ====== Écouter ====== -->
+<div id="ecouter" class="sub">
+  <h3>🎧 Écouter & écrire</h3>
+  <div class="ex-list">
+    <div class="ex"><a href="Ecouter et écrire/audio-fabrice.html" target="_blank">Audio Fabrice</a></div>
+  </div>
+</div>
+
+<!-- ====== Jeux ====== -->
+<div id="jeux" class="sub">
+  <h3>🎮 Jeux</h3>
+  <div class="ex-list">
+    <div class="ex"><a href="Jeux/jeu-directions.html" target="_blank">Jeu des directions</a></div>
+    <div class="ex"><a href="Jeux/mot-image-metiers.html" target="_blank">Mots & métiers</a></div>
+  </div>
+</div>
+
+<!-- ====== Lire & écrire ====== -->
+<div id="lire" class="sub">
+  <h3>📖 Lire & écrire</h3>
+  <div class="ex-list">
+    <div class="ex"><a href="Lire et écrire/comprehension-a1.html" target="_blank">Compréhension A1</a></div>
+    <div class="ex"><a href="Lire et écrire/comprehension-a2-b1.html" target="_blank">Compréhension A2-B1</a></div>
+    <div class="ex"><a href="Lire et écrire/les-bonnes-attitudes-au-travail.html" target="_blank">Bonnes attitudes</a></div>
+    <div class="ex"><a href="Lire et écrire/clavier-reecriture.html" target="_blank">Clavier – réécriture</a></div>
+    <div class="ex"><a href="Lire et écrire/a-mon-avis.html" target="_blank">À mon avis…</a></div>
+  </div>
+</div>
+
+<!-- ====== Parler ====== -->
+<div id="parler" class="sub">
+  <h3>🗣️ Parler</h3>
+  <div class="ex-list">
+    <div class="ex"><a href="Parler/scenarios-professionnels.html" target="_blank">Scénarios pro</a></div>
+    <div class="ex"><a href="Parler/simulation-de-situations-professionnelles.html" target="_blank">Simulations orales</a></div>
+    <div class="ex"><a href="Parler/questions-entretien.html" target="_blank">Questions entretien</a></div>
+    <div class="ex"><a href="Parler/communication-c1.html" target="_blank">Communication pro</a></div>
+  </div>
+</div>
+
+<!-- ====== Recherche d'emploi ====== -->
+<div id="emploi" class="sub">
+  <h3>📄 Recherche d'emploi</h3>
+  <div class="ex-list">
+    <div class="ex"><a href="Recherche d'emploi/lettre-motivation.html" target="_blank">Lettre motivation</a></div>
+    <div class="ex"><a href="Recherche d'emploi/emails-professionnels.html" target="_blank">Emails pro</a></div>
+    <div class="ex"><a href="Recherche d'emploi/competences-pro.html" target="_blank">Compétences pro</a></div>
+    <div class="ex"><a href="Recherche d'emploi/qualites-personnelles.html" target="_blank">Qualités personnelles</a></div>
+    <div class="ex"><a href="Recherche d'emploi/profil-professionnel.html" target="_blank">Profil professionnel</a></div>
+    <div class="ex"><a href="Recherche d'emploi/examen-ecrit.html" target="_blank">Examen écrit</a></div>
+  </div>
+</div>
+
 
 <script>
-// 🔍 Recherche instantanée
-document.getElementById("search").addEventListener("input", function(){
-  const value = this.value.toLowerCase();
-  document.querySelectorAll("#list li").forEach(li=>{
-    li.style.display = li.innerText.toLowerCase().includes(value) ? "" : "none";
-  });
-});
-
-// ✅ Sauvegarde cochage
-document.querySelectorAll("#list li").forEach((li, i)=>{
-  const cb = li.querySelector("input");
-  const key = "ex_done_" + i;
-  if(localStorage.getItem(key)==="1"){
-    cb.checked = true;
-    li.classList.add("done");
-  }
-
-  cb.addEventListener("change", ()=>{
-    if(cb.checked){
-      localStorage.setItem(key,"1");
-      li.classList.add("done");
-    }else{
-      localStorage.removeItem(key);
-      li.classList.remove("done");
-    }
-  });
-});
+function openCat(id){
+  document.querySelectorAll('.sub').forEach(s=> s.style.display='none');
+  document.getElementById(id).style.display='block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 </script>
 
 </body>
